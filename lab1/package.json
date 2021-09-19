@@ -4,7 +4,7 @@
   "description": "lab 1 of web techh course at ECE",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "Arnaud Lambert",
