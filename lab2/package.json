@@ -2,16 +2,14 @@
   "name": "lab1",
   "version": "0.1.0",
   "private": true,
-  "description": "lab 1 of web techh course at ECE",
+  "description": "lab 2 of web technology course at ECE",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "develop": "./node_modules/.bin/nodemon index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "Arnaud Lambert",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^2.0.13"
   }
 }

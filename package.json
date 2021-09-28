@@ -1,0 +1,15 @@
+{
+  "name": "lab",
+  "version": "0.2.0",
+  "private": true,
+  "description": "lab of web techh course at ECE",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Arnaud Lambert",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
