@@ -5,7 +5,7 @@
   "description": "back-end",
   "main": "lib/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./lib/index.js",
     "develop": "./node_modules/.bin/nodemon lib/index.js"
   },
   "keywords": [],
