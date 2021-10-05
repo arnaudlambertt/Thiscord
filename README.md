@@ -1,18 +1,27 @@
 # Web-technologies lab
 
 ## Summary
-This is the lab repository for Web Technologies at ECE.
-It contains the progress made throughout the semester.
+This is a chat application project for the web-technologies semester at ECE.
 
 ## Installation
-#### 1. Node is required :
+#### 1. Node is required:
 - [Node.js official website](https://nodejs.org/en/) or check [n installation guide](https://github.com/tj/n#installing-nodejs-versions).
 #### 2. Clone the repository
+#### 3. Install the dependencies 
+```
+//in the root directory of the project 
+npm install express
+npm install nodemon
+```
 
 ## Usage
-To start the program, simply run the following command inside the repository : 
+To start the program, simply run the following command inside the repository: 
 ```
 npm start
+```
+Or using nodemon:
+```
+npm run develop
 ```
 
 ## Contributors
