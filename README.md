@@ -9,7 +9,7 @@ This is a chat application project for the web-technologies semester at ECE.
 #### 2. Clone the repository
 #### 3. Install the dependencies 
 ```
-//in the root directory of the project 
+//root directory of the project 
 npm install express
 npm install nodemon
 ```
