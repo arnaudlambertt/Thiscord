@@ -4,6 +4,7 @@ const app = require('../lib/app')
 const db = require('../lib/db')
 
 describe('channels', () => {
+  
   beforeEach( async () => {
     await db.admin.clear()
   })

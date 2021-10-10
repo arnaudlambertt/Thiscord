@@ -9,7 +9,7 @@ describe('messages', () => {
     await db.admin.clear()
   })
 
-  it.skip('list empty', async () => {
+  it('list empty', async () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
@@ -21,7 +21,7 @@ describe('messages', () => {
     messages.should.eql([])
   })
 
-  it.skip('list one message', async () => {
+  it('list one message', async () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
@@ -30,6 +30,7 @@ describe('messages', () => {
     await supertest(app)
     .post(`/channels/${channel.id}/messages`)
     .send({content: 'Hello ECE'})
+
     // Get messages
     const {body: messages} = await supertest(app)
     .get(`/channels/${channel.id}/messages`)
@@ -40,7 +41,7 @@ describe('messages', () => {
     }])
   })
 
-  it.skip('add one element', async () => {
+  it('add one element', async () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
