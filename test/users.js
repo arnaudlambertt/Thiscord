@@ -4,7 +4,7 @@ const app = require('../lib/app')
 const db = require('../lib/db')
 
 describe('users', () => {
-  
+
   beforeEach( async () => {
     await db.admin.clear()
   })
