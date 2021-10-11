@@ -49,4 +49,28 @@ describe('users', () => {
     users.length.should.eql(1)
   })
 
+  it('update one element', async () => {
+    // Create a user
+    const {body: user} = await supertest(app)
+    .post('/users')
+    .send({username: 'user_1'})
+    // Update a user
+    const {body: user_updated } = await supertest(app)
+    .put(`/users/${user.id}`)
+    .send({username: 'user_2'})
+    .expect(200)
+    // Check its return value
+    user_updated.should.match({
+      id: /^\w+-\w+-\w+-\w+-\w+$/,
+      username: 'user_2'
+    })
+    // Check it was correctly updated
+    const {body: users} = await supertest(app)
+    .get('/users')
+    users.should.match([{
+      id: /^\w+-\w+-\w+-\w+-\w+$/,
+      username: 'user_2'
+    }])
+  })
+
 })
