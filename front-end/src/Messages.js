@@ -2,7 +2,7 @@ import {useState} from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 import {styles} from './styles.js'
-import {MessageForm} from './MessageForm.js'
+import {MessageSend} from './MessageSend.js'
 
 const channel = {
   name: 'Fake channel'
@@ -119,7 +119,7 @@ export const Messages = (channel) => {
           ))}
         </ul>
         </div>
-        <MessageForm addMessage={addMessage} />
-      </div>
+        <MessageSend sendMessage={addMessage} />
+        </div>
   )
 }
