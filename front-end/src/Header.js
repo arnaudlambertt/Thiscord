@@ -1,19 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
-
-const styles = {
-  header: {
-    height: '60px',
-    backgroundColor: 'rgba(255,255,255,.3)',
-    flexShrink: 0,
-  },
-  headerLogIn: {
-    backgroundColor: 'red',
-  },
-  headerLogOut: {
-    backgroundColor: 'blue',
-  }
-}
+import {styles} from './styles.js'
 
 export const Header = () => {
     return (

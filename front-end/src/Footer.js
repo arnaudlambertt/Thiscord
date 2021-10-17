@@ -1,13 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
-
-const styles = {
-  footer: {
-    height: '30px',
-    backgroundColor: 'rgba(255,255,255,.3)',
-    flexShrink: 0,
-  }
-}
+import {styles} from './styles.js'
 
 export const Footer = () => {
     return (

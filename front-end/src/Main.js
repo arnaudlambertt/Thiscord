@@ -1,15 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
-
-const styles = {
-  main: {
-    backgroundColor: '#373B44',
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'row',
-    overflow: 'hidden',
-  }
-}
+import {styles} from './styles.js'
 
 export const Main = () => {
     return (
