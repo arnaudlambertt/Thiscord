@@ -4,11 +4,11 @@ export const styles = {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#565E71',
-    padding: '40px',
+    padding: '15px',
   },
   header: {
-    'text-align' : 'center',
-    backgroundColor: 'rgba(255,255,255,.3)',
+    textAlign: 'center',
+    backgroundColor: 'rgba(88, 101, 242)',
     flexShrink: 0,
   },
   headerLogIn: {
@@ -25,27 +25,33 @@ export const styles = {
     overflow: 'hidden',
   },
   footer: {
+    textAlign : 'center',
     height: '40px',
-    backgroundColor: 'rgba(255,255,255,.3)',
+    backgroundColor: 'rgba(88,101,242)',
     flexShrink: 0,
   },
   channels: {
-    minWidth: '200px',
+    textAlign: 'center',
+    minWidth: '250px',
+    backgroundColor: 'rgba(44,47,51)',
     '& ul': {
-      'margin': 0,
-      'padding': 0,
-      'textIndent': 0,
-      'listStyleType': 0,
+      margin: 0,
+      padding: 0,
+      textIndent: 0,
+      listStyleType: 0,
+      paddingLeft: 10,
+      paddingRight: 10
     },
     '& li' : {
-      overflow : 'hidden',
-      'white-space' : 'nowrap',
-      'text-align' : 'left',
-      'padding-left' : 10,
-      'padding-bottom': 5,
-      'padding-top': 5,
-      'text-overflow' : 'ellipsis',
-      'font-size': 24,
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textAlign: 'left',
+      paddingBottom: 5,
+      paddingLeft: 3,
+      paddingRight: 3,
+      paddingTop: 5,
+      textOverflow: 'ellipsis',
+      fontSize: 20,
       ':hover': {
         backgroundColor: 'rgba(255,255,255,.2)',
       }
@@ -57,25 +63,38 @@ export const styles = {
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+    paddingLeft : 10,
+    paddingRight : 10,
+    '& h1': {
+      height: '18px',
+      whiteSpace: 'nowrap',
+    },
   },
   messages: {
     flex: '1 1 auto',
     height: '100%',
     overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column-reverse',
     '& ul': {
-      'margin': 0,
-      'padding': 0,
-      'textIndent': 0,
-      'listStyleType': 0,
+      margin: 0,
+      padding: 0,
+      textIndent: 0,
+      listStyleType: 0,
     },
   },
   message: {
+    wordBreak: 'break-all',
     margin: '.2rem',
     padding: '.2rem',
-    // backgroundColor: '#66728E',
     ':hover': {
-      backgroundColor: 'rgba(255,255,255,.2)',
+      backgroundColor: 'rgba(0,0,0,.2)',
     },
+  },
+  author: {
+    color: 'rgb(72, 217, 134)',
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   form: {
     borderTop: '2px solid #373B44',
@@ -84,7 +103,12 @@ export const styles = {
   },
   content: {
     flex: '1 1 auto',
-    marginRight: '.5rem'
+    marginRight: '.5rem',
+    backgroundColor: '#373B44',
+    color: '#ffffff',
+    borderColor: 'white',
+    borderRadius: '8px',
+    height: 20
   },
   send: {
     backgroundColor: '#D6DDEC',

@@ -1,7 +1,7 @@
 export const data = {
   channels: [
   {
-    name: 'flavien'
+    name: 'chaaaaaaneeeelll'
   },
   {
     name: 'channel 2'

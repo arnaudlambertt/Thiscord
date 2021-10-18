@@ -2,15 +2,14 @@
 import { jsx } from '@emotion/core'
 import {styles} from './styles.js'
 
-export const Messages = ({messages, channelName}) => {
+export const Messages = ({messages, channel}) => {
   return (
       <div css={styles.messages}>
-        <h1>Messages for {channelName}</h1>
         <ul>
           { messages.map( (message, i) => (
             <li key={i} css={styles.message}>
               <p>
-                <span>{message.author}</span>
+                <span css={styles.author}>{message.author}</span>
                 {' '}
                 <span>{(new Date(message.creation)).toString()}</span>                  </p>
                 <div>
@@ -18,7 +17,7 @@ export const Messages = ({messages, channelName}) => {
                   message.content
                   .split(/(\n +\n)/)
                   .filter( el => el.trim() )
-                  .map( el => <p>{el}</p>)
+                  .map( el => <p key="{el}">{el}</p>)
                 }
                 </div>
             </li>

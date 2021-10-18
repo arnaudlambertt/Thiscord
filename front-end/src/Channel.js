@@ -18,7 +18,9 @@ export const Channel = ({channel}) => {
 
   return (
     <div css={styles.channel}>
-      <Messages messages={messages} channelName={channel.name} />
+      <h1># {channel.name}</h1>
+      <hr style={{width:'100%',textAlign:'left',marginLeft:0, borderColor:'rgba(0,0,0,.2)'}}/>
+      <Messages messages={messages} channelName={channel} />
       <MessageForm sendMessage={addMessage} />
     </div>
   );

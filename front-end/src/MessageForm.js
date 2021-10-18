@@ -18,7 +18,7 @@ export const MessageForm = (
   return (
     <form css={styles.form}  onSubmit={onSubmit}>
       <input type="input" name="content" css={styles.content} />
-      <input type="submit" value="Send" css={styles.send} />
+      <input type="submit" value=">" css={styles.send} />
     </form>
   );
 }
