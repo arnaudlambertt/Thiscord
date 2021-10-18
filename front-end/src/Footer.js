@@ -5,7 +5,7 @@ import {styles} from './styles.js'
 export const Footer = () => {
   return (
     <footer className="App-footer" style={styles.footer}>
-      <p>Footer</p>
+      <p>Made with ❤️ by Arnaud & Clément</p>
     </footer>
   );
 }

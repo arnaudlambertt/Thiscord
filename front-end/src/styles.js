@@ -4,10 +4,10 @@ export const styles = {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#565E71',
-    padding: '50px',
+    padding: '40px',
   },
   header: {
-    height: '60px',
+    'text-align' : 'center',
     backgroundColor: 'rgba(255,255,255,.3)',
     flexShrink: 0,
   },
@@ -31,6 +31,25 @@ export const styles = {
   },
   channels: {
     minWidth: '200px',
+    '& ul': {
+      'margin': 0,
+      'padding': 0,
+      'textIndent': 0,
+      'listStyleType': 0,
+    },
+    '& li' : {
+      overflow : 'hidden',
+      'white-space' : 'nowrap',
+      'text-align' : 'left',
+      'padding-left' : 10,
+      'padding-bottom': 5,
+      'padding-top': 5,
+      'text-overflow' : 'ellipsis',
+      'font-size': 24,
+      ':hover': {
+        backgroundColor: 'rgba(255,255,255,.2)',
+      }
+    }
   },
   channel: {
     height: '100%',
