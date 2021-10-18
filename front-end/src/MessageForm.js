@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core'
 import {styles} from './styles.js'
 
-export const MessageSend = (
+export const MessageForm = (
   {sendMessage}
 ) => {
   const onSubmit = (e) => {

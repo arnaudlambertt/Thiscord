@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { jsx } from '@emotion/core'
 import {styles} from './styles.js'
 import {Messages, dummy} from './Messages.js'
-import {MessageSend} from './MessageSend.js'
+import {MessageForm} from './MessageForm.js'
 
 export const Channel = ({channel}) => {
   const [messages, setMessages] = useState(dummy);
@@ -18,7 +18,7 @@ export const Channel = ({channel}) => {
   return (
     <div css={styles.channel}>
       <Messages messages={messages} channelName={channel.name} />
-      <MessageSend sendMessage={addMessage} />
+      <MessageForm sendMessage={addMessage} />
     </div>
   );
 }
