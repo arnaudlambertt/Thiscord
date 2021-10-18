@@ -25,7 +25,7 @@ export const styles = {
     overflow: 'hidden',
   },
   footer: {
-    height: '30px',
+    height: '40px',
     backgroundColor: 'rgba(255,255,255,.3)',
     flexShrink: 0,
   },

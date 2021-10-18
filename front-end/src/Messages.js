@@ -1,13 +1,8 @@
-import {useState} from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 import {styles} from './styles.js'
-import {MessageSend} from './MessageSend.js'
 
-const channel = {
-  name: 'Fake channel'
-}
-const dummy = [
+export const dummy = [
   {
   author: 'sergei',
   creation: 1602831101929,
@@ -85,28 +80,17 @@ const dummy = [
   `,
 }]
 
-export const Messages = (channel) => {
-  const [messages, setMessages] = useState(dummy);
-
-  const addMessage = (message) => {
-    setMessages([
-      ...messages,
-      message
-    ])
-  }
-
+export const Messages = ({messages, channelName}) => {
   return (
-    <div css={styles.channel}>
       <div css={styles.messages}>
-        <h1>Messages for {channel.name}</h1>
+        <h1>Messages for {channelName}</h1>
         <ul>
           { messages.map( (message, i) => (
             <li key={i} css={styles.message}>
               <p>
                 <span>{message.author}</span>
                 {' '}
-                <span>{(new Date(message.creation)).toString()}</span>
-                </p>
+                <span>{(new Date(message.creation)).toString()}</span>                  </p>
                 <div>
                 {
                   message.content
@@ -119,7 +103,5 @@ export const Messages = (channel) => {
           ))}
         </ul>
         </div>
-        <MessageSend sendMessage={addMessage} />
-        </div>
-  )
+    );
 }
