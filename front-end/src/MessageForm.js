@@ -10,7 +10,7 @@ export const MessageForm = (
     const data = new FormData(e.target)
     sendMessage({
       content: data.get('content'),
-      author: 'david',
+      author: 'Anonymous',
       creation: Date.now(),
     })
     e.target.elements.content.value = ''

@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 import {styles} from './styles.js'
+import { DateTime } from 'luxon'
+
 
 export const Messages = ({messages, channel}) => {
   return (
@@ -11,7 +13,7 @@ export const Messages = ({messages, channel}) => {
               <p>
                 <span css={styles.author}>{message.author}</span>
                 {' '}
-                <span>{(new Date(message.creation)).toString()}</span>                  </p>
+                <span css={styles.timeStamp}>{DateTime.fromJSDate(new Date(message.creation)).toFormat("MMMM dd, yyyy 'at' t")}</span></p>
                 <div>
                 {
                   message.content

@@ -96,6 +96,11 @@ export const styles = {
     fontSize: 20,
     fontWeight: 'bold'
   },
+  timeStamp: {
+    color: 'rgba(255,255,255,.3)',
+    paddingLeft: 5,
+    fontSize: 14
+  },
   form: {
     borderTop: '2px solid #373B44',
     padding: '.5rem',

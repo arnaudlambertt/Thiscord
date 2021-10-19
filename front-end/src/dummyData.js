@@ -12,7 +12,7 @@ export const data = {
 ],
   messages: [
     {
-    author: 'sergei',
+    author: 'Clément',
     creation: 1602831101929,
     content: `
     ## 1 - Architecture - Level easy
@@ -45,7 +45,7 @@ export const data = {
     \`\`\`
     `,
   },{
-    author: 'david',
+    author: 'Arnaud',
     creation: 1602832138892,
     content: `
     ## 2 - Styles - Level easy
@@ -55,7 +55,7 @@ export const data = {
     with an icon, working on the header, providing day/night themes ... be creative
     `,
   },{
-    author: 'sergei',
+    author: 'Clément',
     creation: 1602840139202,
     content: `
     ## 3 - Use an external library - Level medium
@@ -69,7 +69,7 @@ export const data = {
     and act accordingly.
     `,
   },{
-    author: 'david',
+    author: 'Arnaud',
     creation: 1602844139200,
     content: `
     ## 4 - Support message contents in Markdown - Level hard
