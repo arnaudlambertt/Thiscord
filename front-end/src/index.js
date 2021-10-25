@@ -1,16 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import theme from './theme';
 import './index.css';
 import App from './App';
 import 'typeface-roboto'
 // Layout
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-  }
-});
+import { ThemeProvider } from '@mui/material/styles';
 
 ReactDOM.render(
   <React.StrictMode>
