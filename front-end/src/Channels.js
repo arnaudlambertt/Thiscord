@@ -1,19 +1,46 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core'
-import {styles} from './styles.js'
-import {data} from './dummyData.js'
 
-export const Channels = () => {
+/** @jsxImportSource @emotion/react */
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+// Layout
+import { Link } from '@mui/material';
+
+const styles = {
+  root: {
+    minWidth: '200px',
+  },
+  channel: {
+    padding: '.2rem .5rem',
+    whiteSpace: 'nowrap', 
+  }
+}
+
+export default function Channels({
+  onChannel
+}) {
+  const [channels, setChannels] = useState([])
+  useEffect( () => {
+    const fetch = async () => {
+      const {data: channels} = await axios.get('http://localhost:3001/channels')
+      setChannels(channels)
+    }
+    fetch()
+  }, [])
   return (
-    <div css={styles.channels}>
-    <h1>Channel list</h1>
-    <ul>
-      { data.channels.map( (channel, i) => (
-        <li key={i}>
-          <span># {channel.name}</span>
+    <ul style={styles.root}>
+      { channels.map( (channel, i) => (
+        <li key={i} css={styles.channel}>
+          <Link
+            href="#"
+            onClick={ (e) => {
+              e.preventDefault()
+              onChannel(channel)
+            }}
+            >
+            {channel.name}
+          </Link>
         </li>
       ))}
     </ul>
-    </div>
   );
 }
