@@ -48,7 +48,7 @@ export default function Channel({
       listRef.current.scroll()
     }
   }
-  
+
   if(channelId.current !== channel.id){
     fetchMessages()
     channelId.current = channel.id

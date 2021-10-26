@@ -5,7 +5,8 @@ const styles = {
   footer: {
     height: '30px',
     backgroundColor: 'rgba(255,255,255,.3)',
-    flexShrink: 0,
+    display: 'flex',
+    flexDirection: 'row'
   },
 }
 

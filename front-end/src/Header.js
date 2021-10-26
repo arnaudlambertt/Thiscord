@@ -4,7 +4,7 @@
 const styles = {
   header: {
     height: '60px',
-    backgroundColor: 'rgba(255,255,255,.3)',
+    backgroundColor: 'rgba(255,0,0,.3)',
     flexShrink: 0,
   },
   headerLogIn: {

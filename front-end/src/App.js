@@ -22,11 +22,9 @@ export default function App() {
   const [user, setUser] = useState(null)
   return (
     <div className="App" css={styles.root}>
-      <Header />
       {
         user ? <Main /> : <Login onUser={setUser} />
       }
-      <Footer />
     </div>
   );
 }
