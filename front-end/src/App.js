@@ -3,8 +3,8 @@
 import {useState} from 'react';
 import './App.css';
 // Local
-import Footer from './Footer'
-import Header from './Header'
+// import Footer from './Footer'
+// import Header from './Header'
 import Main from './Main'
 import Login from './Login'
 
