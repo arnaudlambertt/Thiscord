@@ -24,6 +24,7 @@ export default function Channels({
   useEffect( () => {
     const fetch = async () => {
       const {data: channels} = await axios.get('http://localhost:3001/channels')
+      channels.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
       setChannels(channels)
     }
     fetch()
