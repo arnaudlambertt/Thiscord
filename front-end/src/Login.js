@@ -33,34 +33,35 @@ const useStyles = (theme) => ({
 const authorization_endpoint = 'http://127.0.0.1:5556/dex/auth';
 const client_id = 'example-app';
 const redirect_uri = 'http://127.0.0.1:3000';
-const scope = 'openid';
+const scope = 'openid%20email%20offline_access';
+const client_secret = 'ZXhhbXBsZS1hcHAtc2VjcmV0';
 
-const base64URLEncode = (str) => {
+const base64URLEncode = function(str) {
   return str.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 };
 
-const sha256 = (buffer) => {
+const sha256 = function(buffer) {
   return crypto.createHash('sha256').update(buffer).digest();
 };
 
 const generate_redirect_url = (code_verifier) => {
 
   var code_challenge = base64URLEncode(sha256(code_verifier));
-  var url = authorization_endpoint + "?" + "client_id=" + client_id + "&" + "scope=" + (scope.concat('%20')) + "&" + "response_type=code&" + "redirect_uri=" + redirect_uri + "&" + "code_challenge=" + code_challenge + "&" + "code_challenge_method=S256";
+  var url = authorization_endpoint + "?" + "client_id=" + client_id + "&" + "scope=" + scope + "&" + "response_type=code&" + "redirect_uri=" + redirect_uri + "&" + "code_challenge=" + code_challenge + "&" + "code_challenge_method=S256";
 
   return url;
 }
 
 const grant = async (code_verifier, code) => {
   try {
-        const data = await axios.post("http://127.0.0.1:5556/dex/token", qs.stringify({
+        const data = await axios.post('http://127.0.0.1:5556/dex/token', qs.stringify({
           grant_type: 'authorization_code',
-          client_id: "" + 'example-app',
-          redirect_uri: "" + redirect_uri,
-          client_secret: 'ZXhhbXBsZS1hcHAtc2VjcmV0',
-          code_verifier: "" + code_verifier,
-          code: "" + code
-        }))
+          client_id: client_id,
+          redirect_uri: redirect_uri,
+          client_secret: client_secret,
+          code_verifier: code_verifier,
+          code: code
+        }));
 
         return data;
   }
@@ -96,7 +97,6 @@ export default function Login({
   }
   else {   //new user
     const code_verifier = base64URLEncode(crypto.randomBytes(32));
-    setCookie('code_verifier',code_verifier);
     const redirect_url = generate_redirect_url(code_verifier);
     return (
     <div css={styles.root}>
@@ -104,6 +104,7 @@ export default function Login({
         <fieldset>
           <Button variant="contained" type="submit" onClick={ (e) => {
             e.stopPropagation()
+            setCookie('code_verifier',code_verifier);
             onClick(redirect_url)
           }}>Login</Button>
         </fieldset>
