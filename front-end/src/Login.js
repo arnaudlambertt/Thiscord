@@ -47,7 +47,7 @@ const sha256 = function(buffer) {
 const generate_redirect_url = (code_verifier) => {
 
   var code_challenge = base64URLEncode(sha256(code_verifier));
-  var url = authorization_endpoint + "?" + "client_id=" + client_id + "&" + "scope=" + scope + "&" + "response_type=code&" + "redirect_uri=" + redirect_uri + "&" + "code_challenge=" + code_challenge + "&" + "code_challenge_method=S256";
+  var url = authorization_endpoint + "?client_id=" + client_id + "&scope=" + scope + "&response_type=code&redirect_uri=" + redirect_uri + "&code_challenge=" + code_challenge + "&code_challenge_method=S256";
 
   return url;
 }
