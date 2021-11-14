@@ -1,10 +1,8 @@
 
 /** @jsxImportSource @emotion/react */
-import {useState} from 'react';
+import {useContext} from 'react';
+import {Context} from './Context'
 import './App.css';
-// Local
-// import Footer from './Footer'
-// import Header from './Header'
 import Main from './Main'
 import Login from './Login'
 
@@ -13,17 +11,17 @@ const styles = {
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#565E71',
+    backgroundColor: '#35393F',
     padding: '0px',
   },
 }
 
 export default function App() {
-  const [user, setUser] = useState(null)
+  const {user} = useContext(Context)
   return (
     <div className="App" css={styles.root}>
       {
-        user ? <Main /> : <Login onUser={setUser} />
+        user ? <Main /> : <Login />
       }
     </div>
   );

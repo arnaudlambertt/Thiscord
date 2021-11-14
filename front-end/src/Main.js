@@ -1,7 +1,10 @@
 
 /** @jsxImportSource @emotion/react */
-import {useState} from 'react'
+import {useState,useContext} from 'react'
+import { useCookies } from 'react-cookie';
+import {Context} from './Context'
 import { useTheme } from '@mui/styles';
+import {Button} from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -23,6 +26,8 @@ const useStyles = (theme) => ({
   },
 })
 
+
+
 export default function Main() {
 
   const drawerWidth = 240;
@@ -30,7 +35,7 @@ export default function Main() {
   const handleDrawerToggle = () => {
      setMobileOpen(!mobileOpen);
   };
-
+  const [,, removeCookie] = useCookies([]);
   const [channel, setChannel] = useState(null)
   const fetchChannel = async (channel) => {
     setChannel(channel)
@@ -40,6 +45,15 @@ export default function Main() {
   const drawer = (
    <Channels onChannel={fetchChannel} />
   );
+
+  const {user, logout} = useContext(Context)
+
+  const onClick = (e) => {
+    e.stopPropagation()
+    removeCookie('token')
+    logout()
+    window.location = '/'
+  }
 
   return (
     <main css={styles.main}>
@@ -61,7 +75,8 @@ export default function Main() {
           >
             <MenuIcon />
           </IconButton>
-            <h1>Thiscord</h1>
+            <h1>{user.email}</h1>
+            <Button variant="contained" sx={{position: 'absolute', right:20, backgroundColor: 'background.default'}} onClick={onClick}>LOGOUT</Button>
         </Toolbar>
       </AppBar>
       <Box

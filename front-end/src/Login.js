@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 // Layout
 import { useCookies } from 'react-cookie';
+import { useEffect,useContext } from 'react';
+import {Context} from './Context'
 import { useTheme } from '@mui/styles';
 import { Button } from '@mui/material';
 import crypto from 'crypto';
 import axios from 'axios';
 import qs from 'qs';
-
 
 const useStyles = (theme) => ({
   root: {
@@ -34,7 +35,6 @@ const authorization_endpoint = 'http://127.0.0.1:5556/dex/auth';
 const client_id = 'example-app';
 const redirect_uri = 'http://127.0.0.1:3000';
 const scope = 'openid%20email%20offline_access';
-const client_secret = 'ZXhhbXBsZS1hcHAtc2VjcmV0';
 
 const base64URLEncode = function(str) {
   return str.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
@@ -52,48 +52,55 @@ const generate_redirect_url = (code_verifier) => {
   return url;
 }
 
-const grant = async (code_verifier, code) => {
+const Grant = ({code_verifier, code, setCookie, removeCookie}) => {
+  useEffect( () => {
+    const fetch = async () => {
   try {
-        const data = await axios.post('http://127.0.0.1:5556/dex/token', qs.stringify({
+        const {data: token} = await axios.post('http://127.0.0.1:5556/dex/token', qs.stringify({
           grant_type: 'authorization_code',
           client_id: client_id,
           redirect_uri: redirect_uri,
-          client_secret: client_secret,
           code_verifier: code_verifier,
           code: code
         }));
-
-        return data;
+        setCookie('token',token)
+        removeCookie('code_verifier')
+        window.location.replace(redirect_uri)
   }
-  catch (_error) {
-      var err = _error;
-    return err.data;
+  catch (error) {
+      console.log(error)
   }
+}
+fetch()
+})
+  return(<div></div>)
 }
 
 export default function Login({
-  onUser
-}) {
-  const styles = useStyles(useTheme())
-  const [cookies, setCookie, removeCookie] = useCookies([]);
+    onUser
+  }) {
+    const {login} = useContext(Context)
+    const styles = useStyles(useTheme())
+    const [cookies, setCookie, removeCookie] = useCookies([]);
 
-  function onClick(redirect_url) {
-    window.location.replace(redirect_url)
-  }
+    function onClick(redirect_url) {
+      window.location.replace(redirect_url)
+    }
   const params = new URLSearchParams(window.location.search)
   const params_code = params.get('code')
 
   if(params_code)
   {
-    const code_verifier_cookie = cookies.code_verifier;
-    const token = grant(code_verifier_cookie,params_code);
-    removeCookie('code_verifier');
-    setCookie('token', token);
-    //window.location.replace('http://localhost:3000')
+    const code_verifier = cookies.code_verifier;
+    return (<Grant code_verifier={code_verifier} code={params_code} setCookie={setCookie} removeCookie={removeCookie} />)
   }
   else if(cookies.token)  //user already logged in
   {
-    return(<div>{onUser({username: 'david'})}</div>)
+    const {id_token} = cookies.token
+    const id_payload = id_token.split('.')[1]
+    const {email} = JSON.parse(atob(id_payload))
+    login({email: email})
+    return(<div></div>)
   }
   else {   //new user
     const code_verifier = base64URLEncode(crypto.randomBytes(32));
