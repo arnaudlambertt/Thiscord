@@ -9,16 +9,7 @@ import markdown from 'remark-parse'
 import remark2rehype from 'remark-rehype'
 import html from 'rehype-stringify'
 // Time
-import dayjs from 'dayjs'
-import calendar from 'dayjs/plugin/calendar'
-import updateLocale from 'dayjs/plugin/updateLocale'
-dayjs.extend(calendar)
-dayjs.extend(updateLocale)
-dayjs.updateLocale('en', {
-  calendar: {
-    sameElse: 'DD/MM/YYYY hh:mm A'
-  }
-})
+import { DateTime } from 'luxon'
 
 const useStyles = (theme) => ({
   root: {
@@ -37,6 +28,16 @@ const useStyles = (theme) => ({
       backgroundColor: 'rgba(255,255,255,.2)',
     },
   },
+  timeStamp: {
+    color: 'rgba(255,255,255,.3)',
+    paddingLeft: 5,
+    fontSize: 14
+  },
+  author: {
+    color: 'rgb(72, 217, 134)',
+    fontSize: 20,
+    fontWeight: 'bold'
+  }
 })
 
 export default forwardRef(({
@@ -84,9 +85,8 @@ export default forwardRef(({
             return (
               <li key={i} css={styles.message}>
                 <p>
-                  <span>{message.author}</span>
-                  {' - '}
-                  <span>{dayjs().calendar(message.creation)}</span>
+                  <span css={styles.author}>{message.author}</span>
+                  <span css={styles.timeStamp}>{DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                 </p>
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>
