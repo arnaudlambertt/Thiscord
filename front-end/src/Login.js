@@ -32,7 +32,7 @@ const useStyles = (theme) => ({
 })
 
 const authorization_endpoint = 'http://127.0.0.1:5556/dex/auth';
-const client_id = 'example-app';
+const client_id = 'webtech-frontend';
 const redirect_uri = 'http://127.0.0.1:3000';
 const scope = 'openid%20email%20offline_access';
 
@@ -65,7 +65,7 @@ const Grant = ({code_verifier, code, setCookie, removeCookie}) => {
         }));
         setCookie('token',token)
         removeCookie('code_verifier')
-        window.location.replace(redirect_uri)
+        window.location = '/'
   }
   catch (error) {
       console.log(error)
