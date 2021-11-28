@@ -1,6 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
-import {useState,useContext} from 'react'
+import {useState,useContext, useEffect} from 'react'
+import { Routes, Route } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import {Context} from './Context'
 import { useTheme } from '@mui/styles';
@@ -26,8 +27,6 @@ const useStyles = (theme) => ({
   },
 })
 
-
-
 export default function Main() {
 
   const drawerWidth = 240;
@@ -36,23 +35,29 @@ export default function Main() {
      setMobileOpen(!mobileOpen);
   };
   const [,, removeCookie] = useCookies([]);
-  const [channel, setChannel] = useState(null)
-  const fetchChannel = async (channel) => {
-    setChannel(channel)
-  }
   const styles = useStyles(useTheme());
 
   const drawer = (
-   <Channels onChannel={fetchChannel} />
+   <Channels />
   );
 
-  const {user, logout} = useContext(Context)
+  const {user, logout, channels, fetchChannels} = useContext(Context)
 
   const onClick = (e) => {
     e.stopPropagation()
     removeCookie('token')
     logout()
     window.location = '/'
+  }
+
+  const Loading = () => {
+    useEffect( () => {
+       const fetch = async () => {
+        await fetchChannels();
+      }
+      fetch()
+    }, [])
+    return(<div>loading channel</div>);
   }
 
   return (
@@ -124,8 +129,12 @@ export default function Main() {
         }}
       >
         <Toolbar />
-        {channel ? <Channel channel={channel} messages={[]} /> : <Welcome />}
-
+        <Routes>
+          <Route index element={<Welcome />} />
+          <Route path="channel/">
+            <Route path=":channelid" element={channels ? <Channel channels={channels} /> : <Loading/>} />
+          </Route>
+        </Routes>
       </Box>
     </Box>
 

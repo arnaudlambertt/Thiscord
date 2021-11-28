@@ -1,10 +1,11 @@
 
 /** @jsxImportSource @emotion/react */
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 // Layout
-import { Link } from '@mui/material';
+import { Routes, Route, Link } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
+import {Context} from './Context'
 
 const useStyles = (theme) => ({
   root: {
@@ -17,30 +18,24 @@ const useStyles = (theme) => ({
   }
 })
 
-export default function Channels({
-  onChannel
-}) {
-  const [channels, setChannels] = useState([])
+export default function Channels() {
+  const {fetchChannels, channels} = useContext(Context);
   useEffect( () => {
-    const fetch = async () => {
-      const {data: channels} = await axios.get('http://localhost:3001/channels')
-      channels.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
-      setChannels(channels)
+     const fetch = async () => {
+      await fetchChannels();
     }
     fetch()
   }, [])
+
+  const channelsArray = channels ? Object.values(channels) : [];
+  channelsArray.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+
   const styles = useStyles(useTheme());
   return (
     <ul style={styles.root}>
-      { channels.map( (channel, i) => (
-        <li key={i} css={styles.channel}>
-          <Link
-            href="#"
-            onClick={ (e) => {
-              e.preventDefault()
-              onChannel(channel)
-            }}
-            >
+      { channelsArray.map((channel) => (
+        <li key={channel.id} css={styles.channel}>
+          <Link to={`channel/${channel.id}`}>
             {channel.name}
           </Link>
         </li>

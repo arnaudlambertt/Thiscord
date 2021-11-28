@@ -1,6 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
 import {useRef, useState} from 'react';
+import { useParams } from "react-router-dom";
 import axios from 'axios';
 // Layout
 import { useTheme } from '@mui/styles';
@@ -30,11 +31,13 @@ const useStyles = (theme) => ({
 })
 
 export default function Channel({
-  channel
+  channels
 }) {
+
+  const channel = channels[useParams().channelid];
   const styles = useStyles(useTheme())
   const listRef = useRef();
-  const channelId = useRef()
+  const channelId = useRef();
   const [messages, setMessages] = useState([])
   const [scrollDown, setScrollDown] = useState(false)
   const addMessage = (message) => {

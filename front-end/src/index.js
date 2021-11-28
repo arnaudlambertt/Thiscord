@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import theme from './theme';
-import { CookiesProvider } from 'react-cookie';
+import {CookiesProvider} from 'react-cookie';
 import {ContextProvider} from './Context'
+import {BrowserRouter as Router} from "react-router-dom";
 
 import './index.css';
 import App from './App';
@@ -15,7 +16,9 @@ ReactDOM.render(
     <ContextProvider>
       <CookiesProvider>
         <ThemeProvider theme={theme}>
-          <App />
+          <Router>
+            <App />
+          </Router>
         </ThemeProvider>
       </CookiesProvider>
     </ContextProvider>
