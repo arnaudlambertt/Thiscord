@@ -35,6 +35,8 @@ export default function Channel({
 }) {
 
   const channel = channels[useParams().channelid];
+  if (!channel)
+    window.location = "/"
   const styles = useStyles(useTheme())
   const listRef = useRef();
   const channelId = useRef();

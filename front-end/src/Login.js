@@ -52,8 +52,9 @@ const generate_redirect_url = (code_verifier) => {
   return url;
 }
 
-const Grant = ({code_verifier, code, setCookie, removeCookie}) => {
+const Grant = ({cookies, code, setCookie, removeCookie}) => {
   useEffect( () => {
+    const code_verifier = cookies.code_verifier;
     const fetch = async () => {
   try {
         const {data: token} = await axios.post('http://127.0.0.1:5556/dex/token', qs.stringify({
@@ -63,9 +64,11 @@ const Grant = ({code_verifier, code, setCookie, removeCookie}) => {
           code_verifier: code_verifier,
           code: code
         }));
-        setCookie('token',token)
+        setCookie('token',token, {path: "/" })
         removeCookie('code_verifier')
-        window.location = '/'
+        const url_source = cookies.url_source
+        removeCookie('source')
+        window.location = url_source
   }
   catch (error) {
       console.log(error)
@@ -91,8 +94,7 @@ export default function Login({
 
   if(params_code)
   {
-    const code_verifier = cookies.code_verifier;
-    return (<Grant code_verifier={code_verifier} code={params_code} setCookie={setCookie} removeCookie={removeCookie} />)
+    return (<Grant cookies={cookies} code={params_code} setCookie={setCookie} removeCookie={removeCookie} />)
   }
   else if(cookies.token)  //user already logged in
   {
@@ -111,7 +113,8 @@ export default function Login({
         <fieldset>
           <Button variant="contained" type="submit" onClick={ (e) => {
             e.stopPropagation()
-            setCookie('code_verifier',code_verifier);
+            setCookie('code_verifier',code_verifier, {path: "/" });
+            setCookie('url_source',window.location.pathname, {path: "/" });
             onClick(redirect_url)
           }}>Login</Button>
         </fieldset>
