@@ -45,7 +45,7 @@ export default function Main() {
 
   const onClick = (e) => {
     e.stopPropagation()
-    removeCookie('token')
+    removeCookie('token', { path: "/" })
     logout()
     window.location = '/'
   }

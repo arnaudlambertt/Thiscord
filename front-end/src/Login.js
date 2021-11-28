@@ -67,7 +67,7 @@ const Grant = ({cookies, code, setCookie, removeCookie}) => {
         setCookie('token',token, {path: "/" })
         removeCookie('code_verifier')
         const url_source = cookies.url_source
-        removeCookie('source')
+        removeCookie('url_source')
         window.location = url_source
   }
   catch (error) {
