@@ -1,33 +1,47 @@
-import React, {useState} from 'react'
-import axios from 'axios';
-export const Context = React.createContext();
 
-export const ContextProvider =  ({
+import React, {useState} from 'react'
+import { useCookies } from 'react-cookie'
+
+const Context = React.createContext()
+
+export default Context
+
+export const Provider = ({
   children
 }) => {
-  const [user, setUser] = useState(null);
-  const [channels, setChannels] = useState(null);
-
+  const [cookies, setCookie, removeCookie] = useCookies([])
+  const [oauth, setOauth] = useState(cookies.oauth)
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const [channels, setChannels] = useState([])
+  const [currentChannel, setCurrentChannel] = useState(null)
   return (
     <Context.Provider value={{
-      user: user,
-      login: (user) => {
-        if(user && !user.email){
-          throw Error("Invalid user")
+      oauth: oauth,
+      setOauth: (oauth) => {
+        if(oauth){
+          const payload = JSON.parse(
+            Buffer.from(
+              oauth.id_token.split('.')[1], 'base64'
+            ).toString('utf-8')
+          )
+          oauth.email = payload.email
+          setCookie('oauth', oauth)
+        }else{
+          setCurrentChannel(null)
+          setChannels([])
+          removeCookie('oauth')
         }
-        setUser(user)
-      },
-      logout: () => {
-        setUser(null)
+        setOauth(oauth)
       },
       channels: channels,
-      fetchChannels: async () =>
-      {
-        const {data: channelsPost} = await axios.get('http://localhost:3001/channels')
-        const chans = {};
-        channelsPost.forEach((a,b) => chans[a.id] = a)
-        setChannels(chans);
-      }
+      drawerVisible: drawerVisible,
+      setDrawerVisible: setDrawerVisible,
+      setChannels: setChannels,
+      currentChannel: currentChannel,
+      setCurrentChannel: (channelId) => {
+        const channel = channels.find( channel => channel.id === channelId)
+        setCurrentChannel(channel)
+      },
     }}>{children}</Context.Provider>
   )
 }

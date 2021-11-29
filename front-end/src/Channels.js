@@ -1,41 +1,58 @@
 
 /** @jsxImportSource @emotion/react */
-import {useState, useEffect, useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import axios from 'axios';
 // Layout
-import { Routes, Route, Link } from 'react-router-dom';
-import { useTheme } from '@mui/styles';
-import {Context} from './Context'
+import {Link} from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+// Local
+import Context from './Context'
+import {useNavigate} from 'react-router-dom'
 
-const useStyles = (theme) => ({
+const styles = {
   root: {
-    background: theme.palette.background.paper,
-    minWidth: '200px',
+    '& a': {
+      padding: '.2rem .5rem',
+      whiteSpace: 'nowrap', 
+    }
   },
-  channel: {
-    padding: '.2rem .5rem',
-    whiteSpace: 'nowrap',
-  }
-})
+}
 
 export default function Channels() {
-  const {fetchChannels, channels} = useContext(Context);
+  const {
+    oauth,
+    channels, setChannels
+  } = useContext(Context)
+  const naviate = useNavigate();
   useEffect( () => {
-     const fetch = async () => {
-      await fetchChannels();
+    const fetch = async () => {
+      try{
+        const {data: channels} = await axios.get('http://localhost:3001/channels', {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          }
+        })
+        setChannels(channels)
+      }catch(err){
+        console.error(err)
+      }
     }
     fetch()
-  }, [])
-
-  const channelsArray = channels ? Object.values(channels) : [];
-  channelsArray.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
-
-  const styles = useStyles(useTheme());
+  }, [oauth, setChannels])
   return (
-    <ul style={styles.root}>
-      { channelsArray.map((channel) => (
-        <li key={channel.id} css={styles.channel}>
-          <Link to={`channel/${channel.id}`}>
+    <ul css={styles.root}>
+      <li css={styles.channel}>
+        <Link to="/channels" component={RouterLink}>Welcome</Link>
+      </li>
+      { channels.map( (channel, i) => (
+        <li key={i} css={styles.channel}>
+          <Link
+            href={`/channels/${channel.id}`}
+            onClick={ (e) => {
+              e.preventDefault()
+              naviate(`/channels/${channel.id}`)
+            }}
+          >
             {channel.name}
           </Link>
         </li>

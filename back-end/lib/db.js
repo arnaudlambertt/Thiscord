@@ -52,9 +52,7 @@ module.exports = {
       if(!channelId) throw Error('Invalid channel')
       if(!message.author) throw Error('Invalid message')
       if(!message.content) throw Error('Invalid message')
-      if(!message.creation) creation = microtime.now()
-      else creation = message.creation*1000
-
+      creation = microtime.now()
       await db.put(`messages:${channelId}:${creation}`, JSON.stringify({
         author: message.author,
         content: message.content

@@ -63,4 +63,11 @@ describe('messages', () => {
     messages.length.should.eql(1)
   })
   
+  it('access invalid channel', async () => {
+    // Get messages
+    const {body: messages} = await supertest(app)
+    .get(`/channels/1234/messages`)
+    .expect(404)
+  })
+  
 })

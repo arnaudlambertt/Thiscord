@@ -4,15 +4,25 @@ import {forwardRef, useImperativeHandle, useLayoutEffect, useRef} from 'react'
 // Layout
 import { useTheme } from '@mui/styles';
 // Markdown
-import {unified} from 'unified'
+import { unified } from 'unified'
 import markdown from 'remark-parse'
 import remark2rehype from 'remark-rehype'
 import html from 'rehype-stringify'
 // Time
-import { DateTime } from 'luxon'
+import dayjs from 'dayjs'
+import calendar from 'dayjs/plugin/calendar'
+import updateLocale from 'dayjs/plugin/updateLocale'
+dayjs.extend(calendar)
+dayjs.extend(updateLocale)
+dayjs.updateLocale('en', {
+  calendar: {
+    sameElse: 'DD/MM/YYYY hh:mm A'
+  }
+})
 
 const useStyles = (theme) => ({
   root: {
+    position: 'relative',
     flex: '1 1 auto',
     overflow: 'auto',
     '& ul': {
@@ -25,19 +35,20 @@ const useStyles = (theme) => ({
   message: {
     padding: '.2rem .5rem',
     ':hover': {
-      backgroundColor: 'rgba(255,255,255,.2)',
+      backgroundColor: 'rgba(255,255,255,.05)',
     },
   },
-  timeStamp: {
-    color: 'rgba(255,255,255,.3)',
-    paddingLeft: 5,
-    fontSize: 14
+  fabWrapper: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: '50px',
   },
-  author: {
-    color: 'rgb(72, 217, 134)',
-    fontSize: 20,
-    fontWeight: 'bold'
-  }
+  fab: {
+    position: 'fixed !important',
+    top: 0,
+    width: '50px',
+  },
 })
 
 export default forwardRef(({
@@ -85,8 +96,9 @@ export default forwardRef(({
             return (
               <li key={i} css={styles.message}>
                 <p>
-                  <span css={styles.author}>{message.author}</span>
-                  <span css={styles.timeStamp}>{DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                  <span>{message.author}</span>
+                  {' - '}
+                  <span>{dayjs().calendar(message.creation)}</span>
                 </p>
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>

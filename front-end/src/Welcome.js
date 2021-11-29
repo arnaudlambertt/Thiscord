@@ -3,15 +3,16 @@
 // Layout
 import { useTheme } from '@mui/styles';
 import { Grid, Typography } from '@mui/material';
-import {ReactComponent as ChannelIcon} from './icons/channel.svg';
-import {ReactComponent as FriendsIcon} from './icons/friends.svg';
-import {ReactComponent as SettingsIcon} from './icons/settings.svg';
+import { ReactComponent as ChannelIcon } from './icons/channel.svg';
+import { ReactComponent as FriendsIcon } from './icons/friends.svg';
+import { ReactComponent as SettingsIcon } from './icons/settings.svg';
 
 const useStyles = (theme) => ({
   root: {
     height: '100%',
     flex: '1 1 auto',
     display: 'flex',
+    // background: 'rgba(0,0,0,.2)',
   },
   card: {
     textAlign: 'center',
