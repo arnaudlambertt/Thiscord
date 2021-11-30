@@ -13,7 +13,7 @@ const styles = {
   root: {
     '& a': {
       padding: '.2rem .5rem',
-      whiteSpace: 'nowrap', 
+      whiteSpace: 'nowrap',
     }
   },
 }

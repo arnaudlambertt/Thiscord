@@ -10,6 +10,7 @@ import Context from './Context'
 import Channels from './Channels'
 import Channel from './Channel'
 import Welcome from './Welcome'
+import Footer from './Footer'
 import {
   Route,
   Routes,
@@ -18,7 +19,7 @@ import {
 
 const useStyles = (theme) => ({
   root: {
-    backgroundColor: '#373B44',
+    background: theme.palette.background.default,
     overflow: 'hidden',
     flex: '1 1 auto',
     display: 'flex',
@@ -33,6 +34,8 @@ const useStyles = (theme) => ({
     display: 'block',
   },
 })
+
+
 
 export default function Main() {
   const {
@@ -58,6 +61,7 @@ export default function Main() {
       >
         <Channels />
       </Drawer>
+      <div style={{width:"100%",display: 'flex', flexDirection: 'column'}}>
       <Routes>
         <Route path="channels/">
           <Route index element={<Navigate to="/oups" />} />
@@ -66,7 +70,9 @@ export default function Main() {
         </Route>
         <Route path="/" element={<Welcome />} />
         <Route path="*" element={<Navigate to="/oups" />} />
-        </Routes>
+      </Routes>
+      <Footer />
+      </div>
     </main>
   );
 }

@@ -5,23 +5,20 @@ import { useContext } from 'react';
 import { useTheme } from '@mui/styles';
 import { IconButton, Link } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import {Button,Box} from "@mui/material";
 import Context from './Context';
 
 const useStyles = (theme) => ({
   header: {
-    padding: theme.spacing(1),
-    backgroundColor: 'rgba(255,255,255,.3)',
-    flexShrink: 0,
-  },
-  headerLogIn: {
-    backgroundColor: 'red',
-  },
-  headerLogOut: {
-    backgroundColor: 'blue',
+    backgroundColor: theme.palette.primary.main,
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: 20
+    },
   },
   menu: {
     [theme.breakpoints.up('sm')]: {
       display: 'none !important',
+
     },
   }
 })
@@ -42,24 +39,34 @@ export default function Header() {
 
   return (
     <header css={styles.header}>
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={drawerToggle}
-        css={styles.menu}
-      >
-        <MenuIcon />
-      </IconButton>
-      Header
-      {
-        oauth ?
-          <span>
-            {oauth.email}
-            <Link onClick={onClickLogout}>logout</Link>
-          </span>
-        :
-          <span>new user</span>
-      }
+    <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+          { oauth ?
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={drawerToggle}
+            css={styles.menu}
+            >
+              <MenuIcon />
+          </IconButton>
+          : <span></span>
+          }
+          { oauth ?
+            <p>{oauth.email}</p> :
+            <p><b>Thiscord</b></p>
+          }
+          {oauth ?
+          <Button variant="contained" sx={{right:5,backgroundColor: 'background.default',height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
+          : <span></span>
+          }
+          </Box>
+
 
     </header>
   );
