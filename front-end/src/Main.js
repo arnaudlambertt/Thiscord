@@ -60,6 +60,7 @@ export default function Main() {
       </Drawer>
       <Routes>
         <Route path="channels/">
+          <Route index element={<Navigate to="/oups" />} />
           <Route path=":id" element={<Channel />} />
           <Route path="*" element={<Navigate to="/oups" />} />
         </Route>
