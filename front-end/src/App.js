@@ -3,7 +3,6 @@
 import { useContext } from 'react'
 // Local
 import Oups from './Oups'
-import Footer from './Footer'
 import Header from './Header'
 import Main from './Main'
 import Login from './Login'
@@ -22,7 +21,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#565E71',
-    padding: '50px',
+    height:'100%',
+    width:'100%',
   },
 }
 
@@ -50,7 +50,6 @@ export default function App() {
         <Route path="/channels/*" element={oauth ? (<Main />) : (gohome)}/>
         <Route path="/Oups" element={<Oups />} />
       </Routes>
-      <Footer />
     </div>
   );
 }

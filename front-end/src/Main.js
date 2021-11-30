@@ -10,6 +10,7 @@ import Context from './Context'
 import Channels from './Channels'
 import Channel from './Channel'
 import Welcome from './Welcome'
+import Footer from './Footer'
 import {
   Route,
   Routes,
@@ -17,7 +18,7 @@ import {
 
 const useStyles = (theme) => ({
   root: {
-    backgroundColor: '#373B44',
+    background: theme.palette.background.default,
     overflow: 'hidden',
     flex: '1 1 auto',
     display: 'flex',
@@ -33,12 +34,14 @@ const useStyles = (theme) => ({
   },
 })
 
+
+
 export default function Main() {
   const {
     // currentChannel, not yet used
     drawerVisible,
   } = useContext(Context)
-  
+
   const theme = useTheme()
   const styles = useStyles(theme)
   const alwaysOpen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -57,10 +60,13 @@ export default function Main() {
       >
         <Channels />
       </Drawer>
+      <div style={{width:"100%",display: 'flex', flexDirection: 'column'}}>
       <Routes>
         <Route path=":id" element={<Channel />}/>
         <Route path="*" element={<Welcome />}/>
       </Routes>
+      <Footer />
+      </div>
     </main>
   );
 }
