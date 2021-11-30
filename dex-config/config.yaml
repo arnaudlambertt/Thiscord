@@ -33,8 +33,8 @@ connectors:
   id: github
   name: GitHub
   config:
-    clientID: xxxx98f1c26493dbxxxx
-    clientSecret: xxxxxxxxx80e139441b637796b128d8xxxxxxxxx
+    clientID: 25e9fef2210cf49fadd6
+    clientSecret: d21ae170a70d39885850cbbba2579a429c5a0e0e
     redirectURI: http://127.0.0.1:5556/dex/callback
 
 # Let dex keep a list of passwords which can be used to login to dex.
