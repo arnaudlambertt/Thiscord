@@ -11,6 +11,7 @@ import Channels from './Channels'
 import Channel from './Channel'
 import Welcome from './Welcome'
 import Footer from './Footer'
+import Oups from './Oups'
 import {
   Route,
   Routes,
@@ -69,7 +70,7 @@ export default function Main() {
           <Route path="*" element={<Navigate to="/oups" />} />
         </Route>
         <Route path="/" element={<Welcome />} />
-        <Route path="*" element={<Navigate to="/oups" />} />
+        <Route path="*" element={<Oups />} />
       </Routes>
       <Footer />
       </div>

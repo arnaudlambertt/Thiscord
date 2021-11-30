@@ -2,7 +2,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext } from 'react'
 // Local
-import Oups from './Oups'
 import Header from './Header'
 import Main from './Main'
 import Login from './Login'
@@ -11,7 +10,6 @@ import Context from './Context'
 import {
   Route,
   Routes,
-  Navigate
 } from "react-router-dom"
 
 const styles = {
@@ -33,7 +31,6 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/*" element={oauth ? <Main /> : <Login />} />
-        <Route path="oups" element={oauth ? <Oups /> : <Navigate to='/' />} />
       </Routes>
     </div>
   );
