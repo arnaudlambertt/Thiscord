@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react'
 import { useCookies } from 'react-cookie'
 
@@ -25,11 +24,11 @@ export const Provider = ({
             ).toString('utf-8')
           )
           oauth.email = payload.email
-          setCookie('oauth', oauth)
+          setCookie('oauth', oauth, {path: '/'})
         }else{
           setCurrentChannel(null)
           setChannels([])
-          removeCookie('oauth')
+          removeCookie('oauth', {path: '/'})
         }
         setOauth(oauth)
       },

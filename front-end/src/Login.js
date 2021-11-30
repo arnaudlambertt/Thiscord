@@ -112,13 +112,12 @@ const LoadToken = ({
         , qs.stringify ({
           grant_type: 'authorization_code',
           client_id: `${config.client_id}`,
-          code_verifier: `${codeVerifier}`,
+          code_verifier: `${codeVerifier.verifier}`,
           redirect_uri: `${config.redirect_uri}`,
           code: `${code}`,
         }))
-        removeCookie('code_verifier')
+        removeCookie('code_verifier', {path: '/'})
         setOauth(data)
-        navigate('/')
       }catch (err) {
         console.error(err)
       }
@@ -146,11 +145,10 @@ export default function Login({
   }
   const params = new URLSearchParams(window.location.search)
   const code = params.get('code')
-  // is there a code query parameters in the url 
+  // is there a code query parameters in the url
   if(!code){ // no: we are not being redirected from an oauth server
     if(!oauth){
       const codeVerifier = base64URLEncode(crypto.randomBytes(32))
-      console.log('set code_verifier', codeVerifier)
       setCookie('code_verifier', codeVerifier)
       return (
         <Redirect codeVerifier={codeVerifier} config={config} css={styles.root} />
@@ -161,7 +159,6 @@ export default function Login({
       )
     }
   }else{ // yes: we are coming from an oauth server
-    console.log('get code_verifier', cookies.code_verifier)
     return (
       <LoadToken
         code={code}
