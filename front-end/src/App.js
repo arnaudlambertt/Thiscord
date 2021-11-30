@@ -12,8 +12,7 @@ import Context from './Context'
 import {
   Route,
   Routes,
-  Navigate,
-  useLocation
+  Navigate
 } from "react-router-dom"
 
 const styles = {
@@ -27,28 +26,14 @@ const styles = {
 }
 
 export default function App() {
-  const location = useLocation()
   const {oauth} = useContext(Context)
 
-  const gochannels = (<Navigate
-    to={{
-      pathname: "/channels",
-      state: { from: location }
-    }}
-  />)
-  const gohome = (<Navigate
-    to={{
-      pathname: "/",
-      state: { from: location }
-    }}
-  />)
   return (
     <div className="App" css={styles.root}>
       <Header />
       <Routes>
-        <Route exact path="/" element={oauth ? (gochannels) : (<Login />)}/>
-        <Route path="/channels/*" element={oauth ? (<Main />) : (gohome)}/>
-        <Route path="/Oups" element={<Oups />} />
+        <Route path="/*" element={oauth ? <Main /> : <Login />} />
+        <Route path="oups" element={oauth ? <Oups /> : <Navigate to='/' />} />
       </Routes>
       <Footer />
     </div>

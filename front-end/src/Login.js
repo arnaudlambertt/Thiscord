@@ -118,6 +118,7 @@ const LoadToken = ({
         }))
         removeCookie('code_verifier', {path: '/'})
         setOauth(data)
+        navigate(codeVerifier.source)
       }catch (err) {
         console.error(err)
       }
@@ -149,7 +150,7 @@ export default function Login({
   if(!code){ // no: we are not being redirected from an oauth server
     if(!oauth){
       const codeVerifier = base64URLEncode(crypto.randomBytes(32))
-      setCookie('code_verifier', codeVerifier)
+      setCookie('code_verifier', { verifier: codeVerifier, source: window.location.pathname }, {path: '/'})
       return (
         <Redirect codeVerifier={codeVerifier} config={config} css={styles.root} />
       )

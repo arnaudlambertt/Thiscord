@@ -13,6 +13,7 @@ import Welcome from './Welcome'
 import {
   Route,
   Routes,
+  Navigate,
 } from 'react-router-dom'
 
 const useStyles = (theme) => ({
@@ -38,7 +39,7 @@ export default function Main() {
     // currentChannel, not yet used
     drawerVisible,
   } = useContext(Context)
-  
+
   const theme = useTheme()
   const styles = useStyles(theme)
   const alwaysOpen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -58,9 +59,13 @@ export default function Main() {
         <Channels />
       </Drawer>
       <Routes>
-        <Route path=":id" element={<Channel />}/>
-        <Route path="*" element={<Welcome />}/>
-      </Routes>
+        <Route path="channels/">
+          <Route path=":id" element={<Channel />} />
+          <Route path="*" element={<Navigate to="/oups" />} />
+        </Route>
+        <Route path="/" element={<Welcome />} />
+        <Route path="*" element={<Navigate to="/oups" />} />
+        </Routes>
     </main>
   );
 }
