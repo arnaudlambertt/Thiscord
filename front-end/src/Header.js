@@ -8,11 +8,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {Button,Box} from "@mui/material";
 import Context from './Context';
 
-const useStyles = (theme) => ({
+const useStyles = (theme, oauth) => ({
   header: {
     backgroundColor: theme.palette.primary.main,
     [theme.breakpoints.up('sm')]: {
-      paddingLeft: 20
+      paddingLeft: oauth ? 20 : 0
     },
   },
   menu: {
@@ -24,11 +24,12 @@ const useStyles = (theme) => ({
 })
 
 export default function Header() {
-  const styles = useStyles(useTheme())
   const {
     oauth, setOauth,
     drawerVisible, setDrawerVisible
   } = useContext(Context)
+  const styles = useStyles(useTheme(), oauth)
+
   const drawerToggle = (e) => {
     setDrawerVisible(!drawerVisible)
   }
