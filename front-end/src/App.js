@@ -1,6 +1,6 @@
 
 /** @jsxImportSource @emotion/react */
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 // Local
 import Oups from './Oups'
 import Footer from './Footer'
@@ -29,10 +29,7 @@ const styles = {
 export default function App() {
   const location = useLocation()
   const {oauth} = useContext(Context)
-  const [drawerMobileVisible, setDrawerMobileVisible] = useState(false)
-  const drawerToggleListener = () => {
-    setDrawerMobileVisible(!drawerMobileVisible)
-  }
+
   const gochannels = (<Navigate
     to={{
       pathname: "/channels",
@@ -47,7 +44,7 @@ export default function App() {
   />)
   return (
     <div className="App" css={styles.root}>
-      <Header drawerToggleListener={drawerToggleListener}/>
+      <Header />
       <Routes>
         <Route exact path="/" element={oauth ? (gochannels) : (<Login />)}/>
         <Route path="/channels/*" element={oauth ? (<Main />) : (gohome)}/>

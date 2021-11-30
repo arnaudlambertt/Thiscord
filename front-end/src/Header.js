@@ -26,9 +26,7 @@ const useStyles = (theme) => ({
   }
 })
 
-export default function Header({
-  drawerToggleListener
-}) {
+export default function Header() {
   const styles = useStyles(useTheme())
   const {
     oauth, setOauth,
@@ -41,6 +39,7 @@ export default function Header({
     e.stopPropagation()
     setOauth(null)
   }
+
   return (
     <header css={styles.header}>
       <IconButton
@@ -61,7 +60,7 @@ export default function Header({
         :
           <span>new user</span>
       }
-      
+
     </header>
   );
 }
