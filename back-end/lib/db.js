@@ -80,11 +80,11 @@ module.exports = {
     },
   },
   users: {
-    create: async (user) => {
+    create: async (user,email) => {
       if(!user.username) throw Error('Invalid user')
       const id = uuid()
-      await db.put(`users:${id}`, JSON.stringify(user))
-      return merge(user, {id: id})
+      await db.put(`users:${id}`, JSON.stringify(merge(user, {email: email})))
+      return merge(user, {id: id, email: email})
     },
     get: async (id) => {
       if(!id) throw Error('Invalid id')
@@ -118,6 +118,31 @@ module.exports = {
       const original = store.users[id]
       if(!original) throw Error('Unregistered user id')
       delete store.users[id]
+    },
+    verify: async (user, email) => {
+      const data = await db.get(`users:${user.id}`)
+      const value = JSON.parse(data)
+      if(value.email !== email)
+        throw new Error("Email not matching")
+    },
+    signin: (email) => {
+      return new Promise( (resolve, reject) => {
+        db.createReadStream({
+          gt: "users:",
+          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
+        }).on( 'data', ({key, value}) => {
+          user = JSON.parse(value)
+          if(user.email === email)
+          {
+            user.id = key.split(':')[1]
+            resolve(user)
+          }
+        }).on( 'error', (err) => {
+          reject(err)
+        }).on( 'end', () => {
+          resolve(null)
+        })
+      })
     }
   },
   admin: {
@@ -125,4 +150,5 @@ module.exports = {
       await db.clear()
     }
   }
+
 }

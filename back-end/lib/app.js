@@ -2,26 +2,24 @@
 const db = require('./db')
 const express = require('express')
 const cors = require('cors')
-const authenticator = require('./authenticator')
+const {authenticator, userLoader} = require('./authenticator')
 
 const app = express()
 const authenticate = authenticator({
   test_payload_email: process.env['TEST_PAYLOAD_EMAIL'],
   jwks_uri: 'http://127.0.0.1:5556/dex/keys'
 })
+const loadUser = userLoader({test_payload_email: process.env['TEST_PAYLOAD_EMAIL']})
+
 
 app.use(require('body-parser').json())
 app.use(cors())
 
-app.get('/', (req, res) => {
-  res.send([
-    '<h1>ECE WebTech Chat</h1>'
-  ].join(''))
-})
+app.all('*', authenticate, loadUser)
 
 // Channels
 
-app.get('/channels', authenticate, async (req, res) => {
+app.get('/channels', async (req, res) => {
   const channels = await db.channels.list()
   res.json(channels)
 })
@@ -59,6 +57,15 @@ app.post('/channels/:id/messages', async (req, res) => {
 })
 
 // Users
+app.get('/signin', async (req, res) => {
+  const user = await db.users.signin(req.user.email)
+  if(!user)
+  {
+    req.body = {username: Date.now()}
+    return app.post('/users',req)
+  }
+  res.json(user)
+})
 
 app.get('/users', async (req, res) => {
   const users = await db.users.list()
@@ -66,7 +73,7 @@ app.get('/users', async (req, res) => {
 })
 
 app.post('/users', async (req, res) => {
-  const user = await db.users.create(req.body)
+  const user = await db.users.create(req.body,req.user.email)
   res.status(201).json(user)
 })
 

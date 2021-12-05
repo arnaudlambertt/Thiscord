@@ -1,6 +1,7 @@
 
 const jwksClient = require('jwks-rsa')
 const jwt = require('jsonwebtoken')
+const db = require('./db')
 
 const fetchKeyFromOpenIDServer = async (jwks_uri, token) => {
   const header = JSON.parse( Buffer.from(
@@ -13,45 +14,62 @@ const fetchKeyFromOpenIDServer = async (jwks_uri, token) => {
   return publicKey || rsaPublicKey
 }
 
-module.exports = ({jwks_uri, test_payload_email} = {}) => {
-  if(test_payload_email){
-    return async (req, res, next) => {
-      req.user = {
-        iss: 'http://127.0.0.1:5556/dex',
-        sub: 'CiQwOGE4Njg0Yi1kYjg4LTRiNzMtOTBhOS0zY2QxNjYxZjU0NjYSBWxvY2Fs',
-        aud: 'webtech-frontend',
-        exp: 1637152646,
-        iat: 1637066246,
-        at_hash: 'gc-2mLPMU8PY2pN5Smcueg',
-        email: test_payload_email,
-        email_verified: true
+module.exports = {
+  authenticator: ({jwks_uri, test_payload_email} = {}) => {
+    if(test_payload_email){
+      return async (req, res, next) => {
+        req.user = {
+          email: test_payload_email,
+        }
+        next()
       }
-      next()
     }
-    
-  }
-  if(!jwks_uri){
-    throw Error('Invalid Settings: jwks_uri is required')
-  }
-  return async (req, res, next) => {
-    if(! req.headers['authorization'] ){
-      res.status(401).send('Missing Access Token')
-      return
+    if(!jwks_uri){
+      throw Error('Invalid Settings: jwks_uri is required')
     }
-    const header = req.headers['authorization']
-    const [type, access_token] = header.split(' ')
-    if(type !== 'Bearer'){
-      res.status(401).send('Authorization Not Bearer')
-      return
+    return async (req, res, next) => {
+      if(! req.headers['authorization'] ){
+        res.status(401).send('Missing Access Token')
+        return
+      }
+      const header = req.headers['authorization']
+      const [type, access_token] = header.split(' ')
+      if(type !== 'Bearer'){
+        res.status(401).send('Authorization Not Bearer')
+        return
+      }
+      const key = await fetchKeyFromOpenIDServer(jwks_uri, access_token)
+      // Validate the payload
+      try{
+        const payload = jwt.verify(access_token, key)
+        req.user = {
+          email: payload.email
+        }
+        next()
+      }catch(err){
+        res.status(401).send('Invalid Access Token')
+      }
     }
-    const key = await fetchKeyFromOpenIDServer(jwks_uri, access_token)
-    // Validate the payload
-    try{
-      const payload = jwt.verify(access_token, key)
-      req.user = payload
-      next()
-    }catch(err){
-      res.status(401).send('Invalid Access Token')
+  },
+  userLoader: ({test_payload_email} = {}) => {
+    return async (req, res, next) => {
+      if(! req.headers['user']) {
+        if(req.path === '/signin') {
+          next()
+        }
+        if(req.path === '/post'){
+          next()
+        }
+        res.status(403).send('Missing user')
+        return
+      }
+      const user = req.headers['user']
+      try{
+        await db.users.verify(user,req.user.email)
+        next()
+      }catch(err){
+        res.status(403).send('Who are you trying to foul')
+      }
     }
   }
 }
