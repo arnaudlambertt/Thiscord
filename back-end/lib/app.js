@@ -2,20 +2,18 @@
 const db = require('./db')
 const express = require('express')
 const cors = require('cors')
-const {authenticator, userLoader} = require('./authenticator')
+const authenticator = require('./authenticator')
 
 const app = express()
 const authenticate = authenticator({
   test_payload_email: process.env['TEST_PAYLOAD_EMAIL'],
   jwks_uri: 'http://127.0.0.1:5556/dex/keys'
 })
-const loadUser = userLoader({test_payload_email: process.env['TEST_PAYLOAD_EMAIL']})
-
 
 app.use(require('body-parser').json())
 app.use(cors())
 
-app.all('*', authenticate, loadUser)
+app.all('*', authenticate)
 
 // Channels
 
@@ -59,12 +57,15 @@ app.post('/channels/:id/messages', async (req, res) => {
 // Users
 app.get('/signin', async (req, res) => {
   const user = await db.users.signin(req.user.email)
-  if(!user)
+  if(!user.id)
   {
-    req.body = {username: Date.now()}
-    return app.post('/users',req)
+    req.body = {username: req.user.email}
+    req.url = '/users'
+    req.method = 'POST'
+    return app._router.handle(req, res)
   }
-  res.json(user)
+  req.url = `/users/${user.id}`
+  return app._router.handle(req, res)
 })
 
 app.get('/users', async (req, res) => {

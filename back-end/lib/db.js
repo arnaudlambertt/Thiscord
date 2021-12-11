@@ -80,9 +80,11 @@ module.exports = {
     },
   },
   users: {
-    create: async (user,email) => {
+    create: async (user, email) => {
       if(!user.username) throw Error('Invalid user')
+      if(!email) throw Error('Invalid email')
       const id = uuid()
+      await db.put(`usersid:${email}`, JSON.stringify(id))
       await db.put(`users:${id}`, JSON.stringify(merge(user, {email: email})))
       return merge(user, {id: id, email: email})
     },
@@ -119,36 +121,20 @@ module.exports = {
       if(!original) throw Error('Unregistered user id')
       delete store.users[id]
     },
-    verify: async (user, email) => {
-      const data = await db.get(`users:${user.id}`)
-      const value = JSON.parse(data)
-      if(value.email !== email)
-        throw new Error("Email not matching")
+    signin: async (email) => {
+      if(!email) throw Error('Invalid email')
+      try {
+        const data = await db.get(`usersid:${email}`)
+        const userid = JSON.parse(data)
+        return {user: {email: email, id: userid}}
+      } catch (e) {
+        return {user: {email: email}}
+      }
     },
-    signin: (email) => {
-      return new Promise( (resolve, reject) => {
-        db.createReadStream({
-          gt: "users:",
-          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
-        }).on( 'data', ({key, value}) => {
-          user = JSON.parse(value)
-          if(user.email === email)
-          {
-            user.id = key.split(':')[1]
-            resolve(user)
-          }
-        }).on( 'error', (err) => {
-          reject(err)
-        }).on( 'end', () => {
-          resolve(null)
-        })
-      })
-    }
   },
   admin: {
     clear: async () => {
       await db.clear()
     }
   }
-
 }
