@@ -125,10 +125,10 @@ module.exports = {
       if(!email) throw Error('Invalid email')
       try {
         const data = await db.get(`usersid:${email}`)
-        const userid = JSON.parse(data)
-        return {user: {email: email, id: userid}}
+        const id = JSON.parse(data)
+        return id
       } catch (e) {
-        return {user: {email: email}}
+        return null
       }
     },
   },

@@ -56,15 +56,15 @@ app.post('/channels/:id/messages', async (req, res) => {
 
 // Users
 app.get('/signin', async (req, res) => {
-  const user = await db.users.signin(req.user.email)
-  if(!user.id)
+  const id = await db.users.signin(req.user.email)
+  if(!id)
   {
     req.body = {username: req.user.email}
     req.url = '/users'
     req.method = 'POST'
     return app._router.handle(req, res)
   }
-  req.url = `/users/${user.id}`
+  req.url = `/users/${id}`
   return app._router.handle(req, res)
 })
 
