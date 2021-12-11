@@ -62,4 +62,20 @@ describe('users', () => {
     })
   })
 
+  it('signin', async () => {
+    // Try to sign in without creating an account
+    const {body: user} = await supertest(app)
+    .get('/signin')
+    .expect(201) //POST
+    user.should.match({
+      id: /^\w+-\w+-\w+-\w+-\w+$/,
+      username: process.env['TEST_PAYLOAD_EMAIL'],
+      email: process.env['TEST_PAYLOAD_EMAIL']
+    })
+    // Sign in again after creating an account
+    const {body: user1} = await supertest(app)
+    .get('/signin')
+    .expect(200) //GET
+    user1.should.match(user)
+  })
 })
