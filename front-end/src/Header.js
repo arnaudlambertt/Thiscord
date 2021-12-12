@@ -8,11 +8,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {Button,Box} from "@mui/material";
 import Context from './Context';
 
-const useStyles = (theme, oauth) => ({
+const useStyles = (theme, user) => ({
   header: {
     backgroundColor: theme.palette.primary.main,
     [theme.breakpoints.up('sm')]: {
-      paddingLeft: oauth ? 20 : 0
+      paddingLeft: user ? 20 : 0
     },
   },
   menu: {
@@ -25,10 +25,10 @@ const useStyles = (theme, oauth) => ({
 
 export default function Header() {
   const {
-    oauth, setOauth,
+    user, setOauth,
     drawerVisible, setDrawerVisible
   } = useContext(Context)
-  const styles = useStyles(useTheme(), oauth)
+  const styles = useStyles(useTheme(), user)
 
   const drawerToggle = (e) => {
     setDrawerVisible(!drawerVisible)
@@ -47,7 +47,7 @@ export default function Header() {
               alignItems: 'center',
             }}
           >
-          { oauth ?
+          { user ?
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -58,17 +58,15 @@ export default function Header() {
           </IconButton>
           : <span></span>
           }
-          { oauth ?
-            <p>{oauth.email}</p> :
+          { user ?
+            <p>{user.username}</p> :
             <p><b>Thiscord</b></p>
           }
-          {oauth ?
+          { user ?
           <Button variant="contained" sx={{right:5,backgroundColor: 'background.default',height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
           : <span></span>
           }
           </Box>
-
-
     </header>
   );
 }

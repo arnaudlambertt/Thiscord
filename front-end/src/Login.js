@@ -95,19 +95,20 @@ const Tokens = ({
   )
 }
 
-const LoadToken = ({
+const LoadTokenUser = ({
   code,
   codeVerifier,
   config,
   removeCookie,
-  setOauth
+  setOauth,
+  setUser
 }) => {
   const styles = useStyles(useTheme())
   const navigate = useNavigate();
   useEffect( () => {
     const fetch = async () => {
       try {
-        const {data} = await axios.post(
+        var {data} = await axios.post(
           config.token_endpoint
         , qs.stringify ({
           grant_type: 'authorization_code',
@@ -118,6 +119,12 @@ const LoadToken = ({
         }))
         removeCookie('code_verifier', {path: '/'})
         setOauth(data)
+        const signin = await axios.get('http://localhost:3001/signin',{
+          headers: {
+            'Authorization': `Bearer ${data.access_token}`
+          }
+        })
+        setUser(signin.data)
         navigate(codeVerifier.source)
       }catch (err) {
         console.error(err)
@@ -136,7 +143,7 @@ export default function Login({
   const styles = useStyles(useTheme());
   // const location = useLocation();
   const [cookies, setCookie, removeCookie] = useCookies([]);
-  const {oauth, setOauth} = useContext(Context)
+  const {oauth, setOauth, setUser} = useContext(Context)
   const config = {
     authorization_endpoint: 'http://localhost:5556/dex/auth',
     token_endpoint: 'http://localhost:5556/dex/token',
@@ -161,11 +168,12 @@ export default function Login({
     }
   }else{ // yes: we are coming from an oauth server
     return (
-      <LoadToken
+      <LoadTokenUser
         code={code}
         codeVerifier={cookies.code_verifier}
         config={config}
         setOauth={setOauth}
+        setUser={setUser}
         removeCookie={removeCookie} />
     )
   }

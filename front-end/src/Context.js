@@ -10,6 +10,7 @@ export const Provider = ({
 }) => {
   const [cookies, setCookie, removeCookie] = useCookies([])
   const [oauth, setOauth] = useState(cookies.oauth)
+  const [user, setUser] = useState(cookies.user)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [channels, setChannels] = useState([])
   const [currentChannel, setCurrentChannel] = useState(null)
@@ -18,19 +19,23 @@ export const Provider = ({
       oauth: oauth,
       setOauth: (oauth) => {
         if(oauth){
-          const payload = JSON.parse(
-            Buffer.from(
-              oauth.id_token.split('.')[1], 'base64'
-            ).toString('utf-8')
-          )
-          oauth.email = payload.email
           setCookie('oauth', oauth, {path: '/'})
         }else{
+          setUser(null)
           setCurrentChannel(null)
           setChannels([])
           removeCookie('oauth', {path: '/'})
         }
         setOauth(oauth)
+      },
+      user: user,
+      setUser: (user) => {
+        if(user){
+          setCookie('user', user, {path: '/'})
+        }else{
+          removeCookie('user', {path: '/'})
+        }
+        setUser(user)
       },
       channels: channels,
       drawerVisible: drawerVisible,
