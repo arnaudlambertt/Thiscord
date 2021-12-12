@@ -29,7 +29,8 @@ describe('users', () => {
     users.should.match([{
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: 'user_1',
-      email: process.env['TEST_PAYLOAD_EMAIL']
+      email: process.env['TEST_PAYLOAD_EMAIL'],
+      channels: []
     }])
   })
 
@@ -58,7 +59,8 @@ describe('users', () => {
     user.should.match({
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: 'user_1',
-      email: process.env['TEST_PAYLOAD_EMAIL']
+      email: process.env['TEST_PAYLOAD_EMAIL'],
+      channels: []
     })
   })
 
