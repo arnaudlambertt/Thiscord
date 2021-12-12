@@ -118,13 +118,13 @@ const LoadTokenUser = ({
           code: `${code}`,
         }))
         removeCookie('code_verifier', {path: '/'})
-        setOauth(data)
         const signin = await axios.get('http://localhost:3001/signin',{
           headers: {
             'Authorization': `Bearer ${data.access_token}`
           }
         })
         setUser(signin.data)
+        setOauth(data)
         navigate(codeVerifier.source)
       }catch (err) {
         console.error(err)
