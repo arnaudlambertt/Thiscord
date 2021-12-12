@@ -22,6 +22,7 @@ export const Provider = ({
           setCookie('oauth', oauth, {path: '/'})
         }else{
           setUser(null)
+          removeCookie('user', {path: '/'})
           setCurrentChannel(null)
           setChannels([])
           removeCookie('oauth', {path: '/'})
