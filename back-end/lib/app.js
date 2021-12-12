@@ -18,8 +18,10 @@ app.all('*', authenticate)
 // Channels
 
 app.get('/channels', async (req, res) => {
+  const id = await db.users.signin(req.user.email)
   const channels = await db.channels.list()
-  res.json(channels)
+  const filteredChannels = channels.filter(function(channel) { return channel.members.includes(id) })
+  res.json(filteredChannels)
 })
 
 app.post('/channels', async (req, res) => {
