@@ -1,14 +1,19 @@
 
 /** @jsxImportSource @emotion/react */
-import {useContext, useEffect} from 'react';
+import {useContext,useState,useCallback, useEffect} from 'react';
 import axios from 'axios';
 // Layout
 import {Link} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 // Local
 import Context from './Context'
-import {useNavigate} from 'react-router-dom'
-
+import {useNavigate} from 'react-router-dom';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 const styles = {
   root: {
     '& a': {
@@ -19,11 +24,45 @@ const styles = {
 }
 
 export default function Channels() {
+  const [open, setOpen] = useState(false);
+  const [channelName, setChannelName] = useState('');
+
   const {
     oauth,
-    channels, setChannels
+    channels, setChannels,
+    user
   } = useContext(Context)
-  const naviate = useNavigate();
+
+  const navigate = useNavigate();
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const createChannel = useCallback( async () => {
+    try{
+      await axios.post(
+        `http://localhost:3001/channels`,
+        {
+          name: channelName,
+        members: [user.id],
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          }
+        })
+        handleClose()
+        setChannelName('')
+      }catch(err){
+        console.error(err)
+      }
+    },[channelName, user.id, oauth.access_token])
+
   useEffect( () => {
     const fetch = async () => {
       try{
@@ -38,7 +77,7 @@ export default function Channels() {
       }
     }
     fetch()
-  }, [oauth, setChannels])
+  }, [oauth, setChannels,createChannel])
   return (
     <ul css={styles.root}>
       <li css={styles.channel}>
@@ -50,13 +89,28 @@ export default function Channels() {
             href={`/channels/${channel.id}`}
             onClick={ (e) => {
               e.preventDefault()
-              naviate(`/channels/${channel.id}`)
+              navigate(`/channels/${channel.id}`)
             }}
           >
             {channel.name}
           </Link>
         </li>
       ))}
+      <li css={styles.channel}>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Create a Channel
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Create a Channel</DialogTitle>
+        <DialogContent>
+            <TextField value={channelName} placeholder="channel name" onChange={(e) => { setChannelName(e.target.value) }}/>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={createChannel}>Create</Button>
+        </DialogActions>
+      </Dialog>
+      </li>
     </ul>
   );
 }
