@@ -11,6 +11,15 @@ module.exports = {
       if(!channel.name) throw Error('Invalid channel')
       const id = uuid()
       await db.put(`channels:${id}`, JSON.stringify(channel))
+      channel.members.forEach(async (userid) => {
+        try{
+          const user = await users.get(userid)
+          user.channels.push(id)
+          users.update(userid, user)
+        }
+        catch(e){
+        }
+      });
       return merge(channel, {id: id})
     },
     get: async (id) => {
@@ -85,7 +94,7 @@ module.exports = {
       if(!email) throw Error('Invalid email')
       const id = uuid()
       await db.put(`usersid:${email}`, JSON.stringify(id))
-      await db.put(`users:${id}`, JSON.stringify(merge(user, {email: email})))
+      await db.put(`users:${id}`, JSON.stringify(merge(user, {email: email, channels: []})))
       return merge(user, {id: id, email: email})
     },
     get: async (id) => {
@@ -111,10 +120,10 @@ module.exports = {
         })
       })
     },
-    update: (id, user) => {
-      const original = store.users[id]
-      if(!original) throw Error('Unregistered user id')
-      store.users[id] = merge(original, user)
+    update: async (id, user) => {
+      const original = users.get(id)
+      await db.put(`users:${id}`, JSON.stringify(user))
+      return merge(user, {id: id})
     },
     delete: (id, user) => {
       const original = store.users[id]
