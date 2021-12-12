@@ -36,13 +36,13 @@ export default function Form({
 }) {
   const [content, setContent] = useState('')
   const styles = useStyles(useTheme())
-  const {oauth} = useContext(Context)
+  const {oauth, user} = useContext(Context)
   const onSubmit = async () => {
     const {data: message} = await axios.post(
       `http://localhost:3001/channels/${channel.id}/messages`,
       {
         content: content,
-        author: 'david',
+        author: user.username,
       },
       {
       headers: {
