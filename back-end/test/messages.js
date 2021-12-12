@@ -5,28 +5,28 @@ const app = require('../lib/app')
 const db = require('../lib/db')
 
 describe('messages', () => {
-  
+
   beforeEach( async () => {
     await db.admin.clear()
   })
-  
+
   it('list empty', async () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1'})
+    .send({name: 'channel 1', members: []})
     // Get messages
     const {body: messages} = await supertest(app)
     .get(`/channels/${channel.id}/messages`)
     .expect(200)
     messages.should.eql([])
   })
-  
+
   it('list one message', async () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1'})
+    .send({name: 'channel 1', members: []})
     // and a message inside it
     await supertest(app)
     .post(`/channels/${channel.id}/messages`)
@@ -41,12 +41,12 @@ describe('messages', () => {
       content: 'Hello ECE'
     }])
   })
-  
+
   it('add one element', async () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1'})
+    .send({name: 'channel 1', members: []})
     // Create a message inside it
     const {body: message} = await supertest(app)
     .post(`/channels/${channel.id}/messages`)
@@ -62,12 +62,12 @@ describe('messages', () => {
     .get(`/channels/${channel.id}/messages`)
     messages.length.should.eql(1)
   })
-  
+
   it('access invalid channel', async () => {
     // Get messages
     const {body: messages} = await supertest(app)
     .get(`/channels/1234/messages`)
     .expect(404)
   })
-  
+
 })

@@ -23,14 +23,15 @@ describe('channels', () => {
       // Create a channel
       await supertest(app)
       .post('/channels')
-      .send({name: 'channel 1'})
+      .send({name: 'channel 1', members: []})
       // Ensure we list the channels correctly
       const {body: channels} = await supertest(app)
       .get('/channels')
       .expect(200)
       channels.should.match([{
         id: /^\w+-\w+-\w+-\w+-\w+$/,
-        name: 'channel 1'
+        name: 'channel 1',
+        members: []
       }])
     })
 
