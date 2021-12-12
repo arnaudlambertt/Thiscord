@@ -28,7 +28,6 @@ module.exports = ({jwks_uri, test_payload_email} = {}) => {
   }
   return async (req, res, next) => {
     if(req.user){
-      console.log(req.url + " ALREADY AUTHENTIFIED")
       next()
       return
     }
