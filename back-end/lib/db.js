@@ -9,6 +9,7 @@ module.exports = {
   channels: {
     create: async (channel) => {
       if(!channel.name) throw Error('Invalid channel')
+      if(!channel.members) throw Error('Missing members array')
       const id = uuid()
       await db.put(`channels:${id}`, JSON.stringify(channel))
       channel.members.forEach(async (userid) => {
