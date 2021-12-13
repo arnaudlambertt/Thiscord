@@ -106,7 +106,7 @@ module.exports = {
       const user = JSON.parse(data)
       return merge(user, {id: id})
     },
-    list: async () => {
+    list: async (string) => {
       return new Promise( (resolve, reject) => {
         const users = []
         db.createReadStream({
@@ -115,7 +115,8 @@ module.exports = {
         }).on( 'data', ({key, value}) => {
           user = JSON.parse(value)
           user.id = key.split(':')[1]
-          users.push(user)
+          if(user.username.search(string) != -1)
+            users.push(user)
         }).on( 'error', (err) => {
           reject(err)
         }).on( 'end', () => {

@@ -77,7 +77,7 @@ app.get('/signin', loadUser, async (req, res, next) => {
 })
 
 app.get('/users', async (req, res) => {
-  const users = await db.users.list()
+  const users = await db.users.list(req.query.search)
   res.json(users)
 })
 
