@@ -45,7 +45,6 @@ export default function Welcome() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -82,7 +81,7 @@ export default function Welcome() {
         <Grid item xs>
           <div css={styles.card}>
             <ChannelIcon css={styles.icon} />
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button variant="contained" sx={{backgroundColor: 'primary.main'}}onClick={handleClickOpen}>
               Create a Channel
             </Button>
             <Dialog open={open} onClose={handleClose}>
