@@ -97,7 +97,7 @@ export default function Channels() {
         </li>
       ))}
       <li css={styles.channel}>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="contained" sx={{top:5,left:5,backgroundColor: 'primary.main' }} onClick={handleClickOpen}>
         Create a Channel
       </Button>
       <Dialog open={open} onClose={handleClose}>
