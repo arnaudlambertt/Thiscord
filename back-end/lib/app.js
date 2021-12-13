@@ -22,8 +22,8 @@ app.get('/channels', loadUser, async (req, res) => {
   res.json(channels)
 })
 
-app.post('/channels', async (req, res) => {
-  const channel = await db.channels.create(req.body)
+app.post('/channels', loadUser, async (req, res) => {
+  const channel = await db.channels.create(req.body, req.user)
   res.status(201).json(channel)
 })
 
@@ -36,7 +36,12 @@ app.get('/channels/:id', loadUser, async (req, res) => {
   }
 })
 
-app.put('/channels/:id', async (req, res) => {
+app.put('/channels/:id', loadUser, async (req, res) => {
+  try{
+    const channel = await db.channels.get(req.params.id, req.user)
+  }catch(err){
+    return res.status(400).send('You don\'t have access to this channel.')
+  }
   const channel = await db.channels.update(req.body)
   res.json(channel)
 })
@@ -92,8 +97,10 @@ app.get('/users/:id', async (req, res) => {
 })
 
 app.put('/users/:id', async (req, res) => {
-  const user = await db.users.update(req.body)
+  try{
+  const user = await db.users.update(req.params.id,req.body)
   res.json(user)
+}catch(err){ console.log(err)}
 })
 
 module.exports = app

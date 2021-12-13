@@ -7,51 +7,48 @@ const db = level(__dirname + '/../db')
 
 module.exports = {
   channels: {
-    create: async (channel) => {
+    create: async (channel, user) => {
       if(!channel.name) throw Error('Invalid channel')
       if(!channel.members) throw Error('Missing members array')
+      if(!user.id) throw Error('Unkwown user')
       const id = uuid()
       await db.put(`channels:${id}`, JSON.stringify(channel))
-      channel.members.forEach(async (userid) => {
+      channel.members.forEach(async (userid, i) => {
         try{
-          const user = await users.get(userid)
-          user.channels.push(id)
-          users.update(userid, user)
+          const member = await module.exports.users.get(userid)
+          member.channels.push(id)
+          module.exports.users.update(userid,member)
         }
         catch(e){
+          channel.members.splice(i)
         }
       });
       return merge(channel, {id: id})
     },
     get: async (id, user) => {
       if(!id) throw Error('Invalid id')
+      if(!user.id) throw Error('Unkwown user')
       const data = await db.get(`channels:${id}`)
       const channel = JSON.parse(data)
       if(!channel.members.includes(user.id)) throw Error('Unauthorized access')
       return merge(channel, {id: id})
     },
     list: async (user) => {
-      return new Promise( (resolve, reject) => {
-        const channels = []
-        db.createReadStream({
-          gt: "channels:",
-          lte: "channels" + String.fromCharCode(":".charCodeAt(0) + 1),
-        }).on( 'data', ({key, value}) => {
-          channel = JSON.parse(value)
-          channel.id = key.split(':')[1]
-          channels.push(channel)
-        }).on( 'error', (err) => {
-          reject(err)
-        }).on( 'end', () => {
-          const filteredChannels = channels.filter(function(channel) { return channel.members.includes(user.id) })
-          resolve(filteredChannels)
-        })
-      })
+      if(!user.id) throw Error('Unkwown user')
+      const member = await module.exports.users.get(user.id)
+      const filteredChannels = [];
+      for(channelid of member.channels){
+        const channel = await module.exports.channels.get(channelid,user)
+        filteredChannels.push(channel)
+      }
+      return filteredChannels;
     },
-    update: (id, channel) => {
-      const original = store.channels[id]
+    update: async (id, channel) => {
+      const original = channels.get(id)
       if(!original) throw Error('Unregistered channel id')
-      store.channels[id] = merge(original, channel)
+      delete channel['id']
+      await db.put(`channels:${id}`, JSON.stringify(channel))
+      return merge(channel, {id: id})
     },
     delete: (id, channel) => {
       const original = store.channels[id]
@@ -98,7 +95,7 @@ module.exports = {
       const id = uuid()
       await db.put(`usersid:${email}`, JSON.stringify(id))
       await db.put(`users:${id}`, JSON.stringify(merge(user, {email: email, channels: []})))
-      return merge(user, {id: id, email: email})
+      return merge(user, {id: id, email: email, channels: []})
     },
     get: async (id) => {
       if(!id) throw Error('Invalid id')
@@ -125,7 +122,9 @@ module.exports = {
       })
     },
     update: async (id, user) => {
-      const original = users.get(id)
+      const original = await module.exports.users.get(id)
+      if(!original) throw Error('Unregistered user id')
+      delete user['id']
       await db.put(`users:${id}`, JSON.stringify(user))
       return merge(user, {id: id})
     },
