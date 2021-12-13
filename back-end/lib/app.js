@@ -55,16 +55,16 @@ app.post('/channels/:id/messages', async (req, res) => {
 })
 
 // Users
-app.get('/signin', loadUser, async (req, res) => {
+app.get('/signin', loadUser, async (req, res, next) => {
   if(req.user.id === null)
   {
     req.body = {username: req.user.email}
     req.url = '/users'
     req.method = 'POST'
-    return app._router.handle(req, res)
+    return next()
   }
   req.url = `/users/${req.user.id}`
-  return app._router.handle(req, res)
+  next()
 })
 
 app.get('/users', async (req, res) => {
