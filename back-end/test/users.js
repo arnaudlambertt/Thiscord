@@ -34,6 +34,23 @@ describe('users', () => {
     }])
   })
 
+  it('list one element searched by username', async () => {
+    // Create a user
+    await supertest(app)
+    .post('/users')
+    .send({username: 'user_1'})
+    // Ensure we list the users correctly
+    const {body: users} = await supertest(app)
+    .get('/users?search=ser_1')
+    .expect(200)
+    users.should.match([{
+      id: /^\w+-\w+-\w+-\w+-\w+$/,
+      username: 'user_1',
+      email: process.env['TEST_PAYLOAD_EMAIL'],
+      channels: []
+    }])
+  })
+
   it('add one element', async () => {
     // Create a user
     const {body: user} = await supertest(app)
