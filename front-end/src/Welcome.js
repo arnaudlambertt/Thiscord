@@ -1,7 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
 // Layout
-import {useContext,useState,useCallback} from 'react';
+import {useContext, useEffect, useState, useCallback} from 'react';
 import axios from 'axios';
 import { useTheme } from '@mui/styles';
 import { Grid, Typography } from '@mui/material';
@@ -41,12 +41,11 @@ export default function Welcome() {
   const {
     oauth,
     channels, setChannels,
+    setCurrentChannel,
     user
   } = useContext(Context)
 
-  const addChannel = (channel) => {
-    setChannels([...channels, channel])
-  }
+  setCurrentChannel(null)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -54,6 +53,10 @@ export default function Welcome() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect( () => {
+    setCurrentChannel(null)
+  }, [setCurrentChannel])
 
   const createChannel = useCallback( async () => {
     try{
@@ -69,12 +72,12 @@ export default function Welcome() {
           }
         })
         handleClose()
-        addChannel(channel)
+        setChannels([...channels, channel])
         setChannelName('')
       }catch(err){
         console.error(err)
       }
-    },[channelName, user.id, oauth.access_token])
+    },[channelName, user.id, oauth.access_token,setChannels,channels])
   const styles = useStyles(useTheme())
   return (
     <div css={styles.root}>

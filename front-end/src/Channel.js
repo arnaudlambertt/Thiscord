@@ -34,7 +34,7 @@ const useStyles = (theme) => ({
 export default function Channel() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const {channels, oauth} = useContext(Context)
+  const {channels, oauth, setCurrentChannel} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
   const styles = useStyles(useTheme())
   const listRef = useRef()
@@ -60,13 +60,15 @@ export default function Channel() {
       }
     }
     fetch()
-  }, [id, oauth, navigate])
+    setCurrentChannel(id)
+  }, [id, oauth, navigate,setCurrentChannel])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
   const onClickScroll = () => {
     listRef.current.scroll()
   }
+
   // On refresh, context.channel is not yet initialized
   if(!channel){
     return (<div>loading</div>)
