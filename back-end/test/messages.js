@@ -11,10 +11,12 @@ describe('messages', () => {
   })
 
   it('list empty', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1', members: [null]})
+    .send({name: 'channel 1', members: [user.id]})
     // Get messages
     const {body: messages} = await supertest(app)
     .get(`/channels/${channel.id}/messages`)
@@ -23,10 +25,12 @@ describe('messages', () => {
   })
 
   it('list one message', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1', members: [null]})
+    .send({name: 'channel 1', members: [user.id]})
     // and a message inside it
     await supertest(app)
     .post(`/channels/${channel.id}/messages`)
@@ -43,10 +47,12 @@ describe('messages', () => {
   })
 
   it('add one element', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1', members: [null]})
+    .send({name: 'channel 1', members: [user.id]})
     // Create a message inside it
     const {body: message} = await supertest(app)
     .post(`/channels/${channel.id}/messages`)

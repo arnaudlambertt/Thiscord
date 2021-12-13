@@ -80,4 +80,29 @@ describe('users', () => {
     .expect(200) //GET
     user1.should.match(user)
   })
+
+  it('update user', async () => {
+    // Create a user
+    const {body: user1} = await supertest(app)
+    .post('/users')
+    .send({username: 'user_1'})
+    //
+    await supertest(app)
+    .get(`/users/${user1.id}`)
+    .expect(200)
+    // Update the user
+    const {body: user} = await supertest(app)
+    .put(`/users/${user1.id}`)
+    .send({username: 'user_A',
+     email: process.env['TEST_PAYLOAD_EMAIL'],
+     channels: ['1']})
+    .expect(200)
+    // Check if it was correctly updated
+    user.should.match({
+      id: /^\w+-\w+-\w+-\w+-\w+$/,
+      username: 'user_A',
+      email: process.env['TEST_PAYLOAD_EMAIL'],
+      channels: ['1']
+    })
+  })
 })
