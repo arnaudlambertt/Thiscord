@@ -27,9 +27,13 @@ app.post('/channels', async (req, res) => {
   res.status(201).json(channel)
 })
 
-app.get('/channels/:id', async (req, res) => {
-  const channel = await db.channels.get(req.params.id)
-  res.json(channel)
+app.get('/channels/:id', loadUser, async (req, res) => {
+  try{
+    const channel = await db.channels.get(req.params.id, req.user)
+    res.json(channel)
+  }catch(err){
+    return res.status(403).send('You don\'t have access to this channel.')
+  }
 })
 
 app.put('/channels/:id', async (req, res) => {
@@ -39,17 +43,22 @@ app.put('/channels/:id', async (req, res) => {
 
 // Messages
 
-app.get('/channels/:id/messages', async (req, res) => {
+app.get('/channels/:id/messages', loadUser, async (req, res) => {
   try{
-    const channel = await db.channels.get(req.params.id)
+    const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(404).send('Channel does not exist.')
+    return res.status(403).send('You don\'t have access to this channel.')
   }
   const messages = await db.messages.list(req.params.id)
   res.json(messages)
 })
 
-app.post('/channels/:id/messages', async (req, res) => {
+app.post('/channels/:id/messages', loadUser, async (req, res) => {
+  try{
+    const channel = await db.channels.get(req.params.id, req.user)
+  }catch(err){
+    return res.status(400).send('You don\'t have access to this channel.')
+  }
   const message = await db.messages.create(req.params.id, req.body)
   res.status(201).json(message)
 })

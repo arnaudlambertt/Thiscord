@@ -23,10 +23,11 @@ module.exports = {
       });
       return merge(channel, {id: id})
     },
-    get: async (id) => {
+    get: async (id, user) => {
       if(!id) throw Error('Invalid id')
       const data = await db.get(`channels:${id}`)
       const channel = JSON.parse(data)
+      if(!channel.members.includes(user.id)) throw Error('Unauthorized access')
       return merge(channel, {id: id})
     },
     list: async (user) => {
