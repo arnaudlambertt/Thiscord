@@ -37,11 +37,17 @@ const useStyles = (theme) => ({
 export default function Welcome() {
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState('');
+
   const {
     oauth,
     channels, setChannels,
     user
   } = useContext(Context)
+
+  const addChannel = (channel) => {
+    setChannels([...channels, channel])
+  }
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -51,7 +57,7 @@ export default function Welcome() {
 
   const createChannel = useCallback( async () => {
     try{
-      await axios.post(
+        const {data: channel} = await axios.post(
         `http://localhost:3001/channels`,
         {
           name: channelName,
@@ -63,6 +69,7 @@ export default function Welcome() {
           }
         })
         handleClose()
+        addChannel(channel)
         setChannelName('')
       }catch(err){
         console.error(err)

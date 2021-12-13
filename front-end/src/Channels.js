@@ -43,9 +43,13 @@ export default function Channels() {
     setOpen(false);
   };
 
-  const createChannel = useCallback( async () => {
+  const addChannel = (channel) => {
+    setChannels([...channels, channel])
+  }
+
+  const createChannel =  async () => {
     try{
-      await axios.post(
+      const {data: channel} = await axios.post(
         `http://localhost:3001/channels`,
         {
           name: channelName,
@@ -57,11 +61,12 @@ export default function Channels() {
           }
         })
         handleClose()
+        addChannel(channel)
         setChannelName('')
       }catch(err){
         console.error(err)
       }
-    },[channelName, user.id, oauth.access_token])
+    }
 
   useEffect( () => {
     const fetch = async () => {
@@ -77,7 +82,7 @@ export default function Channels() {
       }
     }
     fetch()
-  }, [oauth, setChannels,createChannel])
+  }, [oauth, setChannels])
   return (
     <ul css={styles.root}>
       <li css={styles.channel}>
