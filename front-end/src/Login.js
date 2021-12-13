@@ -108,7 +108,7 @@ const LoadTokenUser = ({
   useEffect( () => {
     const fetch = async () => {
       try {
-        var {data} = await axios.post(
+        const {data: oauth} = await axios.post(
           config.token_endpoint
         , qs.stringify ({
           grant_type: 'authorization_code',
@@ -118,13 +118,13 @@ const LoadTokenUser = ({
           code: `${code}`,
         }))
         removeCookie('code_verifier', {path: '/'})
-        const signin = await axios.get('http://localhost:3001/signin',{
+        const {data: user} = await axios.get('http://localhost:3001/signin',{
           headers: {
-            'Authorization': `Bearer ${data.access_token}`
+            'Authorization': `Bearer ${oauth.access_token}`
           }
         })
-        setUser(signin.data)
-        setOauth(data)
+        setUser(user)
+        setOauth(oauth)
         navigate(codeVerifier.source)
       }catch (err) {
         console.error(err)
