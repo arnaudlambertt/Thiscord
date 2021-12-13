@@ -29,7 +29,7 @@ module.exports = {
       const channel = JSON.parse(data)
       return merge(channel, {id: id})
     },
-    list: async () => {
+    list: async (user) => {
       return new Promise( (resolve, reject) => {
         const channels = []
         db.createReadStream({
@@ -42,7 +42,8 @@ module.exports = {
         }).on( 'error', (err) => {
           reject(err)
         }).on( 'end', () => {
-          resolve(channels)
+          const filteredChannels = channels.filter(function(channel) { return channel.members.includes(user.id) })
+          resolve(filteredChannels)
         })
       })
     },
@@ -131,7 +132,7 @@ module.exports = {
       if(!original) throw Error('Unregistered user id')
       delete store.users[id]
     },
-    signin: async (email) => {
+    getId: async (email) => {
       if(!email) throw Error('Invalid email')
       try {
         const data = await db.get(`usersid:${email}`)

@@ -2,7 +2,7 @@
 const db = require('./db')
 const express = require('express')
 const cors = require('cors')
-const authenticator = require('./authenticator')
+const {authenticator,loadUser} = require('./authenticator')
 
 const app = express()
 const authenticate = authenticator({
@@ -17,11 +17,9 @@ app.all('*', authenticate)
 
 // Channels
 
-app.get('/channels', async (req, res) => {
-  const id = await db.users.signin(req.user.email)
-  const channels = await db.channels.list()
-  const filteredChannels = channels.filter(function(channel) { return channel.members.includes(id) })
-  res.json(filteredChannels)
+app.get('/channels', loadUser, async (req, res) => {
+  const channels = await db.channels.list(req.user)
+  res.json(channels)
 })
 
 app.post('/channels', async (req, res) => {
@@ -57,16 +55,15 @@ app.post('/channels/:id/messages', async (req, res) => {
 })
 
 // Users
-app.get('/signin', async (req, res) => {
-  const id = await db.users.signin(req.user.email)
-  if(!id)
+app.get('/signin', loadUser, async (req, res) => {
+  if(req.user.id === null)
   {
     req.body = {username: req.user.email}
     req.url = '/users'
     req.method = 'POST'
     return app._router.handle(req, res)
   }
-  req.url = `/users/${id}`
+  req.url = `/users/${req.user.id}`
   return app._router.handle(req, res)
 })
 
