@@ -1,6 +1,6 @@
 
 /** @jsxImportSource @emotion/react */
-import {useContext,useState, useEffect} from 'react';
+import {useContext,useState,useEffect} from 'react';
 import axios from 'axios';
 // Layout
 import {Link} from '@mui/material';
@@ -64,10 +64,6 @@ export default function Channels() {
     setMembers(member)
   }
 
-  const initMembers = (member) => {
-    setMembers([...members, member])
-  }
-
   const fetchUsers = async (e,value) => {
     if(value.length > 0)
     {
@@ -106,6 +102,7 @@ export default function Channels() {
         console.error(err)
       }
     }
+
   useEffect( () => {
     const fetch = async () => {
       try{
@@ -124,10 +121,8 @@ export default function Channels() {
 
   useEffect( () => {
     const fetchMembers = async () => {
-      if(currentChannel)
+      if(!members.length && currentChannel)
       {
-        setMembers(null)
-        console.log(members)
         for(const memberId of currentChannel.members)
         {
           try{
@@ -136,7 +131,7 @@ export default function Channels() {
                 'Authorization': `Bearer ${oauth.access_token}`
               }
             })
-            initMembers(member)
+          setMembers([...members,member])
           }catch(err){
             console.error(err)
           }
@@ -144,7 +139,8 @@ export default function Channels() {
       }
     }
     fetchMembers()
-  }, [currentChannel])
+  })
+
 //add members
   return (
     <div>
@@ -192,24 +188,24 @@ export default function Channels() {
         <DialogContentText>
           Manage members
         </DialogContentText>
-         <Autocomplete
-              multiple
-              id="tags-outlined"
-              options={users}
-              getOptionLabel={(option) => option.username}
-              value={members}
-              filterSelectedOptions
-              onInputChange={fetchUsers}
-              onChange={addMember}
-              isOptionEqualToValue={(option,value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{color:'#ffffff'}}
-                  placeholder="type a username"
-                />
-              )}
-            />
+        <Autocomplete
+               multiple
+               id="tags-outlined"
+               options={users}
+               getOptionLabel={(option) => option.username}
+               value={members}
+               filterSelectedOptions
+               onInputChange={fetchUsers}
+               onChange={addMember}
+               isOptionEqualToValue={(option,value) => option.id === value.id}
+               renderInput={(params) => (
+                 <TextField
+                   {...params}
+                   sx={{color:'#ffffff'}}
+                   placeholder="type a username"
+                 />
+               )}
+             />
         <DialogContentText>
            Change channel name
          </DialogContentText>
