@@ -42,7 +42,7 @@ app.put('/channels/:id', loadUser, async (req, res) => {
   }catch(err){
     return res.status(400).send('You don\'t have access to this channel.')
   }
-  const channel = await db.channels.update(req.body)
+  const channel = await db.channels.update(req.params.id,req.body,req.user)
   res.json(channel)
 })
 

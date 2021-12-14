@@ -44,10 +44,36 @@ module.exports = {
       }
       return filteredChannels;
     },
-    update: async (id, channel) => {
-      const original = channels.get(id)
+    update: async (id, channel, user) => {
+      const original = await module.exports.channels.get(id, user)
       if(!original) throw Error('Unregistered channel id')
       delete channel['id']
+      //remove the channel from users who are not in it anymore
+      const membersToRemove = original.members.filter(e => !channel.members.includes(e))
+      for(const userid of membersToRemove)
+      {
+        try{
+          const member = await module.exports.users.get(userid)
+          member.channels.splice(member.channels.findIndex(e => e === id))
+          await module.exports.users.update(userid,member)
+        }
+        catch(e){
+        }
+      }
+      //add the channel to new members
+      const membersToAdd = channel.members.filter(e => !original.members.includes(e))
+      console.log(membersToAdd)
+      for(const userid of membersToAdd)
+      {
+        try{
+          const member = await module.exports.users.get(userid)
+          member.channels.push(id)
+          await module.exports.users.update(userid,member)
+        }
+        catch(e){
+          channel.members.splice(channel.members.findIndex(e => e === userid))
+        }
+      }
       await db.put(`channels:${id}`, JSON.stringify(channel))
       return merge(channel, {id: id})
     },
