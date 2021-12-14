@@ -83,16 +83,15 @@ module.exports = {
     }
   },
   messages: {
-    create: async (channelId, message) => {
-      if(!channelId) throw Error('Invalid channel')
-      if(!message.author) throw Error('Invalid message')
+    create: async (channelId, message, user) => {
       if(!message.content) throw Error('Invalid message')
       creation = microtime.now()
       await db.put(`messages:${channelId}:${creation}`, JSON.stringify({
-        author: message.author,
-        content: message.content
+        author: user.id,
+        content: message.content,
+        edited: false
       }))
-      return merge(message, {channelId: channelId, creation: creation})
+      return merge(message, {author: user.id, creation: creation, edited: false})
     },
     list: async (channelId) => {
       return new Promise( (resolve, reject) => {
@@ -103,7 +102,6 @@ module.exports = {
         }).on( 'data', ({key, value}) => {
           message = JSON.parse(value)
           const [, channelId, creation] = key.split(':')
-          message.channelId = channelId
           message.creation = creation
           messages.push(message)
         }).on( 'error', (err) => {
@@ -112,6 +110,21 @@ module.exports = {
           resolve(messages)
         })
       })
+    },
+    update: async (channelId, message, user) => {
+      if(!message.content) throw Error('Invalid message')
+      if(!message.creation) throw Error('Invalid message')
+      const originalJson = await db.get(`messages:${channelId}:${message.creation}`)
+      const original = JSON.parse(originalJson)
+      if(original.author !== user.id) throw Error('Only the author can edit this message')
+      delete message['edited']
+      delete message['author']
+      await db.put(`messages:${channelId}:${creation}`, JSON.stringify({
+        author: user.id,
+        content: message.content,
+        edited: true
+      }))
+      return merge(message,{author: user.id, edited: true})
     },
   },
   users: {

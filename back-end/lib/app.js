@@ -64,8 +64,20 @@ app.post('/channels/:id/messages', loadUser, async (req, res) => {
   }catch(err){
     return res.status(400).send('You don\'t have access to this channel.')
   }
-  const message = await db.messages.create(req.params.id, req.body)
+  const message = await db.messages.create(req.params.id, req.body, req.user)
   res.status(201).json(message)
+})
+
+app.put('/channels/:id/messages', loadUser, async (req, res) => {
+  try{
+    const channel = await db.channels.get(req.params.id, req.user)
+  }catch(err){
+    return res.status(400).send('You don\'t have access to this channel.')
+  }
+  try{
+  const message = await db.messages.update(req.params.id, req.body, req.user)
+  res.json(message)
+}catch(e){console.log(e)}
 })
 
 // Users
