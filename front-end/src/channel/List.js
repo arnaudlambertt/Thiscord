@@ -35,6 +35,16 @@ const useStyles = (theme) => ({
     top: 0,
     width: '50px',
   },
+  timeStamp: {
+   color: 'rgba(255,255,255,.3)',
+   paddingLeft: 5,
+   fontSize: 14
+ },
+ author: {
+   color: '#d842eb',
+   fontSize: 20,
+   fontWeight: 'bold'
+ },
   fab: {
     position: 'fixed !important',
     top: 0,
@@ -87,9 +97,8 @@ export default forwardRef(({
             return (
               <li key={i} css={styles.message}>
                 <p>
-                  <span>{message.author}</span>
-                  {' - '}
-                  <span>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                  <span css={styles.author}>{message.author}</span>
+                  <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                 </p>
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>

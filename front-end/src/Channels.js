@@ -9,21 +9,23 @@ import { Link as RouterLink } from 'react-router-dom';
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Context from './Context'
+import { useTheme } from '@mui/styles';
 import {useNavigate} from 'react-router-dom';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-const styles = {
+const useStyles = (theme) => ({
   root: {
     '& a': {
       padding: '.2rem .5rem',
       whiteSpace: 'nowrap',
     }
   },
-}
+})
 
 export default function Channels() {
   const {
@@ -40,7 +42,7 @@ export default function Channels() {
   const [members, setMembers] = useState([]);
 
   const navigate = useNavigate();
-
+  const styles = useStyles(useTheme())
   const handleClickOpenCreate = () => {
     setOpenCreate(true);
   };
@@ -143,25 +145,54 @@ export default function Channels() {
 
 //add members
   return (
-    <div>
-    <ul css={styles.root}>
-      <li css={styles.channel}>
-        <Link to="/" component={RouterLink}>Welcome</Link>
+    <div css={styles.root}>
+    <ul>
+      <li>
+      <Button
+      onClick={ (e) => {
+        e.preventDefault()
+        navigate(`/`)
+        }}
+        sx={{
+          width: '100%',
+          height: 50,
+          spacing:0,
+          justifyContent:'left',
+          color:'#ffffff',
+          backgroundColor: 'background.paper',
+          '&:hover': {
+            backgroundColor: 'background.default',
+            opacity: [0.9, 0.8, 0.7],
+          },
+        }}>
+        <h3> Welcome </h3>
+        </Button>
       </li>
       { channels.map( (channel, i) => (
-        <li key={i} css={styles.channel}>
-          <Link
-            href={`/channels/${channel.id}`}
-            onClick={ (e) => {
-              e.preventDefault()
-              navigate(`/channels/${channel.id}`)
-            }}
-          >
-            {channel.name}
-          </Link>
+        <li key={i}>
+        <Button
+        onClick={ (e) => {
+          e.preventDefault()
+          navigate(`/channels/${channel.id}`)
+          }}
+          sx={{
+            width: '100%',
+            height: 50,
+            spacing:0,
+            color:'#ffffff',
+            justifyContent:'left',
+            backgroundColor: 'background.paper',
+            '&:hover': {
+              backgroundColor: 'background.default',
+              opacity: [0.9, 0.8, 0.7],
+            },
+          }}>
+          <h3>{channel.name}</h3>
+          </Button>
         </li>
       ))}
-      <li css={styles.channel}>
+    </ul>
+    <div>
       <Button variant="contained" sx={{top:5,left:5,backgroundColor: 'primary.main' }} onClick={handleClickOpenCreate}>
         Create a Channel
       </Button>
@@ -169,26 +200,25 @@ export default function Channels() {
         <DialogTitle>Create a Channel</DialogTitle>
         <DialogContent>
             <TextField value={channelName} placeholder="channel name" onChange={(e) => { setChannelName(e.target.value) }}/>
-        </DialogContent>
+          </DialogContent>
         <DialogActions>
             <Button onClick={handleCloseCreate}>Cancel</Button>
             <Button variant="contained" sx={{backgroundColor: 'primary.main' }} onClick={createChannel}>Create</Button>
-        </DialogActions>
+          </DialogActions>
       </Dialog>
-      </li>
-    </ul>
+    </div>
     {currentChannel ?
       <div>
-      <Button variant="contained" sx={{top:10,left:5,backgroundColor: 'primary.main' }} onClick={handleClickOpenParameters}>
-        Channel parameters
-      </Button>
-      <Dialog open={openParameters} onClose={handleCloseParameters}>
-        <DialogTitle>Channel Parameters</DialogTitle>
-        <DialogContent>
-        <DialogContentText>
-          Manage members
-        </DialogContentText>
-        <Autocomplete
+        <Button variant="contained" sx={{top:10,left:5,backgroundColor: 'primary.main' }} onClick={handleClickOpenParameters}>
+          Channel parameters
+        </Button>
+        <Dialog open={openParameters} onClose={handleCloseParameters}>
+          <DialogTitle>Channel Parameters</DialogTitle>
+          <DialogContent>
+          <DialogContentText>
+            Manage members
+          </DialogContentText>
+          <Autocomplete
                multiple
                id="tags-outlined"
                options={users}
@@ -206,16 +236,16 @@ export default function Channels() {
                  />
                )}
              />
-        <DialogContentText>
-           Change channel name
-         </DialogContentText>
+            <DialogContentText>
+              Change channel name
+            </DialogContentText>
             <TextField defaultValue={currentChannel.name}/>
-        </DialogContent>
-        <DialogActions>
+          </DialogContent>
+          <DialogActions>
             <Button sx={{color: 'primary.main' }} onClick={handleCloseParameters}>Cancel</Button>
             <Button variant="contained" sx={{backgroundColor: 'primary.main' }} onClick={handleCloseParameters}>Apply changes</Button>
-        </DialogActions>
-      </Dialog>
+          </DialogActions>
+        </Dialog>
       </div>
        : ""}
   </div>
