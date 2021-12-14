@@ -21,7 +21,7 @@ module.exports = {
           await module.exports.users.update(channel.members[i],member)
         }
         catch(e){
-          channel.members.splice(i)
+          channel.members.splice(i,1)
         }
       }
       return merge(channel, {id: id})
@@ -54,7 +54,7 @@ module.exports = {
       {
         try{
           const member = await module.exports.users.get(userid)
-          member.channels.splice(member.channels.findIndex(e => e === id))
+          member.channels.splice(member.channels.findIndex(e => e === id),1)
           await module.exports.users.update(userid,member)
         }
         catch(e){
@@ -70,7 +70,7 @@ module.exports = {
           await module.exports.users.update(userid,member)
         }
         catch(e){
-          channel.members.splice(channel.members.findIndex(e => e === userid))
+          channel.members.splice(channel.members.findIndex(e => e === userid),1)
         }
       }
       await db.put(`channels:${id}`, JSON.stringify(channel))
