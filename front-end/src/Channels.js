@@ -34,28 +34,47 @@ export default function Channels() {
   } = useContext(Context)
 
   const [openCreate, setOpenCreate] = useState(false);
-  const [channelName, setChannelName] = useState('');
+  const [channelNameCreate, setchannelNameCreate] = useState('');
   const [openParameters, setOpenParameters] = useState(false);
   const [users, setUsers] = useState([]);
   const [members, setMembers] = useState([]);
-
+  const [channelName, setChannelName] = useState('');
+  const [refresh, setRefresh] = useState(false);
   const navigate = useNavigate();
 
-  const handleClickOpenCreate = () => {
-    setOpenCreate(true);
-  };
+  const handleOpenCreate = () => {
+    setOpenCreate(true)
+  }
 
   const handleCloseCreate = () => {
-    setOpenCreate(false);
-  };
+    setOpenCreate(false)
+  }
 
-  const handleClickOpenParameters = () => {
-    setOpenParameters(true);
-  };
+  const handleOpenParameters = async() => {
+    setChannelName(currentChannel.name)
+    {
+      const initMembers = []
+      for(const memberId of currentChannel.members)
+      {
+        try{
+          const {data: member} = await axios.get(`http://localhost:3001/users/${memberId}`, {
+            headers: {
+              'Authorization': `Bearer ${oauth.access_token}`
+            }
+          })
+          initMembers.push(member)
+        }catch(err){
+          console.error(err)
+        }
+      }
+      setMembers(initMembers)
+    }
+    setOpenParameters(true)
+  }
 
   const handleCloseParameters = () => {
-    setOpenParameters(false);
-  };
+    setOpenParameters(false)
+  }
 
   const addChannel = (channel) => {
     setChannels([...channels, channel])
@@ -73,7 +92,7 @@ export default function Channels() {
             'Authorization': `Bearer ${oauth.access_token}`
           }
         })
-        setUsers(data)
+        setUsers(data.concat(members))
       }catch(err){
         console.error(err)
       }
@@ -82,27 +101,31 @@ export default function Channels() {
       setUsers([])
   }
   const updateCurrentChannel = async() => {
-    console.log(members)
-    const {data: updatedChannel} = await axios.put(
+    try{
+      const {data: updatedChannel} = await axios.put(
         `http://localhost:3001/channels/${currentChannel.id}`,
         {
-          id: currentChannel.id,
-          name: currentChannel.name,
+          name: channelName,
           members: members.map(a => a.id)
         },
         {
-        headers: {
-          'Authorization': `Bearer ${oauth.access_token}`
-        },
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          },
       })
       setCurrentChannel(updatedChannel)
+      setRefresh(u => !u)
+      handleCloseParameters()
+    }catch(err){
+      console.error(err)
+    }
   }
   const createChannel =  async () => {
     try{
       const {data: channel} = await axios.post(
         `http://localhost:3001/channels`,
         {
-          name: channelName,
+          name: channelNameCreate,
         members: [user.id],
         },
         {
@@ -112,7 +135,7 @@ export default function Channels() {
         })
         handleCloseCreate()
         addChannel(channel)
-        setChannelName('')
+        setchannelNameCreate('')
       }catch(err){
         console.error(err)
       }
@@ -132,32 +155,7 @@ export default function Channels() {
       }
     }
     fetch()
-  }, [oauth, setChannels])
-
-  useEffect( () => {
-    const fetchMembers = async () => {
-      if(!members.length && currentChannel)
-      {
-        const initMembers = []
-        for(const memberId of currentChannel.members)
-        {
-          try{
-            const {data: member} = await axios.get(`http://localhost:3001/users/${memberId}`, {
-              headers: {
-                'Authorization': `Bearer ${oauth.access_token}`
-              }
-            })
-            initMembers.push(member)
-          }catch(err){
-            console.error(err)
-          }
-        }
-        setMembers(initMembers)
-      }
-    }
-    fetchMembers()
-  })
-
+  }, [oauth, setChannels, refresh])
 //add members
   return (
     <div>
@@ -179,13 +177,13 @@ export default function Channels() {
         </li>
       ))}
       <li css={styles.channel}>
-      <Button variant="contained" sx={{top:5,left:5,backgroundColor: 'primary.main' }} onClick={handleClickOpenCreate}>
+      <Button variant="contained" sx={{top:5,left:5,backgroundColor: 'primary.main' }} onClick={handleOpenCreate}>
         Create a Channel
       </Button>
       <Dialog open={openCreate} onClose={handleCloseCreate}>
         <DialogTitle>Create a Channel</DialogTitle>
         <DialogContent>
-            <TextField value={channelName} placeholder="channel name" onChange={(e) => { setChannelName(e.target.value) }}/>
+            <TextField value={channelNameCreate} placeholder="channel name" onChange={(e) => { setchannelNameCreate(e.target.value) }}/>
         </DialogContent>
         <DialogActions>
             <Button onClick={handleCloseCreate}>Cancel</Button>
@@ -196,7 +194,7 @@ export default function Channels() {
     </ul>
     {currentChannel ?
       <div>
-      <Button variant="contained" sx={{top:10,left:5,backgroundColor: 'primary.main' }} onClick={handleClickOpenParameters}>
+      <Button variant="contained" sx={{top:10,left:5,backgroundColor: 'primary.main' }} onClick={handleOpenParameters}>
         Channel parameters
       </Button>
       <Dialog open={openParameters} onClose={handleCloseParameters}>
@@ -226,7 +224,7 @@ export default function Channels() {
         <DialogContentText>
            Change channel name
          </DialogContentText>
-            <TextField defaultValue={currentChannel.name}/>
+            <TextField value={channelName} onChange={(e) => {setChannelName(e.target.value)}}/>
         </DialogContent>
         <DialogActions>
             <Button sx={{color: 'primary.main' }} onClick={handleCloseParameters}>Cancel</Button>
