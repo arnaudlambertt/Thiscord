@@ -24,12 +24,10 @@ const useStyles = (theme) => ({
   },
   card: {
     textAlign: 'center',
-    display:'flex',
-    flexDirection:"column",
     alignItems:"center",
   },
   icon: {
-    width: '30%',
+    width: '50%',
     fill: '#fff',
   }
 })
@@ -90,10 +88,20 @@ export default function Welcome() {
       >
         <Grid item xs>
           <div css={styles.card}>
-            <ChannelIcon css={styles.icon} />
-            <Button variant="contained" sx={{backgroundColor: 'primary.main'}}onClick={handleClickOpen}>
-              Create a Channel
+            <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" onClick={handleClickOpen}>
+              <Grid
+                container
+                direction="column"
+              >
+                <Grid item xs>
+                  <ChannelIcon css={styles.icon} />
+                </Grid>
+                <Grid item xs>
+                  <p>Create a Channel</p>
+                </Grid>
+              </Grid>
             </Button>
+
             <Dialog open={open} onClose={handleClose}>
               <DialogTitle>Create a Channel</DialogTitle>
               <DialogContent>
