@@ -47,7 +47,7 @@ describe('channels', () => {
     // Create a channel
     const {body: channel} = await supertest(app)
     .post('/channels')
-    .send({name: 'channel 1', members: [user.id]})
+    .send({name: 'channel 1', members: [user.id, null]})
     .expect(201)
     // Check its return value
     channel.should.match({
@@ -74,5 +74,26 @@ describe('channels', () => {
     .expect(200)
     channel.should.eql(channel1)
   })
+
+  it('update channel', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
+    // Create a channel
+    const {body: channel1} = await supertest(app)
+    .post('/channels')
+    .send({name: 'channel 1', members: [user.id]})
+    // Update a channel
+    await supertest(app)
+    .put(`/channels/${channel1.id}`)
+    .send({name: 'channel 2', members: [user.id, null]})
+    .expect(200)
+    // Check it was correctly updated
+    const {body: channel} = await supertest(app)
+    .get(`/channels/${channel1.id}`)
+    channel.should.eql({
+      id: channel1.id,
+      name: 'channel 2',
+      members: [user.id]})
+    })
 
 })
