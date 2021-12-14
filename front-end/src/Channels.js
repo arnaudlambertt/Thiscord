@@ -138,6 +138,7 @@ export default function Channels() {
     const fetchMembers = async () => {
       if(!members.length && currentChannel)
       {
+        const initMembers = []
         for(const memberId of currentChannel.members)
         {
           try{
@@ -146,11 +147,12 @@ export default function Channels() {
                 'Authorization': `Bearer ${oauth.access_token}`
               }
             })
-          setMembers([...members,member])
+            initMembers.push(member)
           }catch(err){
             console.error(err)
           }
         }
+        setMembers(initMembers)
       }
     }
     fetchMembers()
