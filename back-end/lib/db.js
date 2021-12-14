@@ -13,16 +13,17 @@ module.exports = {
       if(!user.id) throw Error('Unkwown user')
       const id = uuid()
       await db.put(`channels:${id}`, JSON.stringify(channel))
-      channel.members.forEach(async (userid, i) => {
+      for(var i = 0; i < channel.members.length; i++)
+      {
         try{
-          const member = await module.exports.users.get(userid)
+          const member = await module.exports.users.get(channel.members[i])
           member.channels.push(id)
-          module.exports.users.update(userid,member)
+          await module.exports.users.update(channel.members[i],member)
         }
         catch(e){
           channel.members.splice(i)
         }
-      });
+      }
       return merge(channel, {id: id})
     },
     get: async (id, user) => {
