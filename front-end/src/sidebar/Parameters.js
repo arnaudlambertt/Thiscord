@@ -22,7 +22,7 @@ const useStyles = (theme) => ({
   },
 })
 
-export default function SidebarButton(setRefresh){
+export default function SidebarButton({setRefresh}){
   const {
     oauth,
     channels, setChannels,
@@ -83,7 +83,7 @@ export default function SidebarButton(setRefresh){
           },
       })
       setCurrentChannel(updatedChannel)
-      setRefresh(u=>u)
+      setRefresh(u => !u)
       handleCloseParameters()
     }catch(err){
       console.error(err)
