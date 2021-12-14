@@ -40,9 +40,10 @@ describe('messages', () => {
     .get(`/channels/${channel.id}/messages`)
     .expect(200)
     messages.should.match([{
-      author: 'whoami',
+      author: user.id,
       creation: (it) => it.should.be.approximately(microtime.now(), 1000000),
-      content: 'Hello ECE'
+      content: 'Hello ECE',
+      edited: false
     }])
   })
 
@@ -56,12 +57,13 @@ describe('messages', () => {
     // Create a message inside it
     const {body: message} = await supertest(app)
     .post(`/channels/${channel.id}/messages`)
-    .send({author: 'whoami', content: 'Hello ECE'})
+    .send({content: 'Hello ECE'})
     .expect(201)
     message.should.match({
-      author: 'whoami',
+      author: user.id,
       creation: (it) => it.should.be.approximately(microtime.now(), 1000000),
-      content: 'Hello ECE'
+      content: 'Hello ECE',
+      edited: false
     })
     // Check it was correctly inserted
     const {body: messages} = await supertest(app)
@@ -76,4 +78,30 @@ describe('messages', () => {
     .expect(403)
   })
 
+  it('update message', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
+    // Create a channel
+    const {body: channel} = await supertest(app)
+    .post('/channels')
+    .send({name: 'channel 1', members: [user.id]})
+    // Create a message inside it
+    const {body: message} = await supertest(app)
+    .post(`/channels/${channel.id}/messages`)
+    .send({content: 'Hello ECE'})
+    // Update a message
+    await supertest(app)
+    .put(`/channels/${channel.id}/messages`)
+    .send({creation: message.creation, content:'Edited content'})
+    .expect(200)
+    // Check it was correctly updated
+    const {body: messages} = await supertest(app)
+    .get(`/channels/${channel.id}/messages`)
+    messages.should.match([{
+      author: user.id,
+      creation: message.creation.toString(),
+      content:'Edited content',
+      edited: true
+    }])
+  })
 })
