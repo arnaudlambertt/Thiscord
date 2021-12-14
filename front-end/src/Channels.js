@@ -29,7 +29,7 @@ export default function Channels() {
   const {
     oauth,
     channels, setChannels,
-    currentChannel,
+    currentChannel, setCurrentChannel,
     user
   } = useContext(Context)
 
@@ -81,7 +81,22 @@ export default function Channels() {
     else
       setUsers([])
   }
-
+  const updateCurrentChannel = async() => {
+    console.log(members)
+    const {data: updatedChannel} = await axios.put(
+        `http://localhost:3001/channels/${currentChannel.id}`,
+        {
+          id: currentChannel.id,
+          name: currentChannel.name,
+          members: members.map(a => a.id)
+        },
+        {
+        headers: {
+          'Authorization': `Bearer ${oauth.access_token}`
+        },
+      })
+      setCurrentChannel(updatedChannel)
+  }
   const createChannel =  async () => {
     try{
       const {data: channel} = await axios.post(
@@ -213,7 +228,7 @@ export default function Channels() {
         </DialogContent>
         <DialogActions>
             <Button sx={{color: 'primary.main' }} onClick={handleCloseParameters}>Cancel</Button>
-            <Button variant="contained" sx={{backgroundColor: 'primary.main' }} onClick={handleCloseParameters}>Apply changes</Button>
+            <Button variant="contained" sx={{backgroundColor: 'primary.main' }} onClick={updateCurrentChannel}>Apply changes</Button>
         </DialogActions>
       </Dialog>
       </div>
