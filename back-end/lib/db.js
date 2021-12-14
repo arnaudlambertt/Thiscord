@@ -62,7 +62,6 @@ module.exports = {
       }
       //add the channel to new members
       const membersToAdd = channel.members.filter(e => !original.members.includes(e))
-      console.log(membersToAdd)
       for(const userid of membersToAdd)
       {
         try{
