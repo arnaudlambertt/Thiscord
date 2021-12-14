@@ -1,6 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom'
 // Layout
 import { useTheme } from '@mui/styles';
 import { IconButton } from '@mui/material';
@@ -28,6 +29,7 @@ export default function Header() {
     user, setOauth,
     drawerVisible, setDrawerVisible
   } = useContext(Context)
+  const navigate = useNavigate()
   const styles = useStyles(useTheme(), user)
 
   const drawerToggle = (e) => {
@@ -36,6 +38,7 @@ export default function Header() {
   const onClickLogout = (e) => {
     e.stopPropagation()
     setOauth(null)
+    navigate('/')
   }
 
   return (
