@@ -25,8 +25,6 @@ const useStyles = (theme) => {
         marginRight: theme.spacing(1),
       },
     },
-    send: {
-    },
   }
 }
 
@@ -71,7 +69,6 @@ export default function Form({
         <Button
           variant="contained"
           color="primary"
-          css={styles.send}
           endIcon={<SendIcon />}
           onClick={onSubmit}
         >
