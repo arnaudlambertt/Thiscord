@@ -9,11 +9,12 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useTheme } from '@mui/styles';
 import Button from '@mui/material/Button';
-import SidebarList from './sidebar/SidebarList'
-import SidebarButton from './sidebar/SidebarButton'
+import List from './sidebar/List'
+import Parameters from './sidebar/Parameters'
+import {useNavigate} from 'react-router-dom';
 const useStyles = (theme) => ({
   root: {
-    height: '100%',
+    height: '70%',
     flex: '1 1 auto',
     display: 'flex',
     flexDirection: 'column',
@@ -33,6 +34,7 @@ export default function Channels() {
   const [refresh, setRefresh] = useState(false);
   const [scrollDown, setScrollDown] = useState(false)
 
+  const navigate = useNavigate();
   const listRef = useRef()
   const styles = useStyles(useTheme(), user)
 
@@ -63,12 +65,31 @@ export default function Channels() {
 //add members
   return (
     <div css={styles.root}>
-    <SidebarList
+    <Button
+    onClick={ (e) => {
+      e.preventDefault()
+      navigate(`/`)
+      }}
+      sx={{
+        width: '100%',
+        height: 50,
+        spacing:0,
+        justifyContent:'left',
+        color:'#ffffff',
+        backgroundColor: 'background.paper',
+        '&:hover': {
+          backgroundColor: 'background.default',
+          opacity: [0.9, 0.8, 0.7],
+        },
+      }}>
+      <h3> Welcome </h3>
+      </Button>
+    <List
       onScrollDown={onScrollDown}
       refresh={refresh}
       ref={listRef}
     />
-    <SidebarButton setRefresh={setRefresh}/>
+    <Parameters setRefresh={setRefresh}/>
   </div>
   );
 }

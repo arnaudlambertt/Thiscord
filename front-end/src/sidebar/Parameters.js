@@ -17,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 const useStyles = (theme) => ({
   button: {
     display: 'flex',
+    height:'10%',
     flexDirection:'column'
   },
 })

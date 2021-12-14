@@ -10,6 +10,7 @@ const useStyles = (theme) => ({
   root: {
     position: 'relative',
     flex: '1 1 auto',
+    height:'50%',
     overflow: 'auto',
     '& ul': {
       'margin': 0,
@@ -58,29 +59,8 @@ const styles = useStyles(useTheme())
     return () => rootNode.removeEventListener('scroll', handleScroll)
   })
   return(
-    <div ref={rootEl}>
+    <div ref={rootEl} css={styles.root}>
     <ul>
-        <li>
-        <Button
-        onClick={ (e) => {
-          e.preventDefault()
-          navigate(`/`)
-          }}
-          sx={{
-            width: '100%',
-            height: 50,
-            spacing:0,
-            justifyContent:'left',
-            color:'#ffffff',
-            backgroundColor: 'background.paper',
-            '&:hover': {
-              backgroundColor: 'background.default',
-              opacity: [0.9, 0.8, 0.7],
-            },
-          }}>
-          <h3> Welcome </h3>
-          </Button>
-        </li>
         { channels.map( (channel, i) => (
           <li key={i}>
           <Button
