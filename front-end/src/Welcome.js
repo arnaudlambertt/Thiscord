@@ -45,7 +45,7 @@ export default function Welcome() {
     user
   } = useContext(Context)
 
-  setCurrentChannel(null)
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -77,7 +77,7 @@ export default function Welcome() {
       }catch(err){
         console.error(err)
       }
-    },[channelName, user.id, oauth.access_token,setChannels,channels])
+    },[channelName, user.id, oauth,setChannels,channels])
   const styles = useStyles(useTheme())
   return (
     <div css={styles.root}>
