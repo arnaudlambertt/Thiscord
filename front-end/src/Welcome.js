@@ -77,7 +77,7 @@ export default function Welcome() {
       }catch(err){
         console.error(err)
       }
-    },[channelName, user.id, oauth,setChannels,channels])
+    },[channelName, user, oauth, setChannels,channels])
   const styles = useStyles(useTheme())
   return (
     <div css={styles.root}>

@@ -123,8 +123,8 @@ const LoadTokenUser = ({
             'Authorization': `Bearer ${oauth.access_token}`
           }
         })
-        setUser(user)
         setOauth(oauth)
+        setUser(user)
         navigate(codeVerifier.source)
       }catch (err) {
         console.error(err)
