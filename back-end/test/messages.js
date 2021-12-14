@@ -104,4 +104,27 @@ describe('messages', () => {
       edited: true
     }])
   })
+
+  it('delete message', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
+    // Create a channel
+    const {body: channel} = await supertest(app)
+    .post('/channels')
+    .send({name: 'channel 1', members: [user.id]})
+    // Create a message inside it
+    const {body: message} = await supertest(app)
+    .post(`/channels/${channel.id}/messages`)
+    .send({content: 'Hello ECE'})
+    // Delete a message
+    const response = await supertest(app)
+    .delete(`/channels/${channel.id}/messages`)
+    .send(message)
+    .expect(204)
+    console.log(response)
+    // Check it was correctly deleted
+    const {body: messages} = await supertest(app)
+    .get(`/channels/${channel.id}/messages`)
+    messages.length.should.eql(0)
+  })
 })
