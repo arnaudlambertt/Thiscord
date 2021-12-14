@@ -74,12 +74,19 @@ app.put('/channels/:id/messages', loadUser, async (req, res) => {
   }catch(err){
     return res.status(400).send('You don\'t have access to this channel.')
   }
-  try{
   const message = await db.messages.update(req.params.id, req.body, req.user)
   res.json(message)
-}catch(e){console.log(e)}
 })
 
+app.delete('/channels/:id/messages', loadUser, async (req, res) => {
+  try{
+    const channel = await db.channels.get(req.params.id, req.user)
+  }catch(err){
+    return res.status(400).send('You don\'t have access to this channel.')
+  }
+  await db.messages.delete(req.params.id, req.body, req.user)
+  res.status(204).send()
+})
 // Users
 app.get('/signin', loadUser, async (req, res, next) => {
   if(req.user.id === null)

@@ -126,6 +126,15 @@ module.exports = {
       }))
       return merge(message,{author: user.id, edited: true})
     },
+    delete: async (channelId, message, user) => {
+      if(!message.content) throw Error('Invalid message')
+      if(!message.creation) throw Error('Invalid message')
+      const originalJson = await db.get(`messages:${channelId}:${message.creation}`)
+      const original = JSON.parse(originalJson)
+      if(original.author !== user.id) throw Error('Only the author can delete this message')
+      await db.del(`messages:${channelId}:${message.creation}`)
+      return
+    },
   },
   users: {
     create: async (user, email) => {
