@@ -119,7 +119,7 @@ module.exports = {
       if(original.author !== user.id) throw Error('Only the author can edit this message')
       delete message['edited']
       delete message['author']
-      await db.put(`messages:${channelId}:${creation}`, JSON.stringify({
+      await db.put(`messages:${channelId}:${message.creation}`, JSON.stringify({
         author: user.id,
         content: message.content,
         edited: true

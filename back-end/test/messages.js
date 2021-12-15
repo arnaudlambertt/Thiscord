@@ -121,7 +121,6 @@ describe('messages', () => {
     .delete(`/channels/${channel.id}/messages`)
     .send(message)
     .expect(204)
-    console.log(response)
     // Check it was correctly deleted
     const {body: messages} = await supertest(app)
     .get(`/channels/${channel.id}/messages`)
