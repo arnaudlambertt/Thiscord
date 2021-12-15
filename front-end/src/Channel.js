@@ -81,7 +81,7 @@ export default function Channel() {
     }
     fetch()
     setCurrentChannel(id)
-  },[navigate,id,authors,setCurrentChannel,oauth])
+  },[navigate,id,authors,setAuthors,setCurrentChannel,oauth])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
