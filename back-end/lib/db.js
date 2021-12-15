@@ -12,7 +12,6 @@ module.exports = {
       if(!channel.members) throw Error('Missing members array')
       if(!user.id) throw Error('Unkwown user')
       const id = uuid()
-      await db.put(`channels:${id}`, JSON.stringify(channel))
       for(var i = 0; i < channel.members.length; i++)
       {
         try{
@@ -24,6 +23,9 @@ module.exports = {
           channel.members.splice(i,1)
         }
       }
+      channel.allMembers = channel.members
+      await db.put(`channels:${id}`, JSON.stringify(channel))
+
       return merge(channel, {id: id})
     },
     get: async (id, user) => {
@@ -48,6 +50,7 @@ module.exports = {
       const original = await module.exports.channels.get(id, user)
       if(!original) throw Error('Unregistered channel id')
       delete channel['id']
+      delete channel['allMembers']
       //remove the channel from users who are not in it anymore
       const membersToRemove = original.members.filter(e => !channel.members.includes(e))
       for(const userid of membersToRemove)
@@ -73,6 +76,7 @@ module.exports = {
           channel.members.splice(channel.members.findIndex(e => e === userid),1)
         }
       }
+      channel.allMembers = original.allMembers.filter(e => !channel.members.includes(e)).concat(channel.members)
       await db.put(`channels:${id}`, JSON.stringify(channel))
       return merge(channel, {id: id})
     },

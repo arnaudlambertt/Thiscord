@@ -35,7 +35,8 @@ describe('channels', () => {
       channels.should.match([{
         id: /^\w+-\w+-\w+-\w+-\w+$/,
         name: 'channel 1',
-        members: [user.id]
+        members: [user.id],
+        allMembers: [user.id]
       }])
     })
 
@@ -53,7 +54,8 @@ describe('channels', () => {
     channel.should.match({
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       name: 'channel 1',
-      members: [user.id]
+      members: [user.id],
+      allMembers: [user.id]
     })
     // Check it was correctly inserted
     const {body: channels} = await supertest(app)
@@ -93,7 +95,9 @@ describe('channels', () => {
     channel.should.eql({
       id: channel1.id,
       name: 'channel 2',
-      members: [user.id]})
+      members: [user.id],
+      allMembers: [user.id]
     })
+  })
 
 })
