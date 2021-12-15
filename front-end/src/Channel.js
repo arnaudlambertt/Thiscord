@@ -39,7 +39,7 @@ export default function Channel() {
   const styles = useStyles(useTheme())
   const listRef = useRef()
   const [messages, setMessages] = useState([])
-  const [authors, setAuthors] = useState([])
+  const [authors, setAuthors] = useState({})
   const [scrollDown, setScrollDown] = useState(false)
 
   const addMessage = (message) => {
@@ -55,14 +55,17 @@ export default function Channel() {
           }
         })
         for(const message of messages){
-          if(!authors.find(e => e.id === message.author)){
+          if(!authors[message.author]){
+            console.log(message.author)
             try{
               const {data: author} = await axios.get(`http://localhost:3001/users/${message.author}`, {
                 headers: {
                     'Authorization': `Bearer ${oauth.access_token}`
                   }
               })
-                setAuthors([...authors,author])
+                const pair = {}
+                pair[message.author] = author
+                setAuthors({...authors, ...pair})
             }catch(err){
               console.log(err)
             }
@@ -97,6 +100,7 @@ export default function Channel() {
       <List
         channel={channel}
         messages={messages}
+        authors={authors}
         onScrollDown={onScrollDown}
         ref={listRef}
       />

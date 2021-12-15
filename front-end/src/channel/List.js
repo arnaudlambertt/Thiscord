@@ -55,6 +55,7 @@ const useStyles = (theme) => ({
 export default forwardRef(({
   channel,
   messages,
+  authors,
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
@@ -98,7 +99,7 @@ export default forwardRef(({
             return (
               <li key={i} css={styles.message}>
                 <p>
-                  <span css={styles.author}>{message.author}</span>
+                  <span css={styles.author}>{authors[message.author]?.username}</span>
                   <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                 </p>
                 <div dangerouslySetInnerHTML={{__html: value}}>
