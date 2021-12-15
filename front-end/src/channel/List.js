@@ -51,6 +51,11 @@ const useStyles = (theme) => ({
    paddingLeft: 5,
    fontSize: 14
  },
+ edited: {
+  color: 'rgba(255,255,255,.8)',
+  paddingLeft: 5,
+  fontSize: 14
+},
  author: {
    color: '#d842eb',
    fontSize: 20,
@@ -172,6 +177,10 @@ export default forwardRef(({
                   <div>
                     <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                    {message.edited ?
+                      <span css={styles.edited}> Edited</span>
+                      : ''
+                    }
                   </div>
                   {user.id === message.author ?
                   <div>
