@@ -2,6 +2,7 @@
 /** @jsxImportSource @emotion/react */
 import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState} from 'react'
 import Context from '../Context'
+import axios from 'axios';
 // Layout
 import { useTheme } from '@mui/styles';
 import { IconButton,Box, Button } from '@mui/material';
@@ -64,17 +65,17 @@ const useStyles = (theme) => ({
 
 export default forwardRef(({
   channel,
+  setMessages,
   messages,
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
   const [open, setOpen] = useState(false);
-    const {user} = useContext(Context)
+  const {user,authors,oauth} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
     scroll: scroll
   }));
-  const {authors} = useContext(Context)
 
   const rootEl = useRef(null)
   const scrollEl = useRef(null)
@@ -108,6 +109,23 @@ export default forwardRef(({
    setOpen(false)
  }
 
+ const deleteMessage = async (message) => {
+   try{
+     console.log(message)
+     await axios.delete(
+       `http://localhost:3001/channels/${channel.id}/messages`,
+       {
+       headers: {
+         'Authorization': `Bearer ${oauth.access_token}`
+       },
+       data: message
+     })
+     setMessages([...messages].splice(messages.find(e => e === message),1))
+   }catch(err){
+     console.log(err)
+   }
+ }
+
   return (
     <div css={styles.root} ref={rootEl}>
       <h1>Messages for {channel.name}</h1>
@@ -120,7 +138,6 @@ export default forwardRef(({
             .processSync(message.content);
             return (
               <li key={i} css={styles.message}>
-                { user.username==message.author ?
                 <Box
                         sx={{
                           display: 'flex',
@@ -129,9 +146,10 @@ export default forwardRef(({
                         }}
                       >
                   <div>
-                    <span css={styles.author}>{message.author}</span>
+                    <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                   </div>
+                  {user.id === message.author ?
                   <div>
                     <IconButton aria-label="modify" sx={{color:'#ffffff'}} onClick={handleOpen}>
                       <CreateIcon />
@@ -152,19 +170,12 @@ export default forwardRef(({
                         <Button onClick={handleClose}>Subscribe</Button>
                       </DialogActions>
                     </Dialog>
-                    <IconButton aria-label="delete" sx={{color:'#ffffff'}}>
+                    <IconButton aria-label="delete" sx={{color:'#ffffff'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
                       <DeleteIcon />
                     </IconButton>
                   </div>
+                  : ''}
                   </Box>
-                  :
-                  <Box >
-                    <div>
-                      <span css={styles.author}>{authors[message.author]?.username}</span>
-                      <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                    </div>
-                    </Box>
-                }
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>
               </li>
