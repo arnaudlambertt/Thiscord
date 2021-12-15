@@ -53,7 +53,6 @@ const useStyles = (theme) => ({
  },
  edited: {
   color: 'rgba(255,255,255,.8)',
-  paddingLeft: 5,
   fontSize: 14
 },
  author: {
@@ -177,13 +176,13 @@ export default forwardRef(({
                   <div>
                     <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                    {message.edited ?
-                      <span css={styles.edited}> Edited</span>
-                      : ''
-                    }
                   </div>
                   {user.id === message.author ?
-                  <div>
+                    <div>
+                    {message.edited ?
+                      <span css={styles.edited}>(Edited)</span>
+                      : ''
+                    }
                     <IconButton aria-label="modify" sx={{color:'background.default', '& hover': {
                       color:'#ffffff'
                     }}} onClick={() => {handleOpen(message)}}>
@@ -210,11 +209,17 @@ export default forwardRef(({
                     <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
                       <DeleteIcon />
                     </IconButton>
-                  </div>
-                  : ''}
+                    </div>
+                  :
+                  message.edited ?
+                    <span css={styles.edited}>(Edited)</span>
+                    : ''
+                  }
+
                   </Box>
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>
+
               </li>
             )
         })}
