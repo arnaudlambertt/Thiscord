@@ -33,7 +33,8 @@ const useStyles = (theme) => ({
 })
 
 export default function Welcome() {
-  const [open, setOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
   const [channelName, setChannelName] = useState('');
 
   const {
@@ -45,11 +46,18 @@ export default function Welcome() {
 
 
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleOpenCreate = () => {
+    setOpenCreate(true);
   };
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseCreate = () => {
+    setOpenCreate(false);
+  };
+
+  const handleOpenSettings = () => {
+    setOpenSettings(true);
+  };
+  const handleCloseSettings = () => {
+    setOpenSettings(false);
   };
 
   useEffect( () => {
@@ -69,7 +77,7 @@ export default function Welcome() {
             'Authorization': `Bearer ${oauth.access_token}`
           }
         })
-        handleClose()
+        handleCloseCreate()
         setChannels([...channels, channel])
         setChannelName('')
       }catch(err){
@@ -88,7 +96,7 @@ export default function Welcome() {
       >
         <Grid item xs>
           <div css={styles.card}>
-            <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" onClick={handleClickOpen}>
+            <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" onClick={handleOpenCreate}>
               <Grid
                 container
                 direction="column"
@@ -102,32 +110,60 @@ export default function Welcome() {
               </Grid>
             </Button>
 
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={openCreate} onClose={handleCloseCreate}>
               <DialogTitle>Create a Channel</DialogTitle>
               <DialogContent>
                   <TextField value={channelName} placeholder="channel name" onChange={(e) => { setChannelName(e.target.value) }}/>
               </DialogContent>
               <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button onClick={createChannel}>Create</Button>
+                  <Button onClick={handleCloseCreate}>Cancel</Button>
+                  <Button variant="contained" onClick={createChannel}>Create</Button>
               </DialogActions>
             </Dialog>
           </div>
         </Grid>
         <Grid item xs>
           <div css={styles.card}>
-            <FriendsIcon css={styles.icon} />
-            <Typography color="textPrimary">
-              Invite friends
-            </Typography>
+          <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" >
+            <Grid
+              container
+              direction="column"
+            >
+              <Grid item xs>
+                <FriendsIcon css={styles.icon} />
+              </Grid>
+              <Grid item xs>
+                <p>Invite Friends</p>
+              </Grid>
+            </Grid>
+          </Button>
           </div>
         </Grid>
         <Grid item xs>
           <div css={styles.card}>
-            <SettingsIcon css={styles.icon} />
-            <Typography color="textPrimary">
-              Settings
-            </Typography>
+          <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" onClick={handleOpenSettings} >
+            <Grid
+              container
+              direction="column"
+            >
+              <Grid item xs>
+                <SettingsIcon css={styles.icon} />
+              </Grid>
+              <Grid item xs>
+                <p>Settings</p>
+              </Grid>
+            </Grid>
+          </Button>
+          <Dialog open={openSettings} onClose={handleCloseSettings}>
+            <DialogTitle>Settings</DialogTitle>
+            <DialogContent>
+                <p>Insert some settings here</p>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseSettings}>Cancel</Button>
+                <Button variant="contained" >Apply Changes</Button>
+            </DialogActions>
+          </Dialog>
           </div>
         </Grid>
       </Grid>
