@@ -1,12 +1,10 @@
 
 /** @jsxImportSource @emotion/react */
-import {useContext,useState,useRef,useEffect} from 'react';
+import {useContext,useRef,useEffect} from 'react';
 import axios from 'axios';
 // Layout
 // Local
 import Context from './Context'
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
 import { useTheme } from '@mui/styles';
 import Button from '@mui/material/Button';
 import List from './sidebar/List'
@@ -27,40 +25,43 @@ export default function Channels() {
   const {
     oauth,
     channels, setChannels,
-    currentChannel, setCurrentChannel,
+    updateAuthors,
     user
   } = useContext(Context)
-
-  const [refresh, setRefresh] = useState(false);
-  const [scrollDown, setScrollDown] = useState(false)
 
   const navigate = useNavigate();
   const listRef = useRef()
   const styles = useStyles(useTheme(), user)
 
-    const onScrollDown = (scrollDown) => {
-      setScrollDown(scrollDown)
-    }
-
-    useEffect( () => {
-      const fetch = async () => {
-        try{
-          const {data: channels} = await axios.get('http://localhost:3001/channels', {
-            headers: {
-              'Authorization': `Bearer ${oauth.access_token}`
-            }
-          })
-          setChannels(channels)
-          if(listRef.current){
-            listRef.current.scroll()
+  useEffect( () => {
+    const fetch = async () => {
+      try{
+        const {data: channels} = await axios.get('http://localhost:3001/channels', {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
           }
-        }catch(err){
-          console.error(err)
+        })
+        setChannels(channels)
+        if(listRef.current){
+          listRef.current.scroll()
+        }
+      }catch(err){
+        console.error(err)
+      }
+    }
+    fetch()
+  }, [oauth, setChannels])
+
+  useEffect( () => {
+    const fetch = async () => {
+      for(const channel of channels){
+        for(const member of channel.allMembers){
+          updateAuthors(member)
         }
       }
-      fetch()
-    }, [oauth, setChannels,refresh])
-
+    }
+    fetch()
+  },[updateAuthors,channels])
 
 //add members
   return (
@@ -85,11 +86,9 @@ export default function Channels() {
       <h3> Welcome </h3>
       </Button>
     <List
-      onScrollDown={onScrollDown}
-      refresh={refresh}
       ref={listRef}
     />
-    <Parameters setRefresh={setRefresh}/>
+    <Parameters />
   </div>
   );
 }

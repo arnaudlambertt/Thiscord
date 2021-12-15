@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useImperativeHandle,useContext,useEffect, useLayoutEffect, useRef} from 'react'
+import {forwardRef, useImperativeHandle,useContext, useLayoutEffect, useRef} from 'react'
 import Context from '../Context'
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/styles';
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 
 const useStyles = (theme) => ({
   root: {
@@ -23,12 +22,10 @@ const useStyles = (theme) => ({
 
 export default forwardRef(({
   refresh,
-  onScrollDown,
 }, ref) => {
 const styles = useStyles(useTheme())
   const {
-    oauth,
-    channels, setChannels,
+    channels,
   } = useContext(Context)
 
   const navigate = useNavigate();
@@ -49,8 +46,6 @@ const styles = useStyles(useTheme())
       if (throttleTimeout.current === null) {
         throttleTimeout.current = setTimeout(() => {
           throttleTimeout.current = null
-          const {scrollTop, offsetHeight, scrollHeight} = rootNode // react-hooks/exhaustive-deps
-          onScrollDown(scrollTop + offsetHeight < scrollHeight)
         }, 200)
       }
     }

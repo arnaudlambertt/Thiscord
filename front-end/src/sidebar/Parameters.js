@@ -1,7 +1,8 @@
 
 /** @jsxImportSource @emotion/react */
 
-import {useContext,useState,useRef,useEffect} from 'react';
+import {useContext,useState} from 'react';
+import {useNavigate} from 'react-router-dom'
 import axios from 'axios';
 import Context from '../Context'
 
@@ -22,13 +23,15 @@ const useStyles = (theme) => ({
   },
 })
 
-export default function SidebarButton({setRefresh}){
+export default function SidebarButton(){
   const {
     oauth,
     channels, setChannels,
-    currentChannel, setCurrentChannel,
+    currentChannel,
     user
   } = useContext(Context)
+
+  const navigate = useNavigate();
 
   const [channelNameCreate, setchannelNameCreate] = useState('');
   const [channelName, setChannelName] = useState('');
@@ -82,8 +85,8 @@ export default function SidebarButton({setRefresh}){
             'Authorization': `Bearer ${oauth.access_token}`
           },
       })
-      setCurrentChannel(updatedChannel)
-      setRefresh(u => !u)
+      channels.splice(channels.findIndex(e => e.id === currentChannel.id),1,updatedChannel)
+      setChannels([...channels])
       handleCloseParameters()
     }catch(err){
       console.error(err)
@@ -118,7 +121,7 @@ export default function SidebarButton({setRefresh}){
         `http://localhost:3001/channels`,
         {
           name: channelNameCreate,
-        members: [user.id],
+          members: [user.id],
         },
         {
           headers: {
@@ -127,11 +130,12 @@ export default function SidebarButton({setRefresh}){
         })
         handleCloseCreate()
         addChannel(channel)
+        navigate(`/channels/${channel.id}`)
         setchannelNameCreate('')
-      }catch(err){
-        console.error(err)
-      }
+    }catch(err){
+      console.error(err)
     }
+  }
 
   const addChannel = (channel) => {
     setChannels([...channels, channel])

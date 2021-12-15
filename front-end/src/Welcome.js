@@ -3,6 +3,7 @@
 // Layout
 import {useContext, useEffect, useState, useCallback} from 'react';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 import { useTheme } from '@mui/styles';
 import { Grid, Typography } from '@mui/material';
 import { ReactComponent as ChannelIcon } from './icons/channel.svg';
@@ -35,15 +36,13 @@ const useStyles = (theme) => ({
 export default function Welcome() {
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState('');
-
+  const navigate = useNavigate()
   const {
     oauth,
     channels, setChannels,
     setCurrentChannel,
     user
   } = useContext(Context)
-
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,7 +61,7 @@ export default function Welcome() {
         `http://localhost:3001/channels`,
         {
           name: channelName,
-        members: [user.id],
+          members: [user.id],
         },
         {
           headers: {
@@ -71,11 +70,12 @@ export default function Welcome() {
         })
         handleClose()
         setChannels([...channels, channel])
+        navigate(`/channels/${channel.id}`)
         setChannelName('')
       }catch(err){
         console.error(err)
       }
-    },[channelName, user, oauth, setChannels,channels])
+    },[channelName,navigate, user, oauth, setChannels,channels])
   const styles = useStyles(useTheme())
   return (
     <div css={styles.root}>
