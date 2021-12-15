@@ -71,6 +71,7 @@ export default forwardRef(({
 }, ref) => {
   const styles = useStyles(useTheme())
   const [open, setOpen] = useState(false);
+  const [content, setContent] = useState('')
   const {user,authors,oauth} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
@@ -101,14 +102,17 @@ export default forwardRef(({
     return () => rootNode.removeEventListener('scroll', handleScroll)
   })
 
-  const handleOpen = () => {
+  const handleOpen = (message) => {
    setOpen(true)
+   setContent(message.content)
  }
 
  const handleClose = () => {
    setOpen(false)
  }
-
+ const handleChange = (e) => {
+   setContent(e.target.value)
+ }
  const deleteMessage = async (message) => {
    try{
      console.log(message)
@@ -125,6 +129,26 @@ export default forwardRef(({
      console.log(err)
    }
  }
+ const editMessage = async (message) => {
+   try{
+     const {data: edited} = await axios.put(
+       `http://localhost:3001/channels/${channel.id}/messages`,
+       {
+         content: content,
+         creation: message.creation,
+       },
+       {
+       headers: {
+         'Authorization': `Bearer ${oauth.access_token}`
+       },
+     })
+     messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
+     setOpen(false)
+   }catch(err){
+     console.log(err)
+   }
+ }
+
 
   return (
     <div css={styles.root} ref={rootEl}>
@@ -151,7 +175,9 @@ export default forwardRef(({
                   </div>
                   {user.id === message.author ?
                   <div>
-                    <IconButton aria-label="modify" sx={{color:'#ffffff'}} onClick={handleOpen}>
+                    <IconButton aria-label="modify" sx={{color:'background.default', '& hover': {
+                      color:'#ffffff'
+                    }}} onClick={() => {handleOpen(message)}}>
                       <CreateIcon />
                     </IconButton>
                     <Dialog open={open} onClose={handleClose}>
@@ -161,16 +187,18 @@ export default forwardRef(({
                           autoFocus
                           margin="dense"
                           id="name"
-                          label="message"
+                          value={content}
+                          onChange={handleChange}
+                          label="your message"
                           variant="standard"
                         />
                       </DialogContent>
                       <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleClose}>Subscribe</Button>
+                        <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
                       </DialogActions>
                     </Dialog>
-                    <IconButton aria-label="delete" sx={{color:'#ffffff'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
+                    <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
                       <DeleteIcon />
                     </IconButton>
                   </div>
