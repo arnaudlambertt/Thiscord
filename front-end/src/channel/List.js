@@ -2,6 +2,7 @@
 /** @jsxImportSource @emotion/react */
 import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState} from 'react'
 import Context from '../Context'
+import axios from 'axios';
 // Layout
 import { useTheme } from '@mui/styles';
 import { IconButton,Box, Button } from '@mui/material';
@@ -50,6 +51,10 @@ const useStyles = (theme) => ({
    paddingLeft: 5,
    fontSize: 14
  },
+ edited: {
+  color: 'rgba(255,255,255,.8)',
+  fontSize: 14
+},
  author: {
    color: '#d842eb',
    fontSize: 20,
@@ -64,17 +69,18 @@ const useStyles = (theme) => ({
 
 export default forwardRef(({
   channel,
+  setMessages,
   messages,
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
   const [open, setOpen] = useState(false);
-    const {user} = useContext(Context)
+  const [content, setContent] = useState('')
+  const {user,authors,oauth} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
     scroll: scroll
   }));
-  const {authors} = useContext(Context)
 
   const rootEl = useRef(null)
   const scrollEl = useRef(null)
@@ -100,13 +106,53 @@ export default forwardRef(({
     return () => rootNode.removeEventListener('scroll', handleScroll)
   })
 
-  const handleOpen = () => {
+  const handleOpen = (message) => {
    setOpen(true)
+   setContent(message.content)
  }
 
  const handleClose = () => {
    setOpen(false)
  }
+ const handleChange = (e) => {
+   setContent(e.target.value)
+ }
+ const deleteMessage = async (message) => {
+   try{
+     console.log(message)
+     await axios.delete(
+       `http://localhost:3001/channels/${channel.id}/messages`,
+       {
+       headers: {
+         'Authorization': `Bearer ${oauth.access_token}`
+       },
+       data: message
+     })
+     setMessages([...messages].splice(messages.find(e => e === message),1))
+   }catch(err){
+     console.log(err)
+   }
+ }
+ const editMessage = async (message) => {
+   try{
+     const {data: edited} = await axios.put(
+       `http://localhost:3001/channels/${channel.id}/messages`,
+       {
+         content: content,
+         creation: message.creation,
+       },
+       {
+       headers: {
+         'Authorization': `Bearer ${oauth.access_token}`
+       },
+     })
+     messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
+     setOpen(false)
+   }catch(err){
+     console.log(err)
+   }
+ }
+
 
   return (
     <div css={styles.root} ref={rootEl}>
@@ -120,7 +166,6 @@ export default forwardRef(({
             .processSync(message.content);
             return (
               <li key={i} css={styles.message}>
-                { user.username==message.author ?
                 <Box
                         sx={{
                           display: 'flex',
@@ -129,11 +174,18 @@ export default forwardRef(({
                         }}
                       >
                   <div>
-                    <span css={styles.author}>{message.author}</span>
+                    <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                   </div>
-                  <div>
-                    <IconButton aria-label="modify" sx={{color:'#ffffff'}} onClick={handleOpen}>
+                  {user.id === message.author ?
+                    <div>
+                    {message.edited ?
+                      <span css={styles.edited}>(Edited)</span>
+                      : ''
+                    }
+                    <IconButton aria-label="modify" sx={{color:'background.default', '& hover': {
+                      color:'#ffffff'
+                    }}} onClick={() => {handleOpen(message)}}>
                       <CreateIcon />
                     </IconButton>
                     <Dialog open={open} onClose={handleClose}>
@@ -143,30 +195,31 @@ export default forwardRef(({
                           autoFocus
                           margin="dense"
                           id="name"
-                          label="message"
+                          value={content}
+                          onChange={handleChange}
+                          label="your message"
                           variant="standard"
                         />
                       </DialogContent>
                       <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleClose}>Subscribe</Button>
+                        <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
                       </DialogActions>
                     </Dialog>
-                    <IconButton aria-label="delete" sx={{color:'#ffffff'}}>
+                    <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
                       <DeleteIcon />
                     </IconButton>
-                  </div>
-                  </Box>
-                  :
-                  <Box >
-                    <div>
-                      <span css={styles.author}>{authors[message.author]?.username}</span>
-                      <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                     </div>
-                    </Box>
-                }
+                  :
+                  message.edited ?
+                    <span css={styles.edited}>(Edited)</span>
+                    : ''
+                  }
+
+                  </Box>
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>
+
               </li>
             )
         })}

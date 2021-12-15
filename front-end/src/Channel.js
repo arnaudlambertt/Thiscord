@@ -97,6 +97,7 @@ export default function Channel() {
     <div css={styles.root}>
       <List
         channel={channel}
+        setMessages={setMessages}
         messages={messages}
         onScrollDown={onScrollDown}
         ref={listRef}
