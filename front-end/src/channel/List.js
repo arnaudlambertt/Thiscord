@@ -118,7 +118,6 @@ export default forwardRef(({
  }
  const deleteMessage = async (message) => {
    try{
-     console.log(message)
      await axios.delete(
        `http://localhost:3001/channels/${channel.id}/messages`,
        {
@@ -127,7 +126,8 @@ export default forwardRef(({
        },
        data: message
      })
-     setMessages([...messages].splice(messages.find(e => e === message),1))
+     messages.splice(messages.findIndex(e => e === message),1)
+     setMessages([...messages])
    }catch(err){
      console.log(err)
    }
