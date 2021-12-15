@@ -34,12 +34,11 @@ const useStyles = (theme) => ({
 export default function Channel() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const {channels, oauth, setCurrentChannel} = useContext(Context)
+  const {channels, oauth, setCurrentChannel, authors, setAuthors} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
   const styles = useStyles(useTheme())
   const listRef = useRef()
   const [messages, setMessages] = useState([])
-  const [authors, setAuthors] = useState({})
   const [scrollDown, setScrollDown] = useState(false)
 
   const addMessage = (message) => {
@@ -56,7 +55,6 @@ export default function Channel() {
         })
         for(const message of messages){
           if(!authors[message.author]){
-            console.log(message.author)
             try{
               const {data: author} = await axios.get(`http://localhost:3001/users/${message.author}`, {
                 headers: {
@@ -100,7 +98,6 @@ export default function Channel() {
       <List
         channel={channel}
         messages={messages}
-        authors={authors}
         onScrollDown={onScrollDown}
         ref={listRef}
       />

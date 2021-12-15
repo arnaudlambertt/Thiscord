@@ -1,6 +1,8 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useImperativeHandle, useLayoutEffect, useRef} from 'react'
+import {forwardRef, useImperativeHandle, useLayoutEffect, useRef, useContext} from 'react'
+import Context from '../Context'
+
 // Layout
 import { useTheme } from '@mui/styles';
 // Markdown
@@ -55,7 +57,6 @@ const useStyles = (theme) => ({
 export default forwardRef(({
   channel,
   messages,
-  authors,
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
@@ -63,6 +64,8 @@ export default forwardRef(({
   useImperativeHandle(ref, () => ({
     scroll: scroll
   }));
+  const {authors} = useContext(Context)
+
   const rootEl = useRef(null)
   const scrollEl = useRef(null)
   const scroll = () => {

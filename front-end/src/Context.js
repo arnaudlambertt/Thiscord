@@ -14,6 +14,8 @@ export const Provider = ({
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [channels, setChannels] = useState([])
   const [currentChannel, setCurrentChannel] = useState(null)
+  const [authors, setAuthors] = useState({})
+
   return (
     <Context.Provider value={{
       oauth: oauth,
@@ -38,6 +40,8 @@ export const Provider = ({
         }
         setUser(user)
       },
+      authors: authors,
+      setAuthors: setAuthors,
       channels: channels,
       drawerVisible: drawerVisible,
       setDrawerVisible: setDrawerVisible,
