@@ -1,8 +1,18 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useImperativeHandle, useLayoutEffect, useRef} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState} from 'react'
+import Context from '../Context'
 // Layout
 import { useTheme } from '@mui/styles';
+import { IconButton,Box, Button } from '@mui/material';
+import CreateIcon from '@mui/icons-material/Create';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 // Markdown
 import { unified } from 'unified'
 import markdown from 'remark-parse'
@@ -58,6 +68,8 @@ export default forwardRef(({
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
+  const [open, setOpen] = useState(false);
+    const {user} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
     scroll: scroll
@@ -84,6 +96,15 @@ export default forwardRef(({
     rootNode.addEventListener('scroll', handleScroll)
     return () => rootNode.removeEventListener('scroll', handleScroll)
   })
+
+  const handleOpen = () => {
+   setOpen(true)
+ }
+
+ const handleClose = () => {
+   setOpen(false)
+ }
+
   return (
     <div css={styles.root} ref={rootEl}>
       <h1>Messages for {channel.name}</h1>
@@ -96,10 +117,52 @@ export default forwardRef(({
             .processSync(message.content);
             return (
               <li key={i} css={styles.message}>
-                <p>
-                  <span css={styles.author}>{message.author}</span>
-                  <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                </p>
+                { user.username==message.author ?
+                <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                  <div>
+                    <span css={styles.author}>{message.author}</span>
+                    <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                  </div>
+                  <div>
+                    <IconButton aria-label="modify" sx={{color:'#ffffff'}} onClick={handleOpen}>
+                      <CreateIcon />
+                    </IconButton>
+                    <Dialog open={open} onClose={handleClose}>
+                      <DialogTitle>Edit your message</DialogTitle>
+                      <DialogContent>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="message"
+                          variant="standard"
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleClose}>Subscribe</Button>
+                      </DialogActions>
+                    </Dialog>
+                    <IconButton aria-label="delete" sx={{color:'#ffffff'}}>
+                      <DeleteIcon />
+                    </IconButton>
+
+                  </div>
+                  </Box>
+                  :
+                  <Box >
+                    <div>
+                      <span css={styles.author}>{message.author}</span>
+                      <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                    </div>
+                    </Box>
+                }
                 <div dangerouslySetInnerHTML={{__html: value}}>
                 </div>
               </li>
