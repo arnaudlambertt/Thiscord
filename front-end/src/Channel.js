@@ -39,10 +39,13 @@ export default function Channel() {
   const styles = useStyles(useTheme())
   const listRef = useRef()
   const [messages, setMessages] = useState([])
+  const [authors, setAuthors] = useState([])
   const [scrollDown, setScrollDown] = useState(false)
+
   const addMessage = (message) => {
     setMessages([...messages, message])
   }
+
   useEffect( () => {
     const fetch = async () => {
       try{
@@ -51,17 +54,33 @@ export default function Channel() {
               'Authorization': `Bearer ${oauth.access_token}`
           }
         })
+        for(const message of messages){
+          if(!authors.find(e => e.id === message.author)){
+            try{
+              const {data: author} = await axios.get(`http://localhost:3001/users/${message.author}`, {
+                headers: {
+                    'Authorization': `Bearer ${oauth.access_token}`
+                  }
+              })
+                setAuthors([...authors,author])
+            }catch(err){
+              console.log(err)
+            }
+          }
+        }
+
         setMessages(messages)
         if(listRef.current){
           listRef.current.scroll()
         }
+
       }catch(err){
         navigate('/oups')
       }
     }
     fetch()
     setCurrentChannel(id)
-  }, [id, oauth, navigate,setCurrentChannel])
+  },[navigate,id,authors,setCurrentChannel,oauth])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
