@@ -192,13 +192,14 @@ return(
     <Button variant="contained" sx={{top:10,left:5,right:5,backgroundColor: 'primary.main',width:'calc(100% - 10px)'}} onClick={handleOpenParameters}>
       Channel parameters
     </Button>
-    <Dialog open={openParameters} onClose={handleCloseParameters} >
+    <Dialog open={openParameters} onClose={handleCloseParameters} sx={{justifyContent:'center'}}>
       <DialogTitle>Channel Parameters</DialogTitle>
       <DialogContent sx={{display:'flex',flexDirection:'column'}}>
       <DialogContentText>
         Manage members
       </DialogContentText>
       <Autocomplete
+            sx={{width: { xs: "240px", sm: "400px" }}}
              multiple
              id="tags-outlined"
              options={userList}
