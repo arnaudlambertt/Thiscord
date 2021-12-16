@@ -7,7 +7,7 @@ import qs from 'qs'
 import axios from 'axios'
 // Layout
 import { useTheme } from '@mui/styles';
-import { Link } from '@mui/material';
+import { Link,AppBar,Toolbar } from '@mui/material';
 // Local
 import Context from './Context'
 import {
@@ -31,6 +31,8 @@ const sha256 = (buffer) => {
 const useStyles = (theme) => ({
   root: {
     flex: '1 1 auto',
+    width:'100%',
+    height:'100%',
     background: theme.palette.background.default,
     display: 'flex',
     justifyContent: 'center',
@@ -71,6 +73,17 @@ const Redirect = ({
   }
   return (
     <div css={styles.root}>
+    <AppBar
+      position="fixed"
+      color='primary'
+      sx={{
+        width:'100%',alignItems:'center'
+      }}
+    >
+      <Toolbar>
+        <p><b>Thiscord</b></p>
+      </Toolbar>
+    </AppBar>
       <Link onClick={redirect} color="secondary">Login with OpenID Connect and OAuth2</Link>
     </div>
   )
@@ -159,7 +172,9 @@ export default function Login({
       const codeVerifier = base64URLEncode(crypto.randomBytes(32))
       setCookie('code_verifier', { verifier: codeVerifier, source: window.location.pathname }, {path: '/'})
       return (
-        <Redirect codeVerifier={codeVerifier} config={config} css={styles.root} />
+        <div css={styles.root}>
+          <Redirect codeVerifier={codeVerifier} config={config} css={styles.root} />
+        </div>
       )
     }else{ // yes: user is already logged in, great, is is working
       return (

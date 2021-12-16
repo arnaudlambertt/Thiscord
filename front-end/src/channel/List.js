@@ -26,6 +26,7 @@ const useStyles = (theme) => ({
     position: 'relative',
     flex: '1 1 auto',
     overflow: 'auto',
+    overflowWrap:'break-word',
     '& ul': {
       'margin': 0,
       'padding': 0,

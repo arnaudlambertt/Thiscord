@@ -50,7 +50,6 @@ export default function Header() {
               alignItems: 'center',
             }}
           >
-          { user ?
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -59,16 +58,8 @@ export default function Header() {
             >
               <MenuIcon />
           </IconButton>
-          : <span></span>
-          }
-          { user ?
-            <p>{user.username}</p> :
-            <p><b>Thiscord</b></p>
-          }
-          { user ?
+            <p>{user.username}</p>
           <Button variant="contained" sx={{right:5,backgroundColor: 'background.default',height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
-          : <span></span>
-          }
           </Box>
     </header>
   );
