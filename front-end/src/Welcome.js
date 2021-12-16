@@ -5,11 +5,12 @@ import {useContext, useEffect, useState, useCallback} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom'
 import { useTheme } from '@mui/styles';
-import { Grid } from '@mui/material';
+import { Grid,Box } from '@mui/material';
 import { ReactComponent as ChannelIcon } from './icons/channel.svg';
 import { ReactComponent as FriendsIcon } from './icons/friends.svg';
 import { ReactComponent as SettingsIcon } from './icons/settings.svg';
 import Context from './Context'
+import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -34,17 +35,19 @@ const useStyles = (theme) => ({
 })
 
 export default function Welcome() {
+
   const [openSettings, setOpenSettings] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [channelName, setChannelName] = useState('');
+  const [username, setUsername] = useState('');
   const navigate = useNavigate()
   const {
     oauth,
     channels, setChannels,
     setCurrentChannel,
-    user
+    setDarkTheme,darkTheme,
+    user,setUser
   } = useContext(Context)
-
 
 
   const handleOpenCreate = () => {
@@ -53,8 +56,11 @@ export default function Welcome() {
   const handleCloseCreate = () => {
     setOpenCreate(false);
   };
-
+  const themeSwitch = () => {
+    setDarkTheme(!darkTheme);
+  };
   const handleOpenSettings = () => {
+    setUsername(user.username)
     setOpenSettings(true);
   };
   const handleCloseSettings = () => {
@@ -64,6 +70,30 @@ export default function Welcome() {
   useEffect( () => {
     setCurrentChannel(null)
   }, [setCurrentChannel])
+
+  const applySettings = useCallback( async () => {
+    try{
+      console.log(user)
+        const {data: returnedUser} = await axios.put(
+        `http://localhost:3001/users/${user.id}`,
+        {
+          id: user.id,
+          username: username,
+          email: user.email,
+          channels: user.channels
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          }
+        })
+        setOpenSettings(false)
+        console.log(returnedUser)
+        setUser(returnedUser)
+      }catch(err){
+        console.error(err)
+      }
+    },[username, user, oauth,setUser])
 
   const createChannel = useCallback( async () => {
     try{
@@ -159,11 +189,27 @@ export default function Welcome() {
           <Dialog open={openSettings} onClose={handleCloseSettings}>
             <DialogTitle>Settings</DialogTitle>
             <DialogContent>
-            {user ? <p>{user.email}</p>:''}
+              {user ?
+              <div>
+                <h3>Your profile</h3>
+                <p>email: {user.email}</p>
+                <TextField value={username} placeholder="username" label="username" sx={{width:'100%'}}onChange={(e) => { setUsername(e.target.value) }}/>
+                <Box sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                  <p>light theme</p>
+                  <Switch sx={{top:7}}
+                    checked={darkTheme}
+                    onChange={themeSwitch}
+                  />
+                </Box>
+
+              </div>
+                :''
+              }
+
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCloseSettings}>Cancel</Button>
-                <Button variant="contained" >Apply Changes</Button>
+                <Button variant="contained" onClick={applySettings}>Apply Changes</Button>
             </DialogActions>
           </Dialog>
           </div>

@@ -16,6 +16,7 @@ export const Provider = ({
   const [channels, setChannels] = useState([])
   const [currentChannel, setCurrentChannel] = useState(null)
   const [authors, setAuthors] = useState({})
+  const [darkTheme, setDarkTheme] = useState(true)
 
   const addAuthor = async (id) => {
     try{
@@ -90,6 +91,8 @@ export const Provider = ({
       channels: channels,
       drawerVisible: drawerVisible,
       setDrawerVisible: setDrawerVisible,
+      darkTheme: darkTheme,
+      setDarkTheme: setDarkTheme,
       setChannels: setChannels,
       currentChannel: currentChannel,
       setCurrentChannel: (channel) => {
