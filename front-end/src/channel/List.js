@@ -170,12 +170,20 @@ export default forwardRef(({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
+                          overflow:'auto',
+                          flexWrap:'wrap',
                         }}
                       >
-                  <div>
+                      <Box
+                          sx={{
+                            display: 'flex',
+                            overflow:'auto',
+                            flexWrap:'wrap',
+                          }}
+                            >
                     <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                  </div>
+                  </Box>
                   {user.id === message.author ?
                     <div>
                     {message.edited ?
