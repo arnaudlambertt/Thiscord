@@ -58,7 +58,9 @@ export default function Header() {
             >
               <MenuIcon />
           </IconButton>
-            <p>{user.username}</p>
+          {user ?
+            <p>{user.username}</p> : ''
+          }
           <Button variant="contained" sx={{right:5,backgroundColor: 'background.default',height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
           </Box>
     </header>
