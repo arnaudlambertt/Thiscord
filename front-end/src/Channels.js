@@ -7,6 +7,7 @@ import axios from 'axios';
 import Context from './Context'
 import { useTheme } from '@mui/styles';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import List from './sidebar/List'
 import Parameters from './sidebar/Parameters'
 import {useNavigate} from 'react-router-dom';
@@ -76,7 +77,6 @@ export default function Channels() {
         height: 50,
         spacing:0,
         justifyContent:'left',
-        color:'#ffffff',
         backgroundColor: 'background.paper',
         '&:hover': {
           backgroundColor: 'background.default',
@@ -85,6 +85,7 @@ export default function Channels() {
       }}>
       <h3> Welcome </h3>
       </Button>
+      <Divider sx={{color:'#FF0000'}} />
     <List
       ref={listRef}
     />

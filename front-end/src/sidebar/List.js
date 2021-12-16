@@ -8,9 +8,9 @@ import {useNavigate} from 'react-router-dom';
 const useStyles = (theme) => ({
   root: {
     position: 'relative',
+    height:'70%',
     flex: '1 1 auto',
-    height:'50%',
-    overflow: 'auto',
+    overflowY: 'auto',
     '& ul': {
       'margin': 0,
       'padding': 0,
@@ -64,7 +64,9 @@ const styles = useStyles(useTheme())
             navigate(`/channels/${channel.id}`)
             }}
             sx={{
-              width: '100%',
+              width:'100%',
+              overflow:'hidden',
+              whiteSpace:'nowrap',
               height: 50,
               spacing:0,
               color:'#ffffff',

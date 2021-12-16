@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 const useStyles = (theme) => ({
   button: {
     display: 'flex',
-    height:'10%',
+    height:87,
     flexDirection:'column'
   },
 })
@@ -147,7 +147,7 @@ export default function SidebarButton(){
 return(
   <div css={styles.button}>
   <div>
-    <Button variant="contained" sx={{top:5,left:5,backgroundColor: 'primary.main' }} onClick={handleOpenCreate}>
+    <Button variant="contained" sx={{top:5,left:5,right:5,backgroundColor: 'primary.main',  width:'calc(100% - 10px)'}} onClick={handleOpenCreate}>
       Create a Channel
     </Button>
     <Dialog open={openCreate} onClose={handleCloseCreate}>
@@ -163,7 +163,7 @@ return(
   </div>
   {currentChannel ?
     <div>
-    <Button variant="contained" sx={{top:10,left:5,backgroundColor: 'primary.main' }} onClick={handleOpenParameters}>
+    <Button variant="contained" sx={{top:10,left:5,right:5,backgroundColor: 'primary.main',width:'calc(100% - 10px)'}} onClick={handleOpenParameters}>
       Channel parameters
     </Button>
     <Dialog open={openParameters} onClose={handleCloseParameters}>
