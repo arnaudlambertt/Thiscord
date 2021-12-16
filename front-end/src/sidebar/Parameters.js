@@ -93,6 +93,28 @@ export default function SidebarButton(){
     }
   }
 
+  const leaveChannel = async() => {
+    try{
+      members.splice(members.findIndex(e => e.id === user.id),1)
+      setMembers([...members])
+      await axios.put(
+        `http://localhost:3001/channels/${currentChannel.id}`,
+        {
+          members: members.map(a => a.id)
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          },
+      })
+      handleCloseParameters()
+      navigate(`/`)
+      removeChannel()
+    }catch(err){
+      console.error(err)
+    }
+  }
+
   const handleOpenParameters = async() => {
     setChannelName(currentChannel.name)
     {
@@ -140,6 +162,10 @@ export default function SidebarButton(){
   const addChannel = (channel) => {
     setChannels([...channels, channel])
   }
+  const removeChannel = () => {
+    channels.splice(members.findIndex(e => e.id === currentChannel.id),1)
+    setChannels([...channels])
+  }
   const addMember = (e,member) => {
     setMembers(member)
   }
@@ -166,9 +192,9 @@ return(
     <Button variant="contained" sx={{top:10,left:5,right:5,backgroundColor: 'primary.main',width:'calc(100% - 10px)'}} onClick={handleOpenParameters}>
       Channel parameters
     </Button>
-    <Dialog open={openParameters} onClose={handleCloseParameters}>
+    <Dialog open={openParameters} onClose={handleCloseParameters} >
       <DialogTitle>Channel Parameters</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{display:'flex',flexDirection:'column'}}>
       <DialogContentText>
         Manage members
       </DialogContentText>
@@ -194,6 +220,14 @@ return(
          Change channel name
        </DialogContentText>
           <TextField value={channelName} onChange={(e) => {setChannelName(e.target.value)}}/>
+          <div>
+      <Button variant="contained" color='error' sx={{top:10,width:'30%'}}  onClick={leaveChannel}>
+        Leave Channel
+      </Button>
+      <Button variant="contained" color='error' sx={{left: 10,top:10,width:'30%'}}>
+        Delete Channel
+      </Button>
+      </div>
       </DialogContent>
       <DialogActions>
           <Button sx={{color: 'primary.main' }} onClick={handleCloseParameters}>Cancel</Button>

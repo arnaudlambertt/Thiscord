@@ -5,7 +5,7 @@ import {useContext, useEffect, useState, useCallback} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom'
 import { useTheme } from '@mui/styles';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { ReactComponent as ChannelIcon } from './icons/channel.svg';
 import { ReactComponent as FriendsIcon } from './icons/friends.svg';
 import { ReactComponent as SettingsIcon } from './icons/settings.svg';
