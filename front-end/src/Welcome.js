@@ -1,7 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
 // Layout
-import {useContext, useEffect, useState, useCallback,createContext} from 'react';
+import {useContext, useEffect, useState, useCallback} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom'
 import { useTheme } from '@mui/styles';
@@ -11,6 +11,7 @@ import { ReactComponent as FriendsIcon } from './icons/friends.svg';
 import { ReactComponent as SettingsIcon } from './icons/settings.svg';
 import Context from './Context'
 import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -34,14 +35,11 @@ const useStyles = (theme) => ({
   }
 })
 
-const ColorModeContext = createContext({ App: () => {} });
-
 export default function Welcome() {
-  const theme = useTheme();
   const [openSettings, setOpenSettings] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [channelName, setChannelName] = useState('');
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(false);
   const navigate = useNavigate()
   const {
     oauth,setOauth,
@@ -50,8 +48,7 @@ export default function Welcome() {
     setCurrentChannel,
     user,setUser
   } = useContext(Context)
-const colorMode = useContext(ColorModeContext);
-
+  const [wrongUsername, setWrongUsername] = useState(user.username.includes('@'));
 
   const handleOpenCreate = () => {
     setOpenCreate(true);
@@ -77,6 +74,8 @@ const colorMode = useContext(ColorModeContext);
 
   const applySettings = useCallback( async () => {
     try{
+      if(!wrongUsername)
+      {
         const {data: returnedUser} = await axios.put(
         `http://localhost:3001/users/${user.id}`,
         {
@@ -93,10 +92,12 @@ const colorMode = useContext(ColorModeContext);
         })
         setOpenSettings(false)
         setUser(returnedUser)
+      }
       }catch(err){
         console.error(err)
       }
-    },[username, user, oauth,setUser])
+    }
+    ,[username, user, oauth,setUser,mode,wrongUsername])
 
     const deleteUser = async () => {
       try{
@@ -112,6 +113,35 @@ const colorMode = useContext(ColorModeContext);
         console.log(err)
       }
     }
+const editUsername = async (e) =>
+{
+   setUsername(e.target.value)
+   try{
+     const {data} = await axios.get(`http://localhost:3001/users?search=${e.target.value}`, {
+       headers: {
+         'Authorization': `Bearer ${oauth.access_token}`
+       }
+     })
+     var alreadyUsed=false
+     if (data.filter(u => u.username === e.target.value).length > 0)
+      {
+        if(e.target.value!==user.username)
+          alreadyUsed=true
+
+      }
+      if (e.target.value.includes('@')||alreadyUsed)
+      {
+        await setWrongUsername(true)
+      }
+      else
+      {
+        await setWrongUsername(false)
+      }
+
+   }catch(err){
+     console.error(err)
+   }
+}
 
   const createChannel = useCallback( async () => {
     try{
@@ -212,11 +242,17 @@ const colorMode = useContext(ColorModeContext);
               <div>
                 <h3>Your profile</h3>
                 <p>email: {user.email}</p>
-                <TextField value={username} placeholder="username" label="username" sx={{width:'100%'}}onChange={(e) => { setUsername(e.target.value) }}/>
+                <TextField
+                  value={username}
+                  placeholder="username"
+                  label="username" sx={{width:'100%'}}
+                  onChange={editUsername}
+                />
+                  {wrongUsername ? <Typography color="error">your username can't contain a @ <br/> or is already taken</Typography>:<p><br/></p>}
                 <Box sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
                   <p>light theme</p>
                   <Switch sx={{top:7}}
-                    checked={mode=='light'}
+                    checked={mode==='light'}
                     onChange={toggleTheme}
                   />
                 </Box>

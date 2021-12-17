@@ -183,7 +183,7 @@ export default forwardRef(({
                             flexWrap:'wrap',
                           }}
                             >
-                    <span css={styles.author}>{authors[message.author] ?  authors[message.author].username : message.author}</span>
+                    <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                   </Box>
                   {user.id === message.author ?
