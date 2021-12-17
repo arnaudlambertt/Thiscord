@@ -137,7 +137,7 @@ export default function SidebarButton(){
     setOpenParameters(true)
   }
 
-  const createChannel =  async () => {
+  const createChannel = async () => {
     try{
       const {data: channel} = await axios.post(
         `http://localhost:3001/channels`,
@@ -159,11 +159,29 @@ export default function SidebarButton(){
     }
   }
 
+  const deleteChannel = async () => {
+    try{
+      await axios.delete(
+        `http://localhost:3001/channels/${currentChannel.id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          }
+        })
+        handleCloseParameters()
+        removeChannel()
+        navigate('/')
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   const addChannel = (channel) => {
     setChannels([...channels, channel])
   }
+
   const removeChannel = () => {
-    channels.splice(members.findIndex(e => e.id === currentChannel.id),1)
+    channels.splice(channels.findIndex(e => e.id === currentChannel.id),1)
     setChannels([...channels])
   }
   const addMember = (e,member) => {
@@ -225,7 +243,7 @@ return(
       <Button variant="contained" color='error' sx={{top:10,width:'30%'}}  onClick={leaveChannel}>
         Leave Channel
       </Button>
-      <Button variant="contained" color='error' sx={{left: 10,top:10,width:'30%'}}>
+      <Button variant="contained" color='error' onClick={deleteChannel} sx={{left: 10,top:10,width:'30%'}}>
         Delete Channel
       </Button>
       </div>

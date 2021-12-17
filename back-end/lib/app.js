@@ -18,6 +18,8 @@ app.all('*', authenticate)
 // Channels
 
 app.get('/channels', loadUser, async (req, res) => {
+  if(!req.user.id)
+    return res.status(404).send('Unknown user')
   const channels = await db.channels.list(req.user)
   res.json(channels)
 })
@@ -32,18 +34,28 @@ app.get('/channels/:id', loadUser, async (req, res) => {
     const channel = await db.channels.get(req.params.id, req.user)
     res.json(channel)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel')
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
 })
 
 app.put('/channels/:id', loadUser, async (req, res) => {
   try{
-    const channel = await db.channels.get(req.params.id, req.user)
+    const original = await db.channels.get(req.params.id, req.user)
+    const channel = await db.channels.update(req.body,original)
+    res.json(channel)
   }catch(err){
-    return res.status(400).send('You don\'t have access to this channel')
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
-  const channel = await db.channels.update(req.params.id,req.body,req.user)
-  res.json(channel)
+})
+
+app.delete('/channels/:id', loadUser, async (req, res) => {
+  try{
+    const original = await db.channels.get(req.params.id, req.user)
+    const channel = await db.channels.delete(original)
+    res.status(204).send()
+  }catch(err){
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
+  }
 })
 
 // Messages
@@ -52,7 +64,7 @@ app.get('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel')
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
   const messages = await db.messages.list(req.params.id)
   res.json(messages)
@@ -62,7 +74,7 @@ app.post('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel')
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
   const message = await db.messages.create(req.params.id, req.body, req.user)
   res.status(201).json(message)
@@ -72,7 +84,7 @@ app.put('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel')
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
   const message = await db.messages.update(req.params.id, req.body, req.user)
   res.json(message)
@@ -82,7 +94,7 @@ app.delete('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel')
+    return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
   await db.messages.delete(req.params.id, req.body, req.user)
   res.status(204).send()
@@ -115,7 +127,7 @@ app.get('/users/:id', async (req, res) => {
     const user = await db.users.get(req.params.id)
     res.json(user)
   }catch(err){
-    return res.status(404).send('the user does not exist')
+    return res.status(404).send('The user does not exist')
   }
 })
 
@@ -125,7 +137,7 @@ app.put('/users/:id', loadUser, async (req, res) => {
       throw Error('authenticated user id different from params')
     const user = await db.users.get(req.params.id)
   }catch(err){
-    return res.status(403).send('You cannot perform updates on this user')
+    return res.status(403).send('You cannot perform updates on this user or it does not exist')
   }
 
   const user = await db.users.update(req.params.id,req.body,false)
@@ -135,10 +147,10 @@ app.put('/users/:id', loadUser, async (req, res) => {
 app.delete('/users/:id', loadUser, async (req, res) => {
   try{
     if(req.user.id !== req.params.id)
-      throw Error('authenticated user id different from params')
+      throw Error('Authenticated user id different from params')
     const user = await db.users.get(req.params.id)
   }catch(err){
-    return res.status(403).send('You cannot delete this user')
+    return res.status(403).send('You cannot delete this user or it does not exist')
   }
   await db.users.delete(req.params.id, req.user)
   res.status(204).send()

@@ -100,4 +100,25 @@ describe('channels', () => {
     })
   })
 
+  it('delete channel', async () => {
+    const {body: user} = await supertest(app)
+    .get('/signin')
+    // Create a channel
+    const {body: channel} = await supertest(app)
+    .post('/channels')
+    .send({name: 'channel 1', members: [user.id]})
+    // Create a message inside it
+    const {body: message} = await supertest(app)
+    .post(`/channels/${channel.id}/messages`)
+    .send({content: 'Hello ECE'})
+    // Delete a channel
+    await supertest(app)
+    .delete(`/channels/${channel.id}`)
+    .expect(204)
+    // Check it was correctly deleted
+    await supertest(app)
+    .get(`/channels/${channel.id}`)
+    .expect(403)
+  })
+
 })
