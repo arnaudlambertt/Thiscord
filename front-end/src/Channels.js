@@ -16,6 +16,7 @@ const useStyles = (theme) => ({
     height: '70%',
     flex: '1 1 auto',
     display: 'flex',
+    backgroundColor:theme.palette.background.paper,
     flexDirection: 'column',
     position: 'relative',
     overflowX: 'auto',
