@@ -58,7 +58,7 @@ export default function Channel() {
           listRef.current.scroll()
         }
       }catch(err){
-        navigate('/oups')
+        navigate('/')
       }
     }
     fetch()
