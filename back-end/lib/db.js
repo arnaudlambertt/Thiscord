@@ -83,10 +83,11 @@ module.exports = {
       {
         try{
           const member = await module.exports.users.get(userid)
-          member.channels.splice(member.channels.findIndex(e => e === id),1)
+          member.channels.splice(member.channels.findIndex(e => e === original.id),1)
           await module.exports.users.update(userid,member,true)
         }
         catch(e){
+          console.log(e)
         }
       }
       const messages = await module.exports.messages.list(original.id)

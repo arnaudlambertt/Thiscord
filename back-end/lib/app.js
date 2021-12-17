@@ -18,6 +18,8 @@ app.all('*', authenticate)
 // Channels
 
 app.get('/channels', loadUser, async (req, res) => {
+  if(!req.user.id)
+    return res.status(404).send('Unknown user')
   const channels = await db.channels.list(req.user)
   res.json(channels)
 })
@@ -125,7 +127,7 @@ app.get('/users/:id', async (req, res) => {
     const user = await db.users.get(req.params.id)
     res.json(user)
   }catch(err){
-    return res.status(404).send('the user does not exist')
+    return res.status(404).send('The user does not exist')
   }
 })
 
@@ -145,7 +147,7 @@ app.put('/users/:id', loadUser, async (req, res) => {
 app.delete('/users/:id', loadUser, async (req, res) => {
   try{
     if(req.user.id !== req.params.id)
-      throw Error('authenticated user id different from params')
+      throw Error('Authenticated user id different from params')
     const user = await db.users.get(req.params.id)
   }catch(err){
     return res.status(403).send('You cannot delete this user or it does not exist')
