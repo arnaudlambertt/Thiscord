@@ -193,6 +193,15 @@ module.exports = {
       if(!user.theme) throw Error('Invalid theme')
       const original = await module.exports.users.get(id)
       if(!original) throw Error('Unregistered user id')
+      if(user.username !== original.username){
+        if(user.username.includes('@'))
+          throw Error('Invalid username')
+        else{
+          const users = await module.exports.users.list(user.username)
+          if(users.filter(u => u.username === user.username).length)
+            throw Error('Invalid username')
+        }
+      }
       delete user['id']
       if(!channelUpdate)
         user.channels = original.channels

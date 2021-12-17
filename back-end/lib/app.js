@@ -139,9 +139,12 @@ app.put('/users/:id', loadUser, async (req, res) => {
   }catch(err){
     return res.status(403).send('You cannot perform updates on this user or it does not exist')
   }
-
-  const user = await db.users.update(req.params.id,req.body,false)
-  res.json(user)
+  try{
+    const user = await db.users.update(req.params.id,req.body,false)
+    res.json(user)
+  }catch(err){
+    return res.status(400).send('The updated user is invalid')
+  }
 })
 
 app.delete('/users/:id', loadUser, async (req, res) => {
