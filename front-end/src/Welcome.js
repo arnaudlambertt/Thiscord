@@ -42,7 +42,7 @@ export default function Welcome() {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
   const {
-    oauth,
+    oauth,setOauth,
     channels, setChannels,
     setCurrentChannel,
     setDarkTheme,darkTheme,
@@ -93,6 +93,21 @@ export default function Welcome() {
       }
     },[username, user, oauth,setUser])
 
+    const deleteUser = async () => {
+      try{
+        await axios.delete(
+          `http://localhost:3001/users/${user.id}`,
+          {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          }
+        })
+        setOauth(null)
+      }catch(err){
+        console.log(err)
+      }
+    }
+
   const createChannel = useCallback( async () => {
     try{
         const {data: channel} = await axios.post(
@@ -114,6 +129,7 @@ export default function Welcome() {
         console.error(err)
       }
     },[channelName,navigate, user, oauth, setChannels,channels])
+
   const styles = useStyles(useTheme())
   return (
     <div css={styles.root}>
@@ -199,7 +215,9 @@ export default function Welcome() {
                     onChange={themeSwitch}
                   />
                 </Box>
-
+                <Button variant="contained" color='error' sx={{left: 10,top:10,width:'30%'}} onClick={deleteUser}>
+                  Delete user
+                </Button>
               </div>
                 :''
               }
