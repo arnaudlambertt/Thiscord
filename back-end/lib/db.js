@@ -17,7 +17,7 @@ module.exports = {
         try{
           const member = await module.exports.users.get(channel.members[i])
           member.channels.push(id)
-          await module.exports.users.update(channel.members[i],member)
+          await module.exports.users.update(channel.members[i],member,true)
         }
         catch(e){
           channel.members.splice(i,1)
@@ -58,9 +58,10 @@ module.exports = {
         try{
           const member = await module.exports.users.get(userid)
           member.channels.splice(member.channels.findIndex(e => e === id),1)
-          await module.exports.users.update(userid,member)
+          await module.exports.users.update(userid,member,true)
         }
         catch(e){
+          console.log("bizare1")
         }
       }
       //add the channel to new members
@@ -73,6 +74,7 @@ module.exports = {
           await module.exports.users.update(userid,member)
         }
         catch(e){
+          console.log("bizare2")
           channel.members.splice(channel.members.findIndex(e => e === userid),1)
         }
       }
@@ -173,10 +175,14 @@ module.exports = {
         })
       })
     },
-    update: async (id, user) => {
+    update: async (id, user, channelUpdate) => {
+      if(!user.username) throw Error('Invalid username')
+      if(!user.email) throw Error('Invalid username')
       const original = await module.exports.users.get(id)
       if(!original) throw Error('Unregistered user id')
       delete user['id']
+      if(!channelUpdate)
+        user.channels = original.channels
       await db.put(`users:${id}`, JSON.stringify(user))
       return merge(user, {id: id})
     },

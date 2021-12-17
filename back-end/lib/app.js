@@ -62,7 +62,7 @@ app.post('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(400).send('You don\'t have access to this channel.')
+    return res.status(403).send('You don\'t have access to this channel.')
   }
   const message = await db.messages.create(req.params.id, req.body, req.user)
   res.status(201).json(message)
@@ -72,7 +72,7 @@ app.put('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(400).send('You don\'t have access to this channel.')
+    return res.status(403).send('You don\'t have access to this channel.')
   }
   const message = await db.messages.update(req.params.id, req.body, req.user)
   res.json(message)
@@ -82,7 +82,7 @@ app.delete('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.get(req.params.id, req.user)
   }catch(err){
-    return res.status(400).send('You don\'t have access to this channel.')
+    return res.status(403).send('You don\'t have access to this channel.')
   }
   await db.messages.delete(req.params.id, req.body, req.user)
   res.status(204).send()
@@ -115,11 +115,17 @@ app.get('/users/:id', async (req, res) => {
   res.json(user)
 })
 
-app.put('/users/:id', async (req, res) => {
+app.put('/users/:id', loadUser, async (req, res) => {
   try{
-  const user = await db.users.update(req.params.id,req.body)
+    if(req.user.id !== req.params.id)
+      throw Error('authenticated user id different from params')
+    const user = await db.users.get(req.params.id)
+  }catch(err){
+    return res.status(403).send('You cannot perform updates on this user.')
+  }
+
+  const user = await db.users.update(req.params.id,req.body,false)
   res.json(user)
-}catch(err){ console.log(err)}
 })
 
 module.exports = app

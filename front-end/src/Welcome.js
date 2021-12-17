@@ -73,7 +73,6 @@ export default function Welcome() {
 
   const applySettings = useCallback( async () => {
     try{
-      console.log(user)
         const {data: returnedUser} = await axios.put(
         `http://localhost:3001/users/${user.id}`,
         {
@@ -88,7 +87,6 @@ export default function Welcome() {
           }
         })
         setOpenSettings(false)
-        console.log(returnedUser)
         setUser(returnedUser)
       }catch(err){
         console.error(err)
