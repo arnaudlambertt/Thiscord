@@ -145,9 +145,12 @@ module.exports = {
       if(!user.username) throw Error('Invalid user')
       if(!email) throw Error('Invalid email')
       const id = uuid()
+      user.theme = 'dark'
+      user.email = email
+      user.channels = []
       await db.put(`usersid:${email}`, JSON.stringify(id))
-      await db.put(`users:${id}`, JSON.stringify(merge(user, {email: email, channels: []})))
-      return merge(user, {id: id, email: email, channels: []})
+      await db.put(`users:${id}`, JSON.stringify(user))
+      return merge(user, {id: id})
     },
     get: async (id) => {
       if(!id) throw Error('Invalid id')
@@ -175,7 +178,8 @@ module.exports = {
     },
     update: async (id, user, channelUpdate) => {
       if(!user.username) throw Error('Invalid username')
-      if(!user.email) throw Error('Invalid username')
+      if(!user.email) throw Error('Invalid email')
+      if(!user.theme) throw Error('Invalid theme')
       const original = await module.exports.users.get(id)
       if(!original) throw Error('Unregistered user id')
       delete user['id']

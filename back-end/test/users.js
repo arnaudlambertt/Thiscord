@@ -30,7 +30,8 @@ describe('users', () => {
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: 'user_1',
       email: process.env['TEST_PAYLOAD_EMAIL'],
-      channels: []
+      channels: [],
+      theme: 'dark'
     }])
   })
 
@@ -47,7 +48,8 @@ describe('users', () => {
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: 'user_1',
       email: process.env['TEST_PAYLOAD_EMAIL'],
-      channels: []
+      channels: [],
+      theme: 'dark'
     }])
   })
 
@@ -77,7 +79,8 @@ describe('users', () => {
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: 'user_1',
       email: process.env['TEST_PAYLOAD_EMAIL'],
-      channels: []
+      channels: [],
+      theme: 'dark'
     })
   })
 
@@ -89,7 +92,8 @@ describe('users', () => {
     user.should.match({
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: process.env['TEST_PAYLOAD_EMAIL'],
-      email: process.env['TEST_PAYLOAD_EMAIL']
+      email: process.env['TEST_PAYLOAD_EMAIL'],
+      theme: 'dark'
     })
     // Sign in again after creating an account
     const {body: user1} = await supertest(app)
@@ -111,7 +115,8 @@ describe('users', () => {
     await supertest(app)
     .put(`/users/${user1.id}`)
     .send({username: 'user_A',
-     email: process.env['TEST_PAYLOAD_EMAIL']
+     email: process.env['TEST_PAYLOAD_EMAIL'],
+     theme: 'light'
    })
     .expect(200)
     // Check if it was correctly updated
@@ -122,7 +127,8 @@ describe('users', () => {
       id: /^\w+-\w+-\w+-\w+-\w+$/,
       username: 'user_A',
       email: process.env['TEST_PAYLOAD_EMAIL'],
-      channels: []
+      channels: [],
+      theme: 'light'
     })
   })
 
