@@ -3,7 +3,6 @@
 import {useContext} from 'react'
 // Layout
 import { useTheme } from '@mui/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { Drawer,Box } from '@mui/material';
 // Local
 import Context from './Context'
@@ -51,7 +50,6 @@ const { window } = props;
   window !== undefined ? () => window().document.body : undefined;
   const theme = useTheme()
   const styles = useStyles(theme)
-  const alwaysOpen = useMediaQuery(theme.breakpoints.up('sm'))
   return (
     <main css={styles.main}>
     <Box

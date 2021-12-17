@@ -17,7 +17,7 @@ module.exports = {
         try{
           const member = await module.exports.users.get(channel.members[i])
           member.channels.push(id)
-          await module.exports.users.update(channel.members[i],member)
+          await module.exports.users.update(channel.members[i],member,true)
         }
         catch(e){
           channel.members.splice(i,1)
@@ -58,7 +58,7 @@ module.exports = {
         try{
           const member = await module.exports.users.get(userid)
           member.channels.splice(member.channels.findIndex(e => e === id),1)
-          await module.exports.users.update(userid,member)
+          await module.exports.users.update(userid,member,true)
         }
         catch(e){
         }
@@ -70,7 +70,7 @@ module.exports = {
         try{
           const member = await module.exports.users.get(userid)
           member.channels.push(id)
-          await module.exports.users.update(userid,member)
+          await module.exports.users.update(userid,member,true)
         }
         catch(e){
           channel.members.splice(channel.members.findIndex(e => e === userid),1)
@@ -173,17 +173,29 @@ module.exports = {
         })
       })
     },
-    update: async (id, user) => {
+    update: async (id, user, channelUpdate) => {
+      if(!user.username) throw Error('Invalid username')
+      if(!user.email) throw Error('Invalid username')
       const original = await module.exports.users.get(id)
       if(!original) throw Error('Unregistered user id')
       delete user['id']
+      if(!channelUpdate)
+        user.channels = original.channels
       await db.put(`users:${id}`, JSON.stringify(user))
       return merge(user, {id: id})
     },
-    delete: (id, user) => {
-      const original = store.users[id]
-      if(!original) throw Error('Unregistered user id')
-      delete store.users[id]
+    delete: async (id, user) => {
+      try{
+      const original = await module.exports.users.get(id)
+      for(channelid of original.channels){
+        const channel = await module.exports.channels.get(channelid,user)
+        channel.members.splice(channel.members.findIndex(m => m.id === id),1)
+        await module.exports.channels.update(channelid,channel,user)
+      }
+      await db.del(`usersid:${original.email}`)
+      await db.del(`users:${id}`)
+    }catch(err){console.log(err)}
+      return
     },
     getId: async (email) => {
       if(!email) throw Error('Invalid email')

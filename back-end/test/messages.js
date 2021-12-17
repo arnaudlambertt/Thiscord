@@ -117,7 +117,7 @@ describe('messages', () => {
     .post(`/channels/${channel.id}/messages`)
     .send({content: 'Hello ECE'})
     // Delete a message
-    const response = await supertest(app)
+    await supertest(app)
     .delete(`/channels/${channel.id}/messages`)
     .send(message)
     .expect(204)
