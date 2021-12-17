@@ -46,9 +46,7 @@ module.exports = {
       }
       return filteredChannels;
     },
-    update: async (id, channel, user) => {
-      const original = await module.exports.channels.get(id, user)
-      if(!original) throw Error('Unregistered channel id')
+    update: async (channel, original) => {
       delete channel['id']
       delete channel['allMembers']
       //remove the channel from users who are not in it anymore
@@ -57,7 +55,7 @@ module.exports = {
       {
         try{
           const member = await module.exports.users.get(userid)
-          member.channels.splice(member.channels.findIndex(e => e === id),1)
+          member.channels.splice(member.channels.findIndex(e => e === original.id),1)
           await module.exports.users.update(userid,member,true)
         }
         catch(e){
@@ -69,7 +67,7 @@ module.exports = {
       {
         try{
           const member = await module.exports.users.get(userid)
-          member.channels.push(id)
+          member.channels.push(original.id)
           await module.exports.users.update(userid,member,true)
         }
         catch(e){
@@ -77,13 +75,25 @@ module.exports = {
         }
       }
       channel.allMembers = original.allMembers.filter(e => !channel.members.includes(e)).concat(channel.members)
-      await db.put(`channels:${id}`, JSON.stringify(channel))
-      return merge(channel, {id: id})
+      await db.put(`channels:${original.id}`, JSON.stringify(channel))
+      return merge(channel, {id: original.id})
     },
-    delete: (id, channel) => {
-      const original = store.channels[id]
-      if(!original) throw Error('Unregistered channel id')
-      delete store.channels[id]
+    delete: async (original) => {
+      for(const userid of original.members)
+      {
+        try{
+          const member = await module.exports.users.get(userid)
+          member.channels.splice(member.channels.findIndex(e => e === id),1)
+          await module.exports.users.update(userid,member,true)
+        }
+        catch(e){
+        }
+      }
+      const messages = await module.exports.messages.list(original.id)
+      for(const message of messages)
+        await db.del(`messages:${original.id}:${message.creation}`)
+
+      await db.del(`channels:${original.id}`)
     }
   },
   messages: {
