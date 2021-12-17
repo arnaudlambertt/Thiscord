@@ -61,7 +61,7 @@ export default function Header() {
           {user ?
             <p>{user.username}</p> : ''
           }
-          <Button variant="contained" sx={{right:5,backgroundColor: 'background.default',height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
+          <Button variant="contained" color='terciary' sx={{right:5,height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
           </Box>
     </header>
   );

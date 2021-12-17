@@ -68,6 +68,7 @@ export default function Channels() {
   return (
     <div css={styles.root}>
     <Button
+    color='primary'
     onClick={ (e) => {
       e.preventDefault()
       navigate(`/`)
@@ -76,14 +77,13 @@ export default function Channels() {
         width: '100%',
         height: 50,
         spacing:0,
-        justifyContent:'left',
-        backgroundColor: 'background.paper',
+        justifyContent:'center',
         '&:hover': {
           backgroundColor: 'background.default',
           opacity: [0.9, 0.8, 0.7],
         },
       }}>
-      <h3> Welcome </h3>
+        <h3>  Home </h3>
       </Button>
       <Divider sx={{color:'#FF0000'}} />
     <List

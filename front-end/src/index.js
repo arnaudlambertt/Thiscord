@@ -1,28 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import theme from './theme';
 import { CookiesProvider } from 'react-cookie';
 import './index.css';
 import App from './App';
 import { Provider as ContextProvider } from './Context';
 import * as serviceWorker from './serviceWorker';
 import 'typeface-roboto'
-// Layout
-import { ThemeProvider } from '@mui/material/styles';
-import {
-  BrowserRouter as Router,
-} from "react-router-dom";
-
 
 ReactDOM.render(
   <React.StrictMode>
     <ContextProvider>
       <CookiesProvider>
-        <ThemeProvider theme={theme}>
-          <Router>
-            <App />
-          </Router>
-        </ThemeProvider>
+        <App />
       </CookiesProvider>
     </ContextProvider>
   </React.StrictMode>,

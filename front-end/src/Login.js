@@ -75,9 +75,9 @@ const Redirect = ({
     <div css={styles.root}>
     <AppBar
       position="fixed"
-      color='primary'
       sx={{
-        width:'100%',alignItems:'center'
+        width:'100%',alignItems:'center',
+        backgroundColor:'primary.main'
       }}
     >
       <Toolbar>

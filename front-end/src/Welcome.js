@@ -1,7 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
 // Layout
-import {useContext, useEffect, useState, useCallback} from 'react';
+import {useContext, useEffect, useState, useCallback,createContext} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom'
 import { useTheme } from '@mui/styles';
@@ -30,11 +30,14 @@ const useStyles = (theme) => ({
   },
   icon: {
     width: '50%',
-    fill: '#fff',
+    fill:theme.palette.secondary.main,
   }
 })
 
+const ColorModeContext = createContext({ App: () => {} });
+
 export default function Welcome() {
+  const theme = useTheme();
   const [openSettings, setOpenSettings] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [channelName, setChannelName] = useState('');
@@ -43,11 +46,11 @@ export default function Welcome() {
   const {
     oauth,setOauth,
     channels, setChannels,
+    mode,setMode,
     setCurrentChannel,
-    setDarkTheme,darkTheme,
     user,setUser
   } = useContext(Context)
-
+const colorMode = useContext(ColorModeContext);
 
 
   const handleOpenCreate = () => {
@@ -55,9 +58,6 @@ export default function Welcome() {
   };
   const handleCloseCreate = () => {
     setOpenCreate(false);
-  };
-  const themeSwitch = () => {
-    setDarkTheme(!darkTheme);
   };
   const handleOpenSettings = () => {
     setUsername(user.username)
@@ -71,6 +71,10 @@ export default function Welcome() {
     setCurrentChannel(null)
   }, [setCurrentChannel])
 
+  const toggleTheme = () => {
+    setMode(u => u = (u === 'dark' ? 'light' : 'dark'))
+  }
+
   const applySettings = useCallback( async () => {
     try{
         const {data: returnedUser} = await axios.put(
@@ -79,7 +83,8 @@ export default function Welcome() {
           id: user.id,
           username: username,
           email: user.email,
-          channels: user.channels
+          channels: user.channels,
+          theme:mode,
         },
         {
           headers: {
@@ -187,7 +192,7 @@ export default function Welcome() {
         </Grid>
         <Grid item xs>
           <div css={styles.card}>
-          <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" onClick={handleOpenSettings} >
+          <Button variant="outlined" sx={{color:'primary.main' }} color='secondary' onClick={handleOpenSettings} >
             <Grid
               container
               direction="column"
@@ -211,8 +216,8 @@ export default function Welcome() {
                 <Box sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
                   <p>light theme</p>
                   <Switch sx={{top:7}}
-                    checked={darkTheme}
-                    onChange={themeSwitch}
+                    checked={mode=='light'}
+                    onChange={toggleTheme}
                   />
                 </Box>
                 <Button variant="contained" color='error' sx={{left: 10,top:10,width:'30%'}} onClick={deleteUser}>
@@ -225,7 +230,7 @@ export default function Welcome() {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCloseSettings}>Cancel</Button>
-                <Button variant="contained" onClick={applySettings}>Apply Changes</Button>
+                <Button variant="contained" onClick={applySettings}>Save settings</Button>
             </DialogActions>
           </Dialog>
           </div>

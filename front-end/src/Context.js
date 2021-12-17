@@ -16,8 +16,7 @@ export const Provider = ({
   const [channels, setChannels] = useState([])
   const [currentChannel, setCurrentChannel] = useState(null)
   const [authors, setAuthors] = useState({})
-  const [darkTheme, setDarkTheme] = useState(true)
-
+  const [mode, setMode] = useState(user ? user.theme : 'dark');
   const addAuthor = async (id) => {
     try{
       const {data: author} = await axios.get(`http://localhost:3001/users/${id}`, {
@@ -76,6 +75,7 @@ export const Provider = ({
       user: user,
       setUser: (user) => {
         if(user){
+          setMode(user.theme)
           setCookie('user', user, {path: '/'})
         }else{
           removeCookie('user', {path: '/'})
@@ -91,8 +91,8 @@ export const Provider = ({
       channels: channels,
       drawerVisible: drawerVisible,
       setDrawerVisible: setDrawerVisible,
-      darkTheme: darkTheme,
-      setDarkTheme: setDarkTheme,
+      mode:mode,
+      setMode:setMode,
       setChannels: setChannels,
       currentChannel: currentChannel,
       setCurrentChannel: (channel) => {

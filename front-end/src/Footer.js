@@ -4,6 +4,7 @@ import { useTheme } from '@mui/styles';
 const useStyles = (theme) => ({
   footer: {
     backgroundColor: theme.palette.background.default,
+    color:theme.palette.text.primary,
     borderTop:"rgba(0, 0, 0, 0.23)",
     borderTopStyle:"solid",
     borderTopWidth:1,

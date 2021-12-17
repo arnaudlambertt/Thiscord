@@ -25,6 +25,7 @@ const useStyles = (theme) => ({
   root: {
     position: 'relative',
     flex: '1 1 auto',
+    color:theme.palette.text.primary,
     overflow: 'auto',
     overflowWrap:'break-word',
     '& ul': {
@@ -37,7 +38,7 @@ const useStyles = (theme) => ({
   message: {
     padding: '.2rem .5rem',
     ':hover': {
-      backgroundColor: 'rgba(255,255,255,.2)',
+      backgroundColor:theme.palette.background.middle,
     },
   },
   fabWrapper: {
@@ -47,16 +48,16 @@ const useStyles = (theme) => ({
     width: '50px',
   },
   timeStamp: {
-   color: 'rgba(255,255,255,.3)',
+   color: theme.palette.text.primary,
    paddingLeft: 5,
    fontSize: 14
  },
  edited: {
-  color: 'rgba(255,255,255,.8)',
+  color: theme.palette.text.primary,
   fontSize: 14
 },
  author: {
-   color: '#d842eb',
+   color: theme.palette.primary.main,
    fontSize: 20,
    fontWeight: 'bold'
  },
@@ -191,9 +192,7 @@ export default forwardRef(({
                       <span css={styles.edited}>(Edited)</span>
                       : ''
                     }
-                    <IconButton aria-label="modify" sx={{color:'background.default', '& hover': {
-                      color:'#ffffff'
-                    }}} onClick={() => {handleOpen(message)}}>
+                    <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
                       <CreateIcon />
                     </IconButton>
                     <Dialog open={open} onClose={handleClose}>

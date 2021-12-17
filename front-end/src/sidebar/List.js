@@ -69,7 +69,7 @@ const styles = useStyles(useTheme())
               whiteSpace:'nowrap',
               height: 50,
               spacing:0,
-              color:'#ffffff',
+              color:'text.primary',
               justifyContent:'left',
               backgroundColor: 'background.paper',
               '&:hover': {
