@@ -70,7 +70,7 @@ module.exports = {
         try{
           const member = await module.exports.users.get(userid)
           member.channels.push(id)
-          await module.exports.users.update(userid,member)
+          await module.exports.users.update(userid,member,true)
         }
         catch(e){
           channel.members.splice(channel.members.findIndex(e => e === userid),1)
