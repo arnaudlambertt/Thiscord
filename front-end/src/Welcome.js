@@ -48,8 +48,8 @@ export default function Welcome() {
     setCurrentChannel,
     user,setUser
   } = useContext(Context)
-  const [wrongUsername, setWrongUsername] = useState(user.username.includes('@'));
-
+  const [usedUsername, setUsedUsername] = useState(false);
+  const [atUsername, setAtUsername] = useState(user ? user.username.includes('@') : false);
   const handleOpenCreate = () => {
     setOpenCreate(true);
   };
@@ -58,10 +58,13 @@ export default function Welcome() {
   };
   const handleOpenSettings = () => {
     setUsername(user.username)
+    setAtUsername(user ? user.username.includes('@') : false)
     setOpenSettings(true);
   };
   const handleCloseSettings = () => {
-    setOpenSettings(false);
+    setOpenSettings(false)
+    setUsedUsername(false)
+    setAtUsername(user ? user.username.includes('@') : false)
   };
 
   useEffect( () => {
@@ -74,7 +77,7 @@ export default function Welcome() {
 
   const applySettings = useCallback( async () => {
     try{
-      if(!wrongUsername)
+      if(!usedUsername || !atUsername)
       {
         const {data: returnedUser} = await axios.put(
         `http://localhost:3001/users/${user.id}`,
@@ -97,7 +100,7 @@ export default function Welcome() {
         console.error(err)
       }
     }
-    ,[username, user, oauth,setUser,mode,wrongUsername])
+    ,[username, user, oauth,setUser,mode,usedUsername])
 
     const deleteUser = async () => {
       try{
@@ -122,20 +125,25 @@ const editUsername = async (e) =>
          'Authorization': `Bearer ${oauth.access_token}`
        }
      })
-     var alreadyUsed=false
+
      if (data.filter(u => u.username === e.target.value).length > 0)
       {
         if(e.target.value!==user.username)
-          alreadyUsed=true
+          setUsedUsername(true)
+        else
+          setUsedUsername(false)
 
       }
-      if (e.target.value.includes('@')||alreadyUsed)
+    else {
+      setUsedUsername(false)
+    }
+      if (e.target.value.includes('@'))
       {
-        await setWrongUsername(true)
+        await setAtUsername(true)
       }
       else
       {
-        await setWrongUsername(false)
+        await setAtUsername(false)
       }
 
    }catch(err){
@@ -235,7 +243,7 @@ const editUsername = async (e) =>
               </Grid>
             </Grid>
           </Button>
-          <Dialog open={openSettings} onClose={handleCloseSettings}>
+          <Dialog open={openSettings} onOpen={editUsername} onClose={handleCloseSettings}>
             <DialogTitle>Settings</DialogTitle>
             <DialogContent>
               {user ?
@@ -248,7 +256,8 @@ const editUsername = async (e) =>
                   label="username" sx={{width:'100%'}}
                   onChange={editUsername}
                 />
-                  {wrongUsername ? <Typography color="error">your username can't contain a @ <br/> or is already taken</Typography>:<p><br/></p>}
+                  {usedUsername ? <Typography color="error">your username is already taken</Typography>:<p></p>}
+                  {atUsername ? <Typography color="error">your username can't contain @</Typography>:<p></p>}
                 <Box sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
                   <p>light theme</p>
                   <Switch sx={{top:7}}
