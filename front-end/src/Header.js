@@ -8,6 +8,7 @@ import { IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Button,Box} from "@mui/material";
 import Context from './Context';
+import Settings from './Settings'
 
 const useStyles = (theme, user) => ({
   header: {
@@ -61,7 +62,16 @@ export default function Header() {
           {user ?
             <p>{user.username}</p> : ''
           }
+          <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+          <Settings small={true}/>
           <Button variant="contained" color='terciary' sx={{right:5,height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
+          </Box>
           </Box>
     </header>
   );
