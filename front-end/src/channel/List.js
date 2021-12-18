@@ -1,8 +1,9 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState,useEffect} from 'react'
 import Context from '../Context'
 import axios from 'axios';
+import Gravatar from 'react-gravatar';
 // Layout
 import { useTheme } from '@mui/styles';
 import { IconButton,Box, Button } from '@mui/material';
@@ -82,6 +83,15 @@ export default forwardRef(({
   useImperativeHandle(ref, () => ({
     scroll: scroll
   }));
+
+
+  // useEffect( async () => {
+  //   const savePictures =  async () => {
+  //       const image = await getGravatar(authors[user.id].email, {size: 200})
+  //       await fs.writeFile(authors[user.id].email+'png', image)
+  //     };
+  //   savePictures()
+  // },[authors])
 
   const rootEl = useRef(null)
   const scrollEl = useRef(null)
@@ -181,8 +191,16 @@ export default forwardRef(({
                             display: 'flex',
                             overflow:'auto',
                             flexWrap:'wrap',
+                            alignItems:'center'
                           }}
                             >
+                    <span css={styles.author}>
+                    {
+                      authors[message.author] ?
+                     <Gravatar style={{borderRadius:100}} email={authors[message.author].email} />
+                      :''
+                    }
+                    </span>
                     <span css={styles.author}>{authors[message.author]?.username}</span>
                     <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                   </Box>
