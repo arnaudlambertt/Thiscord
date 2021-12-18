@@ -155,41 +155,53 @@ return (
             </Grid>
           </Button>
   }
-    <Dialog open={openSettings} onClose={handleCloseSettings}>
-      <DialogTitle>Settings</DialogTitle>
-      <DialogContent>
-        {user ?
-          <div>
-            <h3>Your profile</h3>
-            <p>email: {user.email}</p>
-            <TextField
-              value={username}
-              placeholder="username"
-              label="username" sx={{width:'100%'}}
-              onChange={editUsername}
+  <Dialog open={openSettings} onClose={handleCloseSettings}>
+    <DialogTitle>Settings</DialogTitle>
+    <DialogContent>
+      {user ?
+      <Box sx={{ display:'flex',
+         flexDirection:'column'}}>
+         <br></br>
+        <TextField
+          InputProps= {{readOnly: true }}
+          value={user.email}
+          label="email"
+          sx={{width:'100%'}}
+        />
+        <br></br>
+        <TextField
+          value={username}
+          placeholder="username"
+          label="username" sx={{width:'100%'}}
+          onChange={editUsername}
+        />
+      <Typography color="error">{usedUsername ? "This username is already taken"
+          : atUsername ? "Your username cannot contain '@'"
+          : !username.length ? "Your username cannot be empty" : ""}</Typography>
+        <Box sx={{display:'flex',flexDirection:'row', justifyContent: 'space-between'}}>
+          <p>Theme:</p>
+          <Box sx={{display: 'flex', flexDirection: 'row'}}>
+            <p>Dark</p>
+            <Switch sx={{top:7}}
+              checked={mode==='light'}
+              onChange={toggleTheme}
             />
-            {usedUsername ? <Typography color="error">your username is already taken</Typography>:<p></p>}
-            {atUsername ? <Typography color="error">your username can't contain @</Typography>:<p></p>}
-            {username.length===0 ? <Typography color="error">your username should be longer</Typography>:<p></p>}
-            <Box sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
-              <p>light theme</p>
-              <Switch sx={{top:7}}
-                checked={mode==='light'}
-                onChange={toggleTheme}
-              />
-            </Box>
-            <Button variant="contained" color='error' onClick={deleteUser}>
-              Delete user
-            </Button>
-          </div>
-          :''
-        }
-      </DialogContent>
-      <DialogActions>
+            <p>Light</p>
+          </Box>
+        </Box>
+        <Button variant="contained" color='error' onClick={deleteUser}>
+          Delete user
+        </Button>
+      </Box>
+        :''
+      }
+
+    </DialogContent>
+    <DialogActions>
         <Button onClick={handleCloseSettings}>Cancel</Button>
         <Button variant="contained" onClick={applySettings}>Save settings</Button>
-      </DialogActions>
-    </Dialog>
+    </DialogActions>
+  </Dialog>
   </div>
 )
 }
