@@ -157,6 +157,7 @@ module.exports = {
       if(!email) throw Error('Invalid email')
       const id = uuid()
       user.theme = 'dark'
+      user.avatar = 'gravatar'
       user.email = email
       user.channels = []
       await db.put(`usersid:${email}`, JSON.stringify(id))
@@ -169,7 +170,7 @@ module.exports = {
       const user = JSON.parse(data)
       return merge(user, {id: id})
     },
-    list: async (string) => {
+    list: async (string = '') => {
       return new Promise( (resolve, reject) => {
         const users = []
         db.createReadStream({
@@ -191,6 +192,7 @@ module.exports = {
       if(!user.username) throw Error('Invalid username')
       if(!user.email) throw Error('Invalid email')
       if(!user.theme) throw Error('Invalid theme')
+      if(!user.avatar) throw Error('Invalid avatar')
       const original = await module.exports.users.get(id)
       if(!original) throw Error('Unregistered user id')
       if(user.username !== original.username){
@@ -201,6 +203,17 @@ module.exports = {
           if(users.filter(u => u.username === user.username).length)
             throw Error('Invalid username')
         }
+      }
+      if(user.avatar !== original.avatar){
+        if(
+          user.avatar !== 'gravatar' &&
+          user.avatar !== 'arnaud' &&
+          user.avatar !== 'clement' &&
+          user.avatar !== 'david' &&
+          user.avatar !== 'sergei' &&
+          user.avatar.indexOf('data:image/') !== 0
+        )
+          throw Error('Invalid avatar')
       }
       delete user['id']
       if(!channelUpdate)

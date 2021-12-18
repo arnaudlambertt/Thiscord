@@ -31,7 +31,8 @@ describe('users', () => {
       username: 'user_1',
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
-      theme: 'dark'
+      theme: 'dark',
+      avatar: 'gravatar'
     }])
   })
 
@@ -49,7 +50,8 @@ describe('users', () => {
       username: 'user_1',
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
-      theme: 'dark'
+      theme: 'dark',
+      avatar: 'gravatar'
     }])
   })
 
@@ -80,7 +82,8 @@ describe('users', () => {
       username: 'user_1',
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
-      theme: 'dark'
+      theme: 'dark',
+      avatar: 'gravatar'
     })
   })
 
@@ -116,8 +119,9 @@ describe('users', () => {
     .put(`/users/${user1.id}`)
     .send({username: 'user_A',
      email: process.env['TEST_PAYLOAD_EMAIL'],
-     theme: 'light'
-   })
+     theme: 'light',
+     avatar: 'arnaud'
+    })
     .expect(200)
     // Check if it was correctly updated
     const {body: user} = await supertest(app)
@@ -128,7 +132,8 @@ describe('users', () => {
       username: 'user_A',
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
-      theme: 'light'
+      theme: 'light',
+      avatar: 'arnaud'
     })
   })
 
