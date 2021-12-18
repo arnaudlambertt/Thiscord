@@ -16,6 +16,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Gravatar from 'react-gravatar';
+import PortraitIcon from '@mui/icons-material/Portrait';
+import { DropzoneAreaBase } from 'material-ui-dropzone';
 
 const useStyles = (theme) => ({
   root: {
@@ -35,28 +38,42 @@ const useStyles = (theme) => ({
 })
 
 export default function Settings({small}) {
+  const {
+    oauth,setOauth,
+    mode,setMode,
+    user,setUser
+  } = useContext(Context)
+
 const [openSettings, setOpenSettings] = useState(false);
 const [username, setUsername] = useState(false);
-const {
-  oauth,setOauth,
-  mode,setMode,
-  user,setUser
-} = useContext(Context)
 const [usedUsername, setUsedUsername] = useState(false);
 const [atUsername, setAtUsername] = useState(user ? user.username.includes('@') : false);
+const [openImageSettings, setOpenImageSettings] = useState(false);
+const [importedImage, setImportedImage] = useState(null);
+
 const handleOpenSettings = () => {
   setUsername(user.username)
   setAtUsername(user ? user.username.includes('@') : false)
   setOpenSettings(true);
 };
+
 const handleCloseSettings = () => {
   setOpenSettings(false)
   setUsedUsername(false)
   setAtUsername(user ? user.username.includes('@') : false)
 };
+
 const toggleTheme = () => {
   setMode(u => u = (u === 'dark' ? 'light' : 'dark'))
 }
+
+const handleOpenImageSettings = () => {
+  setOpenImageSettings(true);
+};
+
+const handleCloseImageSettings = () => {
+  setOpenImageSettings(false);
+};
 
 const applySettings = useCallback( async () => {
   try{
@@ -99,8 +116,8 @@ const applySettings = useCallback( async () => {
       console.log(err)
     }
   }
-const editUsername = async (e) =>
-{
+
+const editUsername = async (e) => {
  setUsername(e.target.value)
  try{
    const {data} = await axios.get(`http://localhost:3001/users?search=${e.target.value}`, {
@@ -108,31 +125,18 @@ const editUsername = async (e) =>
        'Authorization': `Bearer ${oauth.access_token}`
      }
    })
-
-   if (data.filter(u => u.username === e.target.value).length > 0)
-    {
-      if(e.target.value!==user.username)
-        setUsedUsername(true)
-      else
-        setUsedUsername(false)
-
-    }
-  else {
-    setUsedUsername(false)
-  }
-    if (e.target.value.includes('@'))
-    {
-      await setAtUsername(true)
-    }
-    else
-    {
-      await setAtUsername(false)
-    }
+   setUsedUsername(data.filter(u => u.username === e.target.value).length && e.target.value !== user.username)
+   setAtUsername(e.target.value.includes('@'))
 
  }catch(err){
    console.error(err)
  }
 }
+
+const uploadImage = async (loadedFiles) => {
+  setImportedImage(loadedFiles[0].data)
+}
+
 const styles = useStyles(useTheme())
 return (
   <div>
@@ -159,7 +163,7 @@ return (
     <DialogContent>
       {user ?
       <Box sx={{ display:'flex',
-         flexDirection:'column'}}>
+         flexDirection:'column', width: { xs: "240px", sm: "400px" }}}>
          <br></br>
         <TextField
           InputProps= {{readOnly: true }}
@@ -188,6 +192,42 @@ return (
             <p>Light</p>
           </Box>
         </Box>
+        Profile image:
+        <Button onClick={handleOpenImageSettings}><Gravatar email={user.email}/></Button>
+          <Dialog open={openImageSettings} onClose={handleCloseImageSettings}>
+            <DialogTitle>Image settings</DialogTitle>
+            <DialogContent>
+              <Box sx={{position: 'relative', width: { xs: "240px", sm: "400px" }}}>
+                <DropzoneAreaBase
+                  Icon={PortraitIcon}
+                  acceptedFiles={['image/*']}
+                  dropzoneText={"Drag and drop an image here or click"}
+                  onAdd={uploadImage}
+                  filesLimit={1}
+                  showAlerts={false}
+                />
+                {importedImage ?
+                  <Box sx={{position: "absolute", top: "62%", left: "50%"}}>
+                    <img src={importedImage} alt="importedImage" width='175' height='175'
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translateX(-50%) translateY(-50%)"
+                      }}/>
+                    <Box sx={{width:175,height:175,border:2,borderColor:'#FFF',borderRadius:'50%', position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translateX(-50%) translateY(-50%)"}}>
+                      </Box>
+                    </Box>: ''}
+              </Box>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseImageSettings}>Cancel</Button>
+                <Button variant="contained">Save image settings</Button>
+            </DialogActions>
+          </Dialog>
         <Button variant="contained" color='error' onClick={deleteUser}>
           Delete user
         </Button>
