@@ -77,7 +77,7 @@ export default function Welcome() {
 
   const applySettings = useCallback( async () => {
     try{
-      if(!usedUsername || !atUsername)
+      if(!usedUsername && !atUsername && username.length>0)
       {
         const {data: returnedUser} = await axios.put(
         `http://localhost:3001/users/${user.id}`,
@@ -100,7 +100,7 @@ export default function Welcome() {
         console.error(err)
       }
     }
-    ,[username, user, oauth,setUser,mode,usedUsername])
+    ,[username, user, oauth,setUser,mode,usedUsername,atUsername])
 
     const deleteUser = async () => {
       try{
@@ -243,7 +243,7 @@ const editUsername = async (e) =>
               </Grid>
             </Grid>
           </Button>
-          <Dialog open={openSettings} onOpen={editUsername} onClose={handleCloseSettings}>
+          <Dialog open={openSettings} onClose={handleCloseSettings}>
             <DialogTitle>Settings</DialogTitle>
             <DialogContent>
               {user ?
@@ -258,6 +258,7 @@ const editUsername = async (e) =>
                 />
                   {usedUsername ? <Typography color="error">your username is already taken</Typography>:<p></p>}
                   {atUsername ? <Typography color="error">your username can't contain @</Typography>:<p></p>}
+                  {username.length===0 ? <Typography color="error">your username should be longer</Typography>:<p></p>}
                 <Box sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
                   <p>light theme</p>
                   <Switch sx={{top:7}}
@@ -265,7 +266,7 @@ const editUsername = async (e) =>
                     onChange={toggleTheme}
                   />
                 </Box>
-                <Button variant="contained" color='error' sx={{left: 10,top:10,width:'30%'}} onClick={deleteUser}>
+                <Button variant="contained" color='error' onClick={deleteUser}>
                   Delete user
                 </Button>
               </div>
