@@ -178,7 +178,7 @@ module.exports = {
         }).on( 'data', ({key, value}) => {
           user = JSON.parse(value)
           user.id = key.split(':')[1]
-          if(user.username.search(string) != -1)
+          if(user.username.indexOf(string) !== -1)
             users.push(user)
         }).on( 'error', (err) => {
           reject(err)
