@@ -7,8 +7,14 @@ import { useTheme } from '@mui/styles';
 import { Grid,Box } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ReactComponent as BigSettingsIcon } from './icons/settings.svg';
+import arnaud from './icons/arnaud.jpeg';
+import clement from './icons/clement.jpg';
+import david from './icons/david.png';
+import sergei from './icons/sergei.jpg';
 import Context from './Context'
 import Switch from '@mui/material/Switch';
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -35,6 +41,7 @@ const useStyles = (theme) => ({
 })
 
 export default function Settings({small}) {
+const [chosenPicture, setChosenPicture] = useState('arnaud');
 const [openSettings, setOpenSettings] = useState(false);
 const [username, setUsername] = useState(false);
 const {
@@ -53,6 +60,9 @@ const handleCloseSettings = () => {
   setOpenSettings(false)
   setUsedUsername(false)
   setAtUsername(user ? user.username.includes('@') : false)
+};
+const handleChangePicture = (event, newChosenPicture) => {
+  setChosenPicture(newChosenPicture);
 };
 const toggleTheme = () => {
   setMode(u => u = (u === 'dark' ? 'light' : 'dark'))
@@ -194,7 +204,20 @@ return (
       </Box>
         :''
       }
-
+      <ToggleButtonGroup value={chosenPicture} onChange={handleChangePicture} exclusive={true} size="large">
+        <ToggleButton color='success' sx={{width:100,height:100}}value="arnaud" key="arnaud">
+          <img src={arnaud}  width="70" height="70" />
+        </ToggleButton>,
+        <ToggleButton color='success' sx={{width:100,height:100}} value="clement" key="clement">
+          <img src={clement}  width="70" height="70" />
+        </ToggleButton>,
+        <ToggleButton color='success' sx={{width:100,height:100}} value="david" key="david">
+          <img src={david}  width="70" height="70" />
+        </ToggleButton>,
+        <ToggleButton color='error' sx={{width:100,height:100}} value="sergei" key="sergei">
+          <img src={sergei}  width="70" height="70" />
+        </ToggleButton>
+      </ToggleButtonGroup>
     </DialogContent>
     <DialogActions>
         <Button onClick={handleCloseSettings}>Cancel</Button>
