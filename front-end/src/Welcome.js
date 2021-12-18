@@ -9,7 +9,6 @@ import Settings from './Settings'
 import { Grid} from '@mui/material';
 import { ReactComponent as ChannelIcon } from './icons/channel.svg';
 import { ReactComponent as FriendsIcon } from './icons/friends.svg';
-import { ReactComponent as SettingsIcon } from './icons/settings.svg';
 import Context from './Context'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -22,7 +21,6 @@ const useStyles = (theme) => ({
     height: '100%',
     flex: '1 1 auto',
     display: 'flex',
-    // background: 'rgba(0,0,0,.2)',
   },
   card: {
     textAlign: 'center',

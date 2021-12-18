@@ -134,7 +134,6 @@ const editUsername = async (e) =>
  }
 }
 const styles = useStyles(useTheme())
-console.log(small)
 return (
   <div>
   {small ?
