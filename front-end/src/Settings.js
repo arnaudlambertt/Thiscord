@@ -6,11 +6,10 @@ import axios from 'axios';
 import { useTheme } from '@mui/styles';
 import { Grid,Box } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import Gravatar from 'react-gravatar';
+import CropSquareOutlinedIcon from '@mui/icons-material/CropSquareOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 import { ReactComponent as BigSettingsIcon } from './icons/settings.svg';
-import arnaud from './icons/arnaud.jpeg';
-import clement from './icons/clement.jpg';
-import david from './icons/david.png';
-import sergei from './icons/sergei.jpg';
 import Context from './Context'
 import Switch from '@mui/material/Switch';
 import ToggleButton from "@mui/material/ToggleButton";
@@ -62,6 +61,7 @@ const handleCloseSettings = () => {
   setAtUsername(user ? user.username.includes('@') : false)
 };
 const handleChangePicture = (event, newChosenPicture) => {
+  console.log(newChosenPicture)
   setChosenPicture(newChosenPicture);
 };
 const toggleTheme = () => {
@@ -198,26 +198,109 @@ return (
             <p>Light</p>
           </Box>
         </Box>
-        <Button variant="contained" color='error' onClick={deleteUser}>
-          Delete user
-        </Button>
-      </Box>
-        :''
-      }
-      <ToggleButtonGroup value={chosenPicture} onChange={handleChangePicture} exclusive={true} size="large">
-        <ToggleButton color='success' sx={{width:100,height:100}}value="arnaud" key="arnaud">
-          <img src={arnaud}  width="70" height="70" />
-        </ToggleButton>,
-        <ToggleButton color='success' sx={{width:100,height:100}} value="clement" key="clement">
-          <img src={clement}  width="70" height="70" />
-        </ToggleButton>,
-        <ToggleButton color='success' sx={{width:100,height:100}} value="david" key="david">
-          <img src={david}  width="70" height="70" />
-        </ToggleButton>,
-        <ToggleButton color='error' sx={{width:100,height:100}} value="sergei" key="sergei">
-          <img src={sergei}  width="70" height="70" />
+      <ToggleButtonGroup sx={{top:10}} value={chosenPicture} onChange={handleChangePicture} exclusive={true} size="large">
+      <ToggleButton sx={{position:'relative',width:100,height:100}} value="gravatar" key="gravatar">
+       <Gravatar style={{borderRadius:100,width:100,height:100}} email={user.email} size={300}/>
+        {chosenPicture==='gravatar'? (
+            <div
+              style={{
+                position: "absolute",
+                color: "#00BB00",
+                top: "50%",
+                left: "50%",
+                transform: "translateX(-50%) translateY(-50%)"
+              }}
+            >
+              {" "}
+              <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+            </div>
+          ) : (
+            ""
+          )}
+      </ToggleButton>
+      <ToggleButton sx={{position:'relative',width:100,height:100}} value="arnaud" key="arnaud">
+        <img src='./arnaud.jpeg' style={{borderRadius: "100%"}} width="100" height="100" />
+        {chosenPicture==='arnaud'? (
+            <div
+              style={{
+                position: "absolute",
+                color: "#00BB00",
+                top: "50%",
+                left: "50%",
+                transform: "translateX(-50%) translateY(-50%)"
+              }}
+            >
+              {" "}
+              <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+            </div>
+          ) : (
+            ""
+          )}
+      </ToggleButton>
+        <ToggleButton sx={{position:'relative',width:100,height:100}} value="clement" key="clement">
+          <img src='./clement.jpg' style={{borderRadius: "100%"}} width="100" height="100" />
+          {chosenPicture==='clement'? (
+              <div
+                style={{
+                  position: "absolute",
+                  color: "#00BB00",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translateX(-50%) translateY(-50%)"
+                }}
+              >
+                {" "}
+                <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+              </div>
+            ) : (
+              ""
+            )}
+        </ToggleButton>
+        <ToggleButton sx={{position:'relative',width:100,height:100}} value="david" key="david">
+          <img src='./david.png' style={{borderRadius: "100%"}} width="100" height="100" />
+          {chosenPicture==='david'? (
+              <div
+                style={{
+                  position: "absolute",
+                  color: "#00BB00",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translateX(-50%) translateY(-50%)"
+                }}
+              >
+                {" "}
+                <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+              </div>
+            ) : (
+              ""
+            )}
+        </ToggleButton>
+        <ToggleButton sx={{position:'relative',width:100,height:100}} value="sergei" key="sergei">
+          <img src='./sergei.jpg' style={{borderRadius: "100%"}} width="100" height="100" />
+          {chosenPicture==='sergei'? (
+              <div
+                style={{
+                  position: "absolute",
+                  color: "#FFFFFF",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translateX(-50%) translateY(-50%)"
+                }}
+              >
+                {" "}
+                <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+              </div>
+            ) : (
+              ""
+            )}
         </ToggleButton>
       </ToggleButtonGroup>
+      <Button variant="contained" color='error' onClick={deleteUser}>
+        Delete user
+      </Button>
+    </Box>
+      :''
+    }
     </DialogContent>
     <DialogActions>
         <Button onClick={handleCloseSettings}>Cancel</Button>
