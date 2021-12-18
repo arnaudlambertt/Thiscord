@@ -177,74 +177,79 @@ export default forwardRef(({
             .processSync(message.content);
             return (
               <li key={i} css={styles.message}>
-                <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          overflow:'auto',
-                          flexWrap:'wrap',
-                        }}
-                      >
-                      <Box
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                flexDirection:'row',
+                overflow:'auto',
+                flexWrap:'wrap',
+                }}>
+                <span>
+                {
+                  authors[message.author] ?
+                 <Gravatar style={{borderRadius:100,}} email={authors[message.author].email} />
+                  :''
+                }
+                </span>
+                <Box sx={{width:'calc(100% - 200px)', marginLeft:1}}>
+                  <Box
                           sx={{
+                            width:'100%',
                             display: 'flex',
+                            flexDirection:'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                             overflow:'auto',
                             flexWrap:'wrap',
-                            alignItems:'center'
                           }}
-                            >
-                    <span css={styles.author}>
-                    {
-                      authors[message.author] ?
-                     <Gravatar style={{borderRadius:100}} email={authors[message.author].email} />
-                      :''
-                    }
-                    </span>
-                    <span css={styles.author}>{authors[message.author]?.username}</span>
-                    <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                        >
+                      <Box>
+                        <span css={styles.author}>{authors[message.author]?.username}</span>
+                        <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                      </Box>
+                      <Box>
+                      {user.id === message.author ?
+                        <div>
+                        {message.edited ?
+                          <span css={styles.edited}>(Edited)</span>
+                          : ''
+                        }
+                        <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
+                          <CreateIcon />
+                        </IconButton>
+                        <Dialog open={open} onClose={handleClose}>
+                          <DialogTitle>Edit your message</DialogTitle>
+                          <DialogContent>
+                            <TextField
+                              autoFocus
+                              margin="dense"
+                              id="name"
+                              value={content}
+                              onChange={handleChange}
+                              label="your message"
+                              variant="standard"
+                            />
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={handleClose}>Cancel</Button>
+                            <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
+                          </DialogActions>
+                        </Dialog>
+                        <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
+                          <DeleteIcon />
+                        </IconButton>
+                        </div>
+                      :
+                      message.edited ?
+                        <span css={styles.edited}>(Edited)</span>
+                        : ''
+                      }
+                        </Box>
+                    </Box>
+                  <div dangerouslySetInnerHTML={{__html: value}}>
+                  </div>
                   </Box>
-                  {user.id === message.author ?
-                    <div>
-                    {message.edited ?
-                      <span css={styles.edited}>(Edited)</span>
-                      : ''
-                    }
-                    <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
-                      <CreateIcon />
-                    </IconButton>
-                    <Dialog open={open} onClose={handleClose}>
-                      <DialogTitle>Edit your message</DialogTitle>
-                      <DialogContent>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="name"
-                          value={content}
-                          onChange={handleChange}
-                          label="your message"
-                          variant="standard"
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
-                      </DialogActions>
-                    </Dialog>
-                    <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
-                      <DeleteIcon />
-                    </IconButton>
-                    </div>
-                  :
-                  message.edited ?
-                    <span css={styles.edited}>(Edited)</span>
-                    : ''
-                  }
-
-                  </Box>
-                <div dangerouslySetInnerHTML={{__html: value}}>
-                </div>
-
+                </Box>
               </li>
             )
         })}
