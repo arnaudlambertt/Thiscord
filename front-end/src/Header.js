@@ -12,6 +12,7 @@ import Settings from './Settings'
 
 const useStyles = (theme, user) => ({
   header: {
+    height:50,
     backgroundColor: theme.palette.primary.main,
     [theme.breakpoints.up('sm')]: {
       paddingLeft: user ? 20 : 0
