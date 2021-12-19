@@ -73,15 +73,6 @@ export default forwardRef(({
     scroll: scroll
   }));
 
-
-  // useEffect( async () => {
-  //   const savePictures =  async () => {
-  //       const image = await getGravatar(authors[user.id].email, {size: 200})
-  //       await fs.writeFile(authors[user.id].email+'png', image)
-  //     };
-  //   savePictures()
-  // },[authors])
-
   const rootEl = useRef(null)
   const scrollEl = useRef(null)
   const scroll = () => {
@@ -135,24 +126,25 @@ export default forwardRef(({
  }
  const editMessage = async (message) => {
    try{
-     const {data: edited} = await axios.put(
-       `http://localhost:3001/channels/${channel.id}/messages`,
-       {
-         content: content,
-         creation: message.creation,
-       },
-       {
-       headers: {
-         'Authorization': `Bearer ${oauth.access_token}`
-       },
-     })
-     messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
-     setOpen(false)
+     if(content){
+       const {data: edited} = await axios.put(
+         `http://localhost:3001/channels/${channel.id}/messages`,
+         {
+           content: content,
+           creation: message.creation,
+         },
+         {
+         headers: {
+           'Authorization': `Bearer ${oauth.access_token}`
+         },
+       })
+       messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
+       setOpen(false)
+     }
    }catch(err){
      console.log(err)
    }
  }
-
 
   return (
     <div css={styles.root} ref={rootEl}>

@@ -36,19 +36,26 @@ export default function Form({
   const styles = useStyles(useTheme())
   const {oauth, user} = useContext(Context)
   const onSubmit = async () => {
-    const {data: message} = await axios.post(
-      `http://localhost:3001/channels/${channel.id}/messages`,
-      {
-        content: content,
-        author: user.username,
-      },
-      {
-      headers: {
-        'Authorization': `Bearer ${oauth.access_token}`
-      },
-    })
-    addMessage(message)
-    setContent('')
+    try{
+      if(content){
+        const {data: message} = await axios.post(
+          `http://localhost:3001/channels/${channel.id}/messages`,
+          {
+            content: content,
+            author: user.username,
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${oauth.access_token}`
+            },
+          })
+        addMessage(message)
+        setContent('')
+      }
+    }
+    catch(err){
+      console.log(err)
+    }
   }
   const handleChange = (e) => {
     setContent(e.target.value)

@@ -17,6 +17,24 @@ export const Provider = ({
   const [currentChannel, setCurrentChannel] = useState(null)
   const [authors, setAuthors] = useState({})
   const [mode, setMode] = useState(user ? user.theme : 'dark');
+
+  const userImageInit = async () => {
+    try {
+      const {data: user} = await axios.get(`http://localhost:3001/users/${cookies.user.id}`,{
+        headers: {
+          'Authorization': `Bearer ${oauth.access_token}`
+        }
+      })
+      setUser(user)
+      setCookie('user', user, {path: '/'})
+    }catch (err) {
+      console.error(err)
+    }
+  }
+
+  if(user && !user.avatar)
+    userImageInit()
+
   const addAuthor = async (id) => {
     try{
       const {data: author} = await axios.get(`http://localhost:3001/users/${id}`, {
@@ -75,10 +93,18 @@ export const Provider = ({
       user: user,
       setUser: (user) => {
         if(user){
-          const authorsCopy = Object.assign({},authors)[user.id] = user
+          const authorsCopy = {...authors}
+          authorsCopy[user.id] = user
           setAuthors(authorsCopy)
           setMode(user.theme)
-          setCookie('user', user, {path: '/'})
+          if(user.avatar.indexOf('data:image/') === 0)
+          {
+            const copy = {...user}
+            delete copy['avatar']
+            setCookie('user', copy, {path: '/'})
+          }
+          else
+            setCookie('user', user, {path: '/'})
         }else{
           removeCookie('user', {path: '/'})
         }
