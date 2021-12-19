@@ -61,8 +61,11 @@ export default function Channel() {
         navigate('/')
       }
     }
-    fetch()
-    setCurrentChannel(channel)
+    if(channel)
+    {
+      fetch()
+      setCurrentChannel(channel)
+    }
   },[navigate,channel,setCurrentChannel,id,oauth,authors])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
