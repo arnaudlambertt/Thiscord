@@ -135,19 +135,21 @@ export default forwardRef(({
  }
  const editMessage = async (message) => {
    try{
-     const {data: edited} = await axios.put(
-       `http://localhost:3001/channels/${channel.id}/messages`,
-       {
-         content: content,
-         creation: message.creation,
-       },
-       {
-       headers: {
-         'Authorization': `Bearer ${oauth.access_token}`
-       },
-     })
-     messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
-     setOpen(false)
+     if(content){
+       const {data: edited} = await axios.put(
+         `http://localhost:3001/channels/${channel.id}/messages`,
+         {
+           content: content,
+           creation: message.creation,
+         },
+         {
+         headers: {
+           'Authorization': `Bearer ${oauth.access_token}`
+         },
+       })
+       messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
+       setOpen(false)
+     }
    }catch(err){
      console.log(err)
    }
