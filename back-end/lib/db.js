@@ -207,10 +207,10 @@ module.exports = {
       if(user.avatar !== original.avatar){
         if(
           user.avatar !== 'gravatar' &&
-          user.avatar !== 'arnaud' &&
-          user.avatar !== 'clement' &&
-          user.avatar !== 'david' &&
-          user.avatar !== 'sergei' &&
+          user.avatar !== './arnaud.jpeg' &&
+          user.avatar !== './clement.jpg' &&
+          user.avatar !== './david.png' &&
+          user.avatar !== './sergei.jpg' &&
           user.avatar.indexOf('data:image/') !== 0
         )
           throw Error('Invalid avatar')

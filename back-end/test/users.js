@@ -120,7 +120,7 @@ describe('users', () => {
     .send({username: 'user_A',
      email: process.env['TEST_PAYLOAD_EMAIL'],
      theme: 'light',
-     avatar: 'arnaud'
+     avatar: './arnaud.jpeg'
     })
     .expect(200)
     // Check if it was correctly updated
@@ -133,7 +133,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'light',
-      avatar: 'arnaud'
+      avatar: './arnaud.jpeg'
     })
   })
 

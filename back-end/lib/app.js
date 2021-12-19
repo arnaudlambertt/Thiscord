@@ -25,8 +25,12 @@ app.get('/channels', loadUser, async (req, res) => {
 })
 
 app.post('/channels', loadUser, async (req, res) => {
-  const channel = await db.channels.create(req.body, req.user)
-  res.status(201).json(channel)
+  try{
+    const channel = await db.channels.create(req.body, req.user)
+    res.status(201).json(channel)
+  }catch(err){
+    return res.status(403).send(err.message)
+  }
 })
 
 app.get('/channels/:id', loadUser, async (req, res) => {
