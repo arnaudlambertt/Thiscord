@@ -28,19 +28,12 @@ const useStyles = (theme) => ({
     flex: '1 1 auto',
     color:theme.palette.text.primary,
     overflow: 'auto',
-    overflowWrap:'break-word',
     '& ul': {
       'margin': 0,
       'padding': 0,
       'textIndent': 0,
       'listStyleType': 0,
     },
-  },
-  fabWrapper: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    width: '50px',
   },
   timeStamp: {
    color: theme.palette.text.primary,
@@ -158,97 +151,96 @@ export default forwardRef(({
             .processSync(message.content);
             return (
               <li key={i} css={styles.message}>
-              <Box sx={{
-                padding: '.2rem .5rem',
-                ':hover': {
-                  backgroundColor:'background.middle',
-                },
-                display: 'flex',
-                alignItems: 'flex-start',
-                flexDirection:'row',
-                overflow:'auto',
-                overflowWrap:'break-word',
-                flexWrap:'wrap',
-                }}>
-                  <span>
-                  {
-                    authors[message.author] ?
-                    authors[message.author].avatar==='gravatar' ? <Gravatar size={50} style={{borderRadius: "100%"}} email={authors[message.author].email}/>
-                    : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50'/>
-                    :''
-                  }
-                  </span>
+                <Box sx={{
+                  padding: '.2rem .5rem',
+                  ':hover': {
+                    backgroundColor:'background.middle',
+                  },
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  flexDirection:'row',
+                  overflow:'auto',
+                  overflowWrap:'break-word',
+                  flexWrap:'wrap',
+                  }}>
+                    <span>
+                    {
+                      authors[message.author] ?
+                      authors[message.author].avatar==='gravatar' ? <Gravatar size={50} style={{borderRadius: "100%"}} email={authors[message.author].email}/>
+                      : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50'/>
+                      :''
+                    }
+                    </span>
                   <Box sx={{width:'calc(100% - 60px)', marginLeft:1}}>
-                  <Box
-                          sx={{
-                            display: 'flex',
-                            flexDirection:'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
-                            overflowWrap:'break-word',
-                            flexWrap:'wrap',
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection:'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        overflowWrap:'break-word',
+                        flexWrap:'wrap',
                           }}
+                    >
+                      <Box sx={{
+                              display: 'flex',
+                              flexDirection:'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'baseline',
+                              overflowWrap:'break-word',
+                              flexWrap:'wrap',
+                            }}>
+                        <Typography sx={{
+                               color: 'primary.main',
+                               fontSize: 20,
+                               fontWeight: 'bold',
+                               maxWidth:{ xs: "240px", sm: "600px" },
+                             }}
                         >
-                        <Box   sx={{
-                            display: 'flex',
-                            flexDirection:'row',
-                            justifyContent: 'flex-start',
-                            alignItems: 'baseline',
-                            overflowWrap:'break-word',
-                            flexWrap:'wrap',
-                          }}>
-                          <Typography sx={{
-                             color: 'primary.main',
-                             fontSize: 20,
-                             fontWeight: 'bold',
-                             maxWidth:{ xs: "240px", sm: "600px" },
-                           }}
-                          >
-                            {authors[message.author]?.username}
-                          </Typography>
-                          <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                        </Box>
+                          {authors[message.author]?.username}
+                        </Typography>
+                        <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                      </Box>
                       <Box>
-                      {user.id === message.author ?
+                        {user.id === message.author ?
                         <div>
-                        {message.edited ?
+                          {message.edited ?
                           <span css={styles.edited}>(Edited)</span>
                           : ''
-                        }
-                        <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
-                          <CreateIcon fontSize="small" />
-                        </IconButton>
-                        <Dialog open={open} onClose={handleClose}>
-                          <DialogTitle>Edit your message</DialogTitle>
-                          <DialogContent>
-                            <TextField
-                              autoFocus
-                              margin="dense"
-                              id="name"
-                              value={content}
-                              onChange={handleChange}
-                              label="your message"
-                              variant="standard"
-                            />
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
-                          </DialogActions>
-                        </Dialog>
-                        <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
-                          <DeleteIcon fontSize="small"/>
-                        </IconButton>
+                          }
+                          <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
+                            <CreateIcon fontSize="small" />
+                          </IconButton>
+                          <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle>Edit your message</DialogTitle>
+                            <DialogContent>
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                value={content}
+                                onChange={handleChange}
+                                label="your message"
+                                variant="standard"
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={handleClose}>Cancel</Button>
+                              <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
+                            </DialogActions>
+                          </Dialog>
+                          <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
+                            <DeleteIcon fontSize="small"/>
+                          </IconButton>
                         </div>
-                      :
-                      message.edited ?
+                        :
+                        message.edited ?
                         <span css={styles.edited}>(Edited)</span>
                         : ''
-                      }
-                        </Box>
+                        }
+                      </Box>
                     </Box>
-                  <div dangerouslySetInnerHTML={{__html: value}}>
-                  </div>
+                    <div dangerouslySetInnerHTML={{__html: value}}>
+                    </div>
                   </Box>
                 </Box>
               </li>
