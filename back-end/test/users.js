@@ -32,7 +32,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'dark',
-      avatar: './david.png'
+      avatar: 'http://localhost:3000/david.png'
     }])
   })
 
@@ -51,7 +51,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'dark',
-      avatar: './david.png'
+      avatar: 'http://localhost:3000/david.png'
     }])
   })
 
@@ -83,7 +83,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'dark',
-      avatar: './david.png'
+      avatar: 'http://localhost:3000/david.png'
     })
   })
 
@@ -120,7 +120,7 @@ describe('users', () => {
     .send({username: 'user_A',
      email: process.env['TEST_PAYLOAD_EMAIL'],
      theme: 'light',
-     avatar: './arnaud.jpeg'
+     avatar: 'http://localhost:3000/arnaud.jpeg'
     })
     .expect(200)
     // Check if it was correctly updated
@@ -133,7 +133,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'light',
-      avatar: './arnaud.jpeg'
+      avatar: 'http://localhost:3000/arnaud.jpeg'
     })
   })
 

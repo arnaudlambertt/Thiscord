@@ -157,7 +157,7 @@ module.exports = {
       if(!email) throw Error('Invalid email')
       const id = uuid()
       user.theme = 'dark'
-      user.avatar = './david.png'
+      user.avatar = 'http://localhost:3000/david.png'
       user.email = email
       user.channels = []
       await db.put(`usersid:${email}`, JSON.stringify(id))
@@ -207,10 +207,10 @@ module.exports = {
       if(user.avatar !== original.avatar){
         if(
           user.avatar !== 'gravatar' &&
-          user.avatar !== './arnaud.jpeg' &&
-          user.avatar !== './clement.jpg' &&
-          user.avatar !== './david.png' &&
-          user.avatar !== './sergei.jpg' &&
+          user.avatar !== 'http://localhost:3000/arnaud.jpeg' &&
+          user.avatar !== 'http://localhost:3000/clement.jpg' &&
+          user.avatar !== 'http://localhost:3000/david.png' &&
+          user.avatar !== 'http://localhost:3000/sergei.jpg' &&
           user.avatar.indexOf('data:image/') !== 0
         )
           throw Error('Invalid avatar')
