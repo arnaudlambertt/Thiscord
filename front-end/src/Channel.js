@@ -17,6 +17,7 @@ const useStyles = (theme) => ({
     height: '100%',
     flex: '1 1 auto',
     display: 'flex',
+    color:theme.palette.text.primary,
     flexDirection: 'column',
     position: 'relative',
     overflowX: 'auto',
@@ -40,7 +41,6 @@ export default function Channel() {
   const listRef = useRef()
   const [messages, setMessages] = useState([])
   const [scrollDown, setScrollDown] = useState(false)
-
   const addMessage = (message) => {
     setMessages([...messages, message])
   }
@@ -61,12 +61,9 @@ export default function Channel() {
         navigate('/')
       }
     }
-    if(channel)
-    {
-      fetch()
-      setCurrentChannel(channel)
-    }
-  },[navigate,channel,setCurrentChannel,id,oauth,authors])
+    fetch()
+    setCurrentChannel(channel)
+  },[navigate,channel,setCurrentChannel,id,oauth])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
@@ -74,9 +71,22 @@ export default function Channel() {
     listRef.current.scroll()
   }
 
-  // On refresh, context.channel is not yet initialized
-  if(!channel || Object.keys(authors).length === 0){
-    return (<div>loading</div>)
+  const messagesReady = () => {
+    for(const message of messages){
+      if(!authors[message.author])
+        return false
+    }
+      return true
+  }
+
+  if(!channel)
+    return <div></div>
+
+  if(!messagesReady()){
+    return(
+    <div css={styles.root}>
+      <h1>Messages for {channel.name}</h1>
+    </div>)
   }
   return (
     <div css={styles.root}>

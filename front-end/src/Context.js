@@ -26,6 +26,7 @@ export const Provider = ({
         }
       })
       setUser(user)
+      setCookie('user', user, {path: '/'})
     }catch (err) {
       console.error(err)
     }
