@@ -291,7 +291,7 @@ return (
               <p>Light</p>
             </Box>
           </Box>
-        Profile image:
+        Avatar:
         <Button onClick={handleOpenImageSettings}>
         {user.avatar==='gravatar' ? <Gravatar size={100} email={user.email}/> : <img src={user.avatar} alt="your avatar" width='100' height='100'/>}
         </Button>
