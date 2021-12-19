@@ -34,7 +34,7 @@ const useStyles = (theme) => ({
 export default function Channel() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const {channels, oauth, setCurrentChannel, updateAuthors} = useContext(Context)
+  const {channels, oauth, setCurrentChannel, authors} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
   const styles = useStyles(useTheme())
   const listRef = useRef()
@@ -63,7 +63,7 @@ export default function Channel() {
     }
     fetch()
     setCurrentChannel(channel)
-  },[navigate,channel,setCurrentChannel,id,oauth,updateAuthors])
+  },[navigate,channel,setCurrentChannel,id,oauth,authors])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
@@ -72,7 +72,7 @@ export default function Channel() {
   }
 
   // On refresh, context.channel is not yet initialized
-  if(!channel){
+  if(!channel || Object.keys(authors).length === 0){
     return (<div>loading</div>)
   }
   return (
