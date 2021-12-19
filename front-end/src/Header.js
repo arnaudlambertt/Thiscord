@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
 // Layout
 import { useTheme } from '@mui/styles';
-import { IconButton } from '@mui/material';
+import { IconButton,Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Button,Box} from "@mui/material";
 import Context from './Context';
@@ -20,7 +20,6 @@ const useStyles = (theme, user) => ({
   menu: {
     [theme.breakpoints.up('sm')]: {
       display: 'none !important',
-
     },
   }
 })
@@ -45,34 +44,35 @@ export default function Header() {
   return (
     <header css={styles.header}>
     <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={drawerToggle}
-            css={styles.menu}
-            >
-              <MenuIcon />
-          </IconButton>
-          {user ?
-            <p>{user.username}</p> : ''
-          }
-          <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-          <Settings small={true}/>
-          <Button variant="contained" color='terciary' sx={{right:5,height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
-          </Box>
-          </Box>
+      sx={{
+        display: 'flex',
+        height: 50,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        onClick={drawerToggle}
+        css={styles.menu}
+      >
+        <MenuIcon />
+      </IconButton>
+      {user ?
+      <Typography sx={{width: { xs: "240px", sm: "200px",md:"400px" },overflow:'hidden',textOverflow:'ellipsis'}}>{user.username}</Typography> : ''
+      }
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Settings small={true}/>
+        <Button variant="contained" color='terciary' sx={{right:5,height:"90%" }} onClick={onClickLogout}>LOGOUT</Button>
+      </Box>
+    </Box>
     </header>
   );
 }

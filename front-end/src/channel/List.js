@@ -1,12 +1,12 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState,useEffect} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState} from 'react'
 import Context from '../Context'
 import axios from 'axios';
 import Gravatar from 'react-gravatar';
 // Layout
 import { useTheme } from '@mui/styles';
-import { IconButton,Box, Button } from '@mui/material';
+import { IconButton,Box, Button,Typography } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextField from "@mui/material/TextField";
@@ -28,25 +28,12 @@ const useStyles = (theme) => ({
     flex: '1 1 auto',
     color:theme.palette.text.primary,
     overflow: 'auto',
-    overflowWrap:'break-word',
     '& ul': {
       'margin': 0,
       'padding': 0,
       'textIndent': 0,
       'listStyleType': 0,
     },
-  },
-  message: {
-    padding: '.2rem .5rem',
-    ':hover': {
-      backgroundColor:theme.palette.background.middle,
-    },
-  },
-  fabWrapper: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    width: '50px',
   },
   timeStamp: {
    color: theme.palette.text.primary,
@@ -57,11 +44,6 @@ const useStyles = (theme) => ({
   color: theme.palette.text.primary,
   fontSize: 14
 },
- author: {
-   color: theme.palette.primary.main,
-   fontSize: 20,
-   fontWeight: 'bold'
- },
   fab: {
     position: 'fixed !important',
     top: 0,
@@ -83,15 +65,6 @@ export default forwardRef(({
   useImperativeHandle(ref, () => ({
     scroll: scroll
   }));
-
-
-  // useEffect( async () => {
-  //   const savePictures =  async () => {
-  //       const image = await getGravatar(authors[user.id].email, {size: 200})
-  //       await fs.writeFile(authors[user.id].email+'png', image)
-  //     };
-  //   savePictures()
-  // },[authors])
 
   const rootEl = useRef(null)
   const scrollEl = useRef(null)
@@ -146,24 +119,25 @@ export default forwardRef(({
  }
  const editMessage = async (message) => {
    try{
-     const {data: edited} = await axios.put(
-       `http://localhost:3001/channels/${channel.id}/messages`,
-       {
-         content: content,
-         creation: message.creation,
-       },
-       {
-       headers: {
-         'Authorization': `Bearer ${oauth.access_token}`
-       },
-     })
-     messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
-     setOpen(false)
+     if(content){
+       const {data: edited} = await axios.put(
+         `http://localhost:3001/channels/${channel.id}/messages`,
+         {
+           content: content,
+           creation: message.creation,
+         },
+         {
+         headers: {
+           'Authorization': `Bearer ${oauth.access_token}`
+         },
+       })
+       messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
+       setOpen(false)
+     }
    }catch(err){
      console.log(err)
    }
  }
-
 
   return (
     <div css={styles.root} ref={rootEl}>
@@ -177,74 +151,98 @@ export default forwardRef(({
             .processSync(message.content);
             return (
               <li key={i} css={styles.message}>
-                <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          overflow:'auto',
-                          flexWrap:'wrap',
-                        }}
-                      >
-                      <Box
-                          sx={{
-                            display: 'flex',
-                            overflow:'auto',
-                            flexWrap:'wrap',
-                            alignItems:'center'
-                          }}
-                            >
-                    <span css={styles.author}>
+                <Box sx={{
+                  padding: '.2rem .5rem',
+                  ':hover': {
+                    backgroundColor:'background.middle',
+                  },
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  flexDirection:'row',
+                  overflow:'auto',
+                  overflowWrap:'break-word',
+                  flexWrap:'wrap',
+                  }}>
+                    <span>
                     {
                       authors[message.author] ?
-                     <Gravatar style={{borderRadius:100}} email={authors[message.author].email} />
+                      authors[message.author].avatar==='gravatar' ? <Gravatar size={50} style={{borderRadius: "100%"}} email={authors[message.author].email}/>
+                      : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50'/>
                       :''
                     }
                     </span>
-                    <span css={styles.author}>{authors[message.author]?.username}</span>
-                    <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                  </Box>
-                  {user.id === message.author ?
-                    <div>
-                    {message.edited ?
-                      <span css={styles.edited}>(Edited)</span>
-                      : ''
-                    }
-                    <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
-                      <CreateIcon />
-                    </IconButton>
-                    <Dialog open={open} onClose={handleClose}>
-                      <DialogTitle>Edit your message</DialogTitle>
-                      <DialogContent>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="name"
-                          value={content}
-                          onChange={handleChange}
-                          label="your message"
-                          variant="standard"
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
-                      </DialogActions>
-                    </Dialog>
-                    <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
-                      <DeleteIcon />
-                    </IconButton>
+                  <Box sx={{width:'calc(100% - 60px)', marginLeft:1}}>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection:'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        overflowWrap:'break-word',
+                        flexWrap:'wrap',
+                          }}
+                    >
+                      <Box sx={{
+                              display: 'flex',
+                              flexDirection:'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'baseline',
+                              overflowWrap:'break-word',
+                              flexWrap:'wrap',
+                            }}>
+                        <Typography sx={{
+                               color: 'primary.main',
+                               fontSize: 20,
+                               fontWeight: 'bold',
+                               maxWidth:{ xs: "240px", sm: "600px" },
+                             }}
+                        >
+                          {authors[message.author]?.username}
+                        </Typography>
+                        <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                      </Box>
+                      <Box>
+                        {user.id === message.author ?
+                        <div>
+                          {message.edited ?
+                          <span css={styles.edited}>(Edited)</span>
+                          : ''
+                          }
+                          <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
+                            <CreateIcon fontSize="small" />
+                          </IconButton>
+                          <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle>Edit your message</DialogTitle>
+                            <DialogContent>
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                value={content}
+                                onChange={handleChange}
+                                label="your message"
+                                variant="standard"
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={handleClose}>Cancel</Button>
+                              <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
+                            </DialogActions>
+                          </Dialog>
+                          <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
+                            <DeleteIcon fontSize="small"/>
+                          </IconButton>
+                        </div>
+                        :
+                        message.edited ?
+                        <span css={styles.edited}>(Edited)</span>
+                        : ''
+                        }
+                      </Box>
+                    </Box>
+                    <div dangerouslySetInnerHTML={{__html: value}}>
                     </div>
-                  :
-                  message.edited ?
-                    <span css={styles.edited}>(Edited)</span>
-                    : ''
-                  }
-
                   </Box>
-                <div dangerouslySetInnerHTML={{__html: value}}>
-                </div>
-
+                </Box>
               </li>
             )
         })}

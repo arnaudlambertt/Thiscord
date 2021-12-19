@@ -10,7 +10,7 @@ const authenticate = authenticator({
   jwks_uri: 'http://127.0.0.1:5556/dex/keys'
 })
 
-app.use(require('body-parser').json())
+app.use(require('body-parser').json({limit:'4mb'}))
 app.use(cors())
 
 app.all('*', authenticate)
@@ -25,8 +25,12 @@ app.get('/channels', loadUser, async (req, res) => {
 })
 
 app.post('/channels', loadUser, async (req, res) => {
-  const channel = await db.channels.create(req.body, req.user)
-  res.status(201).json(channel)
+  try{
+    const channel = await db.channels.create(req.body, req.user)
+    res.status(201).json(channel)
+  }catch(err){
+    res.status(403).send(err.message)
+  }
 })
 
 app.get('/channels/:id', loadUser, async (req, res) => {
@@ -34,7 +38,7 @@ app.get('/channels/:id', loadUser, async (req, res) => {
     const channel = await db.channels.get(req.params.id, req.user)
     res.json(channel)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel or it does not exist')
+    res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
 })
 
@@ -44,7 +48,7 @@ app.put('/channels/:id', loadUser, async (req, res) => {
     const channel = await db.channels.update(req.body,original)
     res.json(channel)
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel or it does not exist')
+    res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
 })
 
@@ -54,7 +58,7 @@ app.delete('/channels/:id', loadUser, async (req, res) => {
     const channel = await db.channels.delete(original)
     res.status(204).send()
   }catch(err){
-    return res.status(403).send('You don\'t have access to this channel or it does not exist')
+    res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
 })
 
@@ -76,8 +80,12 @@ app.post('/channels/:id/messages', loadUser, async (req, res) => {
   }catch(err){
     return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
-  const message = await db.messages.create(req.params.id, req.body, req.user)
-  res.status(201).json(message)
+  try{
+    const message = await db.messages.create(req.params.id, req.body, req.user)
+    res.status(201).json(message)
+  }catch(err){
+    res.status(400).send('Bad message')
+  }
 })
 
 app.put('/channels/:id/messages', loadUser, async (req, res) => {
@@ -86,8 +94,12 @@ app.put('/channels/:id/messages', loadUser, async (req, res) => {
   }catch(err){
     return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
-  const message = await db.messages.update(req.params.id, req.body, req.user)
-  res.json(message)
+  try{
+    const message = await db.messages.update(req.params.id, req.body, req.user)
+    res.json(message)
+  }catch(err){
+    res.status(400).send('Bad message')
+  }
 })
 
 app.delete('/channels/:id/messages', loadUser, async (req, res) => {
@@ -96,8 +108,12 @@ app.delete('/channels/:id/messages', loadUser, async (req, res) => {
   }catch(err){
     return res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
-  await db.messages.delete(req.params.id, req.body, req.user)
-  res.status(204).send()
+  try{
+    await db.messages.delete(req.params.id, req.body, req.user)
+    res.status(204).send()
+  }catch(err){
+    res.status(403).send('You cannot delete this message or it does not exist')
+  }
 })
 // Users
 app.get('/signin', loadUser, async (req, res, next) => {
