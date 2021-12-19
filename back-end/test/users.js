@@ -32,7 +32,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'dark',
-      avatar: 'gravatar'
+      avatar: './david.png'
     }])
   })
 
@@ -51,7 +51,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'dark',
-      avatar: 'gravatar'
+      avatar: './david.png'
     }])
   })
 
@@ -83,7 +83,7 @@ describe('users', () => {
       email: process.env['TEST_PAYLOAD_EMAIL'],
       channels: [],
       theme: 'dark',
-      avatar: 'gravatar'
+      avatar: './david.png'
     })
   })
 

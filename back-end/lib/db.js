@@ -157,7 +157,7 @@ module.exports = {
       if(!email) throw Error('Invalid email')
       const id = uuid()
       user.theme = 'dark'
-      user.avatar = 'gravatar'
+      user.avatar = './david.png'
       user.email = email
       user.channels = []
       await db.put(`usersid:${email}`, JSON.stringify(id))
