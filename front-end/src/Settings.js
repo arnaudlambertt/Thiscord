@@ -21,6 +21,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Gravatar from 'react-gravatar';
 import PortraitIcon from '@mui/icons-material/Portrait';
 import { DropzoneAreaBase } from 'material-ui-dropzone';
+import Divider from '@mui/material/Divider';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -308,32 +309,33 @@ return (
     <DialogTitle>Settings</DialogTitle>
     <DialogContent>
       {user ?
-        <Box sx={{ display:'flex',
-           flexDirection:'column', width: { xs: "240px", sm: "400px" }}}>
-           <br></br>
-          <TextField
-            InputProps= {{readOnly: true }}
-            value={user.email}
-            label="email"
-            sx={{width:'100%'}}
-          />
-          <br></br>
-          <TextField
-            value={username}
-            placeholder="username"
-            label="username" sx={{width:'100%'}}
-            onChange={editUsername}
-          />
+      <Box sx={{ display:'flex', flexDirection:'column', width: { xs: "240px", sm: "400px" }}}>
+        <Divider sx={{ borderBottomWidth: 7, borderColor: "transparent" }}/>
+        <TextField
+          InputProps= {{readOnly: true }}
+          value={user.email}
+          label="email"
+          sx={{width:'100%'}}
+        />
+      <Divider sx={{ borderBottomWidth: 7, borderColor: "transparent" }}/>
+        <TextField
+          value={username}
+          placeholder="username"
+          label="username" sx={{width:'100%'}}
+          onChange={editUsername}
+        />
         <Typography color="error">{usedUsername ? "This username is already taken"
             : atUsername ? "Your username cannot contain '@'"
             : !username.length ? "Your username cannot be empty" : ""}</Typography>
-          <Box sx={{display:'flex',flexDirection:'row', justifyContent: 'space-between'}}>
-            <p>Theme:</p>
-            <MaterialUISwitch sx={{ m: 1 }} checked={mode==='dark'} onChange={toggleTheme}/>
-          </Box>
+        <Box sx={{display:'flex',flexDirection:'row', justifyContent: 'space-between'}}>
+          <p>Theme:</p>
+          <MaterialUISwitch sx={{ m: 1 }} checked={mode==='dark'} onChange={toggleTheme}/>
+        </Box>
         Avatar:
         <Button onClick={handleOpenImageSettings}>
-        {user.avatar==='gravatar' ? <Gravatar size={100} email={user.email}/> : <img src={user.avatar} alt="your avatar" width='100' height='100'/>}
+        {user.avatar==='gravatar' ?
+        <Gravatar size={100} email={user.email}/> :
+        <img src={user.avatar} alt="your avatar" width='100' height='100'/>}
         </Button>
         <Dialog open={openImageSettings} onClose={handleCloseImageSettings}>
           <Button onClick={applyImageGravatar}>use my gravatar</Button>
@@ -353,25 +355,25 @@ return (
                   showAlerts={false}
                 />
                 {importedImage ?
-                  <Box sx={{position: "absolute", top: "62%", left: "50%"}}>
-                    <img src={importedImage} alt="importedImage" width='175' height='175'
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translateX(-50%) translateY(-50%)"
-                      }}/>
-                    <Box sx={{width:175,height:175,border:2,borderColor:'#FFF',borderRadius:'50%', position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translateX(-50%) translateY(-50%)"}}>
-                      </Box>
-                    </Box>: ''}
+                <Box sx={{position: "absolute", top: "62%", left: "50%"}}>
+                  <img src={importedImage} alt="importedImage" width='175' height='175'
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(-50%)"
+                    }}/>
+                  <Box sx={{width:175,height:175,border:2,borderColor:'#FFF',borderRadius:'50%', position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(-50%)"}}>
+                  </Box>
+                </Box> : ''}
               </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCloseImageUpload}>Cancel</Button>
-                <Button onClick={applyImageUpload} variant="contained">Save image settings</Button>
+              <Button onClick={handleCloseImageUpload}>Cancel</Button>
+              <Button onClick={applyImageUpload} variant="contained">Save image settings</Button>
             </DialogActions>
           </Dialog>
           <Dialog open={openImageSelection} onClose={handleCloseImageSelection}>
@@ -397,53 +399,53 @@ return (
               <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/clement.jpg' key="clement">
                 <img src='http://localhost:3000/clement.jpg' style={{borderRadius: "100%"}} width="100" height="100" alt='clement'/>
                 {chosenPicture==='http://localhost:3000/clement.jpg'?
-                    <div
-                      style={{
-                        position: "absolute",
-                        color: "#00BB00",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translateX(-50%) translateY(-50%)"
-                      }}
-                    >
-                      {" "}
-                      <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
-                    </div>
-                   : ''}
+                  <div
+                    style={{
+                      position: "absolute",
+                      color: "#00BB00",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(-50%)"
+                    }}
+                  >
+                    {" "}
+                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                  </div>
+                 : ''}
               </ToggleButton>
               <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/david.png' key="david">
                 <img src='http://localhost:3000/david.png' style={{borderRadius: "100%"}} width="100" height="100" alt='david'/>
                 {chosenPicture==='http://localhost:3000/david.png'?
-                    <div
-                      style={{
-                        position: "absolute",
-                        color: "#00BB00",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translateX(-50%) translateY(-50%)"
-                      }}
-                    >
-                      {" "}
-                      <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
-                    </div>
-                   : ''}
+                  <div
+                    style={{
+                      position: "absolute",
+                      color: "#00BB00",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(-50%)"
+                    }}
+                  >
+                    {" "}
+                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                  </div>
+                 : ''}
               </ToggleButton>
               <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/sergei.jpg' key='./sergei.jpg'>
                 <img src='http://localhost:3000/sergei.jpg' style={{borderRadius: "100%"}} width="100" height="100" alt='sergei'/>
                 {chosenPicture==='http://localhost:3000/sergei.jpg'?
-                    <div
-                      style={{
-                        position: "absolute",
-                        color: "#FFFFFF",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translateX(-50%) translateY(-50%)"
-                      }}
-                    >
-                      {" "}
-                      <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
-                    </div>
-                   : ''}
+                  <div
+                    style={{
+                      position: "absolute",
+                      color: "#FFFFFF",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(-50%)"
+                    }}
+                  >
+                    {" "}
+                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                  </div>
+                 : ''}
               </ToggleButton>
             </ToggleButtonGroup>
             <DialogActions>
