@@ -115,23 +115,6 @@ export default function Welcome() {
         </Grid>
         <Grid item xs>
           <div css={styles.card}>
-          <Button variant="outlined" sx={{color:'primary.main' }} color="secondary" >
-            <Grid
-              container
-              direction="column"
-            >
-              <Grid item xs>
-                <FriendsIcon css={styles.icon} />
-              </Grid>
-              <Grid item xs>
-                <p>Invite Friends</p>
-              </Grid>
-            </Grid>
-          </Button>
-          </div>
-        </Grid>
-        <Grid item xs>
-          <div css={styles.card}>
             <Settings small={false}/>
           </div>
         </Grid>
