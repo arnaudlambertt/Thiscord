@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
 // Layout
 import { useTheme } from '@mui/styles';
-import { IconButton } from '@mui/material';
+import { IconButton,Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Button,Box} from "@mui/material";
 import Context from './Context';
@@ -60,7 +60,7 @@ export default function Header() {
               <MenuIcon />
           </IconButton>
           {user ?
-            <p>{user.username}</p> : ''
+            <Typography sx={{width: { xs: "240px", sm: "600px" },overflow:'hidden',textOverflow:'ellipsis'}}>{user.username}</Typography> : ''
           }
           <Box
                   sx={{
