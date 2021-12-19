@@ -136,10 +136,15 @@ Application development
     Every user can choose an avatar from a wonderful preselection of profile pictures the image selected is saved into his profile
 * Personal custom avatar   
   graduation: 6/6
-  
+
     You can upload your own profile picture and that picture will be saved in your profile as your avatar
 ## Bonus
 
-+1 every user has a username and can modify it, it is impossible to have the whole list of username or to enter in contact with someone without knowing his username.
+* Username +1
+
+  every user has a username and can modify it, it is impossible to have the whole list of username or to enter in contact with someone without knowing his username.
   When a user first logs in he is asked to create one.
-+1 point Theme dark or light, settings saved in the user db
+
+* working theme +1
+
+    point Theme dark or light, settings saved in the user db
