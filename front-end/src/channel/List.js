@@ -187,7 +187,8 @@ export default forwardRef(({
                 <span>
                 {
                   authors[message.author] ?
-                 <Gravatar style={{borderRadius:100,}} email={authors[message.author].email} />
+                  authors[message.author].avatar==='gravatar' ? <Gravatar size={50} email={authors[message.author].email}/>
+                  : <img src={authors[message.author].avatar} alt="user_avatar" width='50' height='50'/>
                   :''
                 }
                 </span>

@@ -75,6 +75,8 @@ export const Provider = ({
       user: user,
       setUser: (user) => {
         if(user){
+          const authorsCopy = Object.assign({},authors)[user.id] = user
+          setAuthors(authorsCopy)
           setMode(user.theme)
           setCookie('user', user, {path: '/'})
         }else{
