@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useTheme } from '@mui/styles';
 import Blog from './landing/Blog'
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { Link,AppBar,Toolbar,Box,Button,Grid } from '@mui/material';
+import { Link,Box,Button } from '@mui/material';
 // Local
 import Context from './Context'
 import {
