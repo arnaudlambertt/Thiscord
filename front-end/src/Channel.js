@@ -63,7 +63,7 @@ export default function Channel() {
     }
     fetch()
     setCurrentChannel(channel)
-  },[navigate,channel,setCurrentChannel,id,oauth])
+  },[navigate,channel,setCurrentChannel,id,oauth,authors])
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
@@ -71,23 +71,9 @@ export default function Channel() {
     listRef.current.scroll()
   }
 
-  const messagesReady = () => {
-    for(const message of messages){
-      if(!authors[message.author])
-        return false
-    }
-      return true
-  }
-
   if(!channel)
-    return <div></div>
+    return (<div></div>)
 
-  if(!messagesReady()){
-    return(
-    <div css={styles.root}>
-      <h1>Messages for {channel.name}</h1>
-    </div>)
-  }
   return (
     <div css={styles.root}>
       <List
