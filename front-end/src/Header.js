@@ -60,7 +60,7 @@ export default function Header() {
               <MenuIcon />
           </IconButton>
           {user ?
-            <Typography sx={{width: { xs: "240px", sm: "600px" },overflow:'hidden',textOverflow:'ellipsis'}}>{user.username}</Typography> : ''
+            <Typography sx={{width: { xs: "240px", sm: "200px",md:"400px" },overflow:'hidden',textOverflow:'ellipsis'}}>{user.username}</Typography> : ''
           }
           <Box
                   sx={{

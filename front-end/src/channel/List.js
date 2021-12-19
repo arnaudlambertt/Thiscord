@@ -6,7 +6,7 @@ import axios from 'axios';
 import Gravatar from 'react-gravatar';
 // Layout
 import { useTheme } from '@mui/styles';
-import { IconButton,Box, Button } from '@mui/material';
+import { IconButton,Box, Button,Typography } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextField from "@mui/material/TextField";
@@ -36,12 +36,6 @@ const useStyles = (theme) => ({
       'listStyleType': 0,
     },
   },
-  message: {
-    padding: '.2rem .5rem',
-    ':hover': {
-      backgroundColor:theme.palette.background.middle,
-    },
-  },
   fabWrapper: {
     position: 'absolute',
     right: 0,
@@ -57,11 +51,6 @@ const useStyles = (theme) => ({
   color: theme.palette.text.primary,
   fontSize: 14
 },
- author: {
-   color: theme.palette.primary.main,
-   fontSize: 20,
-   fontWeight: 'bold'
- },
   fab: {
     position: 'fixed !important',
     top: 0,
@@ -178,36 +167,55 @@ export default forwardRef(({
             return (
               <li key={i} css={styles.message}>
               <Box sx={{
+                padding: '.2rem .5rem',
+                ':hover': {
+                  backgroundColor:'background.middle',
+                },
                 display: 'flex',
                 alignItems: 'flex-start',
                 flexDirection:'row',
                 overflow:'auto',
+                overflowWrap:'break-word',
                 flexWrap:'wrap',
                 }}>
-                <span>
-                {
-                  authors[message.author] ?
-                  authors[message.author].avatar==='gravatar' ? <Gravatar size={50} style={{borderRadius: "100%"}} email={authors[message.author].email}/>
-                  : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50'/>
-                  :''
-                }
-                </span>
-                <Box sx={{width:'calc(100% - 200px)', marginLeft:1}}>
+                  <span>
+                  {
+                    authors[message.author] ?
+                    authors[message.author].avatar==='gravatar' ? <Gravatar size={50} style={{borderRadius: "100%"}} email={authors[message.author].email}/>
+                    : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50'/>
+                    :''
+                  }
+                  </span>
+                  <Box sx={{width:'calc(100% - 60px)', marginLeft:1}}>
                   <Box
                           sx={{
-                            width:'100%',
                             display: 'flex',
                             flexDirection:'row',
                             justifyContent: 'space-between',
-                            alignItems: 'center',
-                            overflow:'auto',
+                            alignItems: 'flex-start',
+                            overflowWrap:'break-word',
                             flexWrap:'wrap',
                           }}
                         >
-                      <Box>
-                        <span css={styles.author}>{authors[message.author]?.username}</span>
-                        <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
-                      </Box>
+                        <Box   sx={{
+                            display: 'flex',
+                            flexDirection:'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'baseline',
+                            overflowWrap:'break-word',
+                            flexWrap:'wrap',
+                          }}>
+                          <Typography sx={{
+                             color: 'primary.main',
+                             fontSize: 20,
+                             fontWeight: 'bold',
+                             maxWidth:{ xs: "240px", sm: "600px" },
+                           }}
+                          >
+                            {authors[message.author]?.username}
+                          </Typography>
+                          <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
+                        </Box>
                       <Box>
                       {user.id === message.author ?
                         <div>
@@ -216,7 +224,7 @@ export default forwardRef(({
                           : ''
                         }
                         <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
-                          <CreateIcon />
+                          <CreateIcon fontSize="small" />
                         </IconButton>
                         <Dialog open={open} onClose={handleClose}>
                           <DialogTitle>Edit your message</DialogTitle>
@@ -237,7 +245,7 @@ export default forwardRef(({
                           </DialogActions>
                         </Dialog>
                         <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
-                          <DeleteIcon />
+                          <DeleteIcon fontSize="small"/>
                         </IconButton>
                         </div>
                       :
