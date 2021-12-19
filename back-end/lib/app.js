@@ -10,7 +10,7 @@ const authenticate = authenticator({
   jwks_uri: 'http://127.0.0.1:5556/dex/keys'
 })
 
-app.use(require('body-parser').json())
+app.use(require('body-parser').json({limit:'3mb'}))
 app.use(cors())
 
 app.all('*', authenticate)
