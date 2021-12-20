@@ -62,6 +62,7 @@ app.post('/channels', loadUser, async (req, res) => {
   try{
     const channel = await db.channels.create(req.body, req.user)
     res.status(201).json(channel)
+    io.to(req.user.id).emit('update channel', channel)
   }catch(err){
     res.status(403).send(err.message)
   }
