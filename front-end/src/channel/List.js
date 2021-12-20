@@ -1,6 +1,6 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState, useEffect} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState} from 'react'
 import Context from '../Context'
 import axios from 'axios';
 import Gravatar from 'react-gravatar';
@@ -60,7 +60,6 @@ export default forwardRef(({
   const styles = useStyles(useTheme())
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState('')
-  const [, refresh] = useState(false)
   const {user,authors,oauth} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
@@ -139,17 +138,6 @@ export default forwardRef(({
      console.log(err)
    }
  }
-
-useEffect(() => {
-const authorsLoaded = () => {
- for(const message of messages){
-   if(!authors[message.author])
-    return false
-  }
-  return true
-  }
-  refresh(authorsLoaded())
-}, [refresh,authors,messages])
 
   return (
     <div css={styles.root} ref={rootEl}>

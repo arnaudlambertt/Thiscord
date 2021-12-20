@@ -35,24 +35,6 @@ export const Provider = ({
   if(user && !user.avatar)
     userImageInit()
 
-  const addAuthor = async (id) => {
-    try{
-      const {data: author} = await axios.get(`http://localhost:3001/users/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${oauth.access_token}`
-        }
-      })
-      const pair = {}
-      if(!authors[id])
-      {
-        pair[id] = author
-        setAuthors(Object.assign(authors,pair))
-      }
-    }catch(err){
-      console.error(err)
-    }
-  }
-
   const refreshOneChannel = async (desiredChannel) => {
     try{
       const {data: channel} = await axios.get(`http://localhost:3001/channels/${desiredChannel.id}`, {
@@ -111,11 +93,7 @@ export const Provider = ({
         setUser(user)
       },
       authors: authors,
-      updateAuthors: (id) => {
-        if(!authors[id]){
-          addAuthor(id)
-        }
-      },
+      setAuthors: setAuthors,
       channels: channels,
       drawerVisible: drawerVisible,
       setDrawerVisible: setDrawerVisible,
