@@ -61,7 +61,7 @@ export default forwardRef(({
 }, ref) => {
   const styles = useStyles(useTheme())
   const [open, setOpen] = useState(false);
-  const [content, setContent] = useState('')
+  const [messageToEdit, setMessageToEdit] = useState({content:''})
   const {user,authors,oauth} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
@@ -93,79 +93,77 @@ export default forwardRef(({
   })
 
   const handleOpen = (message) => {
-   setOpen(true)
-   setContent(message.content)
- }
+    setOpen(true)
+    setMessageToEdit(message)
+  }
 
- const handleClose = () => {
-   setOpen(false)
- }
- const handleChange = (e) => {
-   setContent(e.target.value)
- }
- const deleteMessage = async (message) => {
-   try{
-     await axios.delete(
-       `http://localhost:3001/channels/${channel.id}/messages`,
-       {
-       headers: {
-         'Authorization': `Bearer ${oauth.access_token}`
-       },
-       data: message
-     })
-   }catch(err){
-     console.log(err)
-   }
- }
- const editMessage = async (message) => {
-   try{
-     if(content){
-       const {data: edited} = await axios.put(
-         `http://localhost:3001/channels/${channel.id}/messages`,
-         {
-           content: content,
-           creation: message.creation,
-         },
-         {
-         headers: {
-           'Authorization': `Bearer ${oauth.access_token}`
-         },
-       })
-       setOpen(false)
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleChange = (e) => {
+    setMessageToEdit({...messageToEdit, content: e.target.value})
+  }
+
+  const deleteMessage = async (message) => {
+    try{
+      await axios.delete(`http://localhost:3001/channels/${channel.id}/messages`,
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          },
+          data: message
+      })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const editMessage = async () => {
+    if(messageToEdit.content){
+      try{
+        await axios.put(`http://localhost:3001/channels/${channel.id}/messages`,
+        {
+          content: messageToEdit.content,
+          creation: messageToEdit.creation,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          },
+        })
+        setOpen(false)
+       }catch(err){
+         console.log(err)
+       }
      }
-   }catch(err){
-     console.log(err)
-   }
- }
+  }
 
- useEffect(() => {
-   const socket = socketIOClient('http://localhost:3001', {
-     withCredentials: true,
-     extraHeaders: {
-    'Authorization': `Bearer ${oauth.access_token}`
-   }
-   });
-   socket.on('update message '+ channel.id, message => {
-     setMessages(messages =>
-     {
-       const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
-       if(localMessageIndex === -1)
-         return[...messages, message]
+  useEffect(() => {
+    const socket = socketIOClient('http://localhost:3001', {
+      withCredentials: true,
+      extraHeaders: {
+        'Authorization': `Bearer ${oauth.access_token}`
+      }
+    });
+    socket.on('update message '+ channel.id, message => {
+      setMessages(messages => {
+        const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+        if(localMessageIndex === -1)
+          return[...messages, message]
 
-       messages.splice(localMessageIndex,1,message)
-       return[...messages]
-     })
-   });
-   socket.on('delete message '+ channel.id, message => {
-     setMessages(messages =>
-     {
-       const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
-       if(localMessageIndex !== -1)
-         messages.splice(localMessageIndex,1)
-       return [...messages]
-     })
-   });
- }, [setMessages, oauth, channel])
+        messages.splice(localMessageIndex,1,message)
+        return[...messages]
+      })
+    });
+    socket.on('delete message '+ channel.id, message => {
+      setMessages(messages => {
+        const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+        if(localMessageIndex !== -1)
+          messages.splice(localMessageIndex,1)
+        return [...messages]
+      })
+    });
+  }, [setMessages, oauth, channel])
 
   return (
     <div css={styles.root} ref={rootEl}>
@@ -235,7 +233,7 @@ export default forwardRef(({
                           <span css={styles.edited}>(Edited)</span>
                           : ''
                           }
-                          <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
+                          <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation();handleOpen(message)}}>
                             <CreateIcon fontSize="small" />
                           </IconButton>
                           <Dialog open={open} onClose={handleClose}>
@@ -245,7 +243,7 @@ export default forwardRef(({
                                 autoFocus
                                 margin="dense"
                                 id="name"
-                                value={content}
+                                value={messageToEdit.content}
                                 onChange={handleChange}
                                 label="your message"
                                 variant="standard"
@@ -253,7 +251,7 @@ export default forwardRef(({
                             </DialogContent>
                             <DialogActions>
                               <Button onClick={handleClose}>Cancel</Button>
-                              <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
+                              <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage();}}>Edit</Button>
                             </DialogActions>
                           </Dialog>
                           <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
