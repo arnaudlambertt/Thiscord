@@ -16,14 +16,14 @@ function Main() {
         },
       }}
     >
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" sx={{color:'terciary.contrastText'}}gutterBottom>
         A project made by
       </Typography>
       <Divider />
-        <Typography>
+        <Typography sx={{color:'terciary.contrastText'}}>
           Lambert Arnaud
         </Typography>
-        <Typography>
+        <Typography sx={{color:'terciary.contrastText'}}>
           Bouvard Clément
         </Typography>
     </Grid>
