@@ -44,6 +44,7 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   socket.join(socket.request.user.id);
   socket.on("disconnect", () => {
+    socket.leave(socket.request.user.id);
   });
 });
 
