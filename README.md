@@ -160,6 +160,6 @@ Application development
 
   Customized from mui, mode dark or light, this setting is saved in the db.
   
-* Socket.io
+* Socket.io (+?)
 
-Use of Socket.io to update in real time the client of each user connected. The channels, the members, the messages (creation, edition and deletion), etc. Are all updated and shared across the concerned clients.
+Use of Socket.io to update in real time the client of each user connected. The channels, the members, the messages (creation, edition and deletion), etc. Are all updated and shared across the concerned clients. This feature is what makes this chat a real time chat app. And it works beautifully.
