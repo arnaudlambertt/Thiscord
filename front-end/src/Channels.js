@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import List from './sidebar/List'
 import Parameters from './sidebar/Parameters'
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 const useStyles = (theme) => ({
   root: {
     height: '70%',
@@ -32,6 +32,7 @@ export default function Channels() {
   } = useContext(Context)
 
   const navigate = useNavigate();
+  const location = useLocation();
   const listRef = useRef()
   const styles = useStyles(useTheme(), user)
 
@@ -78,9 +79,11 @@ export default function Channels() {
           channels.splice(localChannelIndex,1)
         return [...channels]
       })
+      if(location.pathname === (`/channels/${channel.id}`))
+        navigate('/')
     });
 
-  }, [oauth,setChannels])
+  }, [oauth,setChannels,navigate,location])
 
 
 //add members
