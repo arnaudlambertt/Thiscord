@@ -26,8 +26,7 @@ const useStyles = (theme) => ({
 export default function Channels() {
   const {
     oauth,
-    channels, setChannels,
-    updateAuthors,
+    setChannels,
     user
   } = useContext(Context)
 
@@ -53,17 +52,6 @@ export default function Channels() {
     }
     fetch()
   }, [oauth, setChannels])
-
-  useEffect( () => {
-    const fetch = async () => {
-      for(const channel of channels){
-        for(const member of channel.allMembers){
-          updateAuthors(member)
-        }
-      }
-    }
-    fetch()
-  },[updateAuthors,channels])
 
 //add members
   return (

@@ -1,6 +1,6 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef,useState} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState} from 'react'
 import Context from '../Context'
 import axios from 'axios';
 import Gravatar from 'react-gravatar';
@@ -167,7 +167,7 @@ export default forwardRef(({
                     {
                       authors[message.author] ?
                       authors[message.author].avatar==='gravatar' ? <Gravatar size={50} style={{borderRadius: "100%"}} email={authors[message.author].email}/>
-                      : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50'/>
+                      : <img src={authors[message.author].avatar} style={{borderRadius: "100%"}} alt="user_avatar" width='50' height='50' />
                       :''
                     }
                     </span>

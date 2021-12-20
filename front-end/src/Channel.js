@@ -35,11 +35,12 @@ const useStyles = (theme) => ({
 export default function Channel() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const {channels, oauth, setCurrentChannel, authors} = useContext(Context)
+  const {channels, oauth, setCurrentChannel, authors, setAuthors} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
   const styles = useStyles(useTheme())
   const listRef = useRef()
   const [messages, setMessages] = useState([])
+  const [,reRender] = useState(false)
   const [scrollDown, setScrollDown] = useState(false)
   const addMessage = (message) => {
     setMessages([...messages, message])
@@ -64,6 +65,35 @@ export default function Channel() {
     fetch()
     setCurrentChannel(channel)
   },[navigate,channel,setCurrentChannel,id,oauth])
+
+  useEffect( () => {
+    const authorsTemp = {}
+    const addAuthor = async (id) => {
+      try{
+        const {data: author} = await axios.get(`http://localhost:3001/users/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          }
+        })
+        if(!authorsTemp[id])
+          authorsTemp[id] = author
+      }catch(err){
+        console.error(err)
+      }
+    }
+    const fetch = async () => {
+      for(const channel of channels){
+        for(const member of channel.allMembers){
+          if(!authorsTemp[member])
+            await addAuthor(member)
+        }
+      }
+      setAuthors(Object.assign(authors,authorsTemp))
+      reRender(u => !u)
+    }
+    fetch()
+  },[authors, oauth, setAuthors,reRender, channels])
+
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
   }
@@ -71,41 +101,30 @@ export default function Channel() {
     listRef.current.scroll()
   }
 
-  const messagesReady = () => {
-    for(const message of messages){
-      if(!authors[message.author])
-        return false
-    }
-      return true
-  }
+  if(!channel || Object.keys(authors).length === 0)
+    return (<div css={styles.root}>
+              {channel ? <h1>Messages for {channel.name}</h1> : ''}
+            </div>)
 
-  if(!channel)
-    return <div></div>
+    return (
+      <div css={styles.root}>
+        <List
+          channel={channel}
+          setMessages={setMessages}
+          messages={messages}
+          onScrollDown={onScrollDown}
+          ref={listRef}
+        />
+        <Form addMessage={addMessage} channel={channel} />
+        <Fab
+          color="primary"
+          aria-label="Latest messages"
+          css={[styles.fab, scrollDown || styles.fabDisabled]}
+          onClick={onClickScroll}
+        >
+          <ArrowDropDownIcon />
+        </Fab>
+      </div>
+    )
 
-  if(!messagesReady()){
-    return(
-    <div css={styles.root}>
-      <h1>Messages for {channel.name}</h1>
-    </div>)
-  }
-  return (
-    <div css={styles.root}>
-      <List
-        channel={channel}
-        setMessages={setMessages}
-        messages={messages}
-        onScrollDown={onScrollDown}
-        ref={listRef}
-      />
-      <Form addMessage={addMessage} channel={channel} />
-      <Fab
-        color="primary"
-        aria-label="Latest messages"
-        css={[styles.fab, scrollDown || styles.fabDisabled]}
-        onClick={onClickScroll}
-      >
-        <ArrowDropDownIcon />
-      </Fab>
-    </div>
-  );
 }

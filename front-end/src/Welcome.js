@@ -8,7 +8,6 @@ import { useTheme } from '@mui/styles';
 import Settings from './Settings'
 import { Grid} from '@mui/material';
 import { ReactComponent as ChannelIcon } from './icons/channel.svg';
-import { ReactComponent as FriendsIcon } from './icons/friends.svg';
 import Context from './Context'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
