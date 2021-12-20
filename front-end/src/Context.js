@@ -53,9 +53,6 @@ export const Provider = ({
       user: user,
       setUser: (user) => {
         if(user){
-          const authorsCopy = {...authors}
-          authorsCopy[user.id] = user
-          setAuthors(authorsCopy)
           setMode(user.theme)
           if(user.avatar.indexOf('data:image/') === 0)
           {

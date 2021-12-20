@@ -92,6 +92,7 @@ export default function App() {
        }),
      [mode],
    );
+
   return (
     <div className="App" css={styles.root}>
       <ThemeProvider theme={theme}>

@@ -1,6 +1,8 @@
 
 /** @jsxImportSource @emotion/react */
-import {useContext} from 'react'
+import {useContext, useEffect} from 'react'
+import {useNavigate} from 'react-router-dom'
+import socketIOClient from 'socket.io-client';
 // Layout
 import { useTheme } from '@mui/styles';
 import { Drawer,Box } from '@mui/material';
@@ -36,18 +38,34 @@ const useStyles = (theme) => ({
 export default function Main(props) {
 const { window } = props;
   const {
-    // currentChannel, not yet used
+    setUser, oauth, setOauth,
     drawerVisible,setDrawerVisible
   } = useContext(Context)
-
-
   const handleDrawerToggle = () => {
     setDrawerVisible(!drawerVisible);
   };
-  const container =
-  window !== undefined ? () => window().document.body : undefined;
+
+  const navigate = useNavigate();
+  const container = window !== undefined ? () => window().document.body : undefined;
   const theme = useTheme()
   const styles = useStyles(theme)
+
+  useEffect(() => {
+    const socket = socketIOClient('http://localhost:3001', {
+      withCredentials: true,
+      extraHeaders: {
+     'Authorization': `Bearer ${oauth.access_token}`
+    }
+    });
+    socket.on('update user', user => {
+      setUser(user)
+    });
+    socket.on('delete user', user => {
+      setOauth(null);
+      navigate('/')
+    });
+  }, [oauth,setOauth,setUser,navigate])
+
   return (
     <main css={styles.main}>
     <Box

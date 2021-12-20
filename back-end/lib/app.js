@@ -41,10 +41,11 @@ io.use((socket, next) => {
   }
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   socket.join(socket.request.user.id);
+  const user = await db.users.get(socket.request.user.id)
+  socket.join(user.channels)
   socket.on("disconnect", () => {
-    socket.leave(socket.request.user.id);
   });
 });
 
@@ -127,7 +128,7 @@ app.post('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const message = await db.messages.create(req.params.id, req.body, req.user)
     res.status(201).json(message)
-    io.to(channel.members).emit('update message ' + channel.id, message)
+    io.to(channel.id).emit('update message ' + channel.id, message)
   }catch(err){
     res.status(400).send('Bad message')
   }
@@ -143,7 +144,7 @@ app.put('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const message = await db.messages.update(req.params.id, req.body, req.user)
     res.json(message)
-    io.to(channel.members).emit('update message ' + channel.id, message)
+    io.to(channel.id).emit('update message ' + channel.id, message)
   }catch(err){
     res.status(400).send('Bad message')
   }
@@ -159,12 +160,14 @@ app.delete('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     await db.messages.delete(req.params.id, req.body, req.user)
     res.status(204).send()
-    io.to(channel.members).emit('delete message ' + channel.id, req.body)
+    io.to(channel.id).emit('delete message ' + channel.id, req.body)
   }catch(err){
     res.status(403).send('You cannot delete this message or it does not exist')
   }
 })
+
 // Users
+
 app.get('/signin', loadUser, async (req, res, next) => {
   if(req.user.id === null)
   {
@@ -207,21 +210,27 @@ app.put('/users/:id', loadUser, async (req, res) => {
   try{
     const user = await db.users.update(req.params.id,req.body,false)
     res.json(user)
+    io.to(user.channels).emit('update author', user)
+    io.to(user.id).emit('update user', user)
   }catch(err){
+    console.log(err)
     return res.status(400).send('The updated user is invalid')
   }
 })
 
 app.delete('/users/:id', loadUser, async (req, res) => {
+  var user = null
   try{
     if(req.user.id !== req.params.id)
       throw Error('Authenticated user id different from params')
-    const user = await db.users.get(req.params.id)
+    user = await db.users.get(req.params.id)
   }catch(err){
     return res.status(403).send('You cannot delete this user or it does not exist')
   }
   await db.users.delete(req.params.id, req.user)
   res.status(204).send()
+  io.to(user.channels).emit('delete author', user)
+  io.to(user.id).emit('delete user', user)
 })
 
 module.exports = server
