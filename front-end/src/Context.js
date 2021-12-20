@@ -35,28 +35,6 @@ export const Provider = ({
   if(user && !user.avatar)
     userImageInit()
 
-  const refreshOneChannel = async (desiredChannel) => {
-    try{
-      const {data: channel} = await axios.get(`http://localhost:3001/channels/${desiredChannel.id}`, {
-        headers: {
-          'Authorization': `Bearer ${oauth.access_token}`
-        }
-      })
-      const index = channels.findIndex(e => e.id === desiredChannel.id)
-      const actual = channels.find(e => e.id === desiredChannel.id)
-      if(JSON.stringify(channel) !== JSON.stringify(actual))
-      {
-        if(actual)
-          channels.splice(index,1,channel)
-        else
-          channels.push(channel)
-        setCurrentChannel(channel)
-      }
-    }catch(err){
-      console.error(err)
-    }
-  }
-
   return (
     <Context.Provider value={{
       oauth: oauth,
@@ -101,13 +79,7 @@ export const Provider = ({
       setMode:setMode,
       setChannels: setChannels,
       currentChannel: currentChannel,
-      setCurrentChannel: (channel) => {
-        if(channel){
-          refreshOneChannel(channel)
-          channel = channels.find( e => e.id === channel.id)
-        }
-        setCurrentChannel(channel)
-      },
+      setCurrentChannel: setCurrentChannel,
     }}>{children}</Context.Provider>
   )
 }
