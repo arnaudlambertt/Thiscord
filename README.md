@@ -60,8 +60,8 @@ Project management
 
 * Naming convention   
   graduation: 2/2
-
-      The files and variables names are clear and descriptive.
+  
+    The files and variables names are clear and descriptive.
 * Project structure   
   graduation: 4/4
 
@@ -79,7 +79,7 @@ Project management
 * Git and DevOps   
   graduation: 3/4
 
-Good use of git overall, a new branch for each relatively big features, and commit names respecting conventions. Although the urls are pointing to localhost, the front-end has been deployed to [netlify](https://thiscord.netlify.app/). No docker image, nor linter though.
+  Good use of git overall, a new branch for each relatively big features, and commit names respecting conventions. Although the urls are pointing to localhost, the front-end has been deployed to [netlify](https://thiscord.netlify.app/). No docker image, nor linter though.
 
 Application development
 
@@ -160,6 +160,6 @@ Application development
 
   Customized from mui, mode dark or light, this setting is saved in the db.
   
-* Socket.io (+?)
+* Socket.io (+??)
 
-Use of Socket.io to update in real time the client of each user connected. The channels, the members, the messages (creation, edition and deletion), etc. Are all updated and shared across the concerned clients. This feature is what makes this chat a real time chat app. And it works beautifully.
+  Use of Socket.io to update **in real time the client of each user connected**. The channels, the members and the messages (creation, update and deletion), are all shared across the concerned clients. This feature is what makes this chat a real time chat app. And it works beautifully.
