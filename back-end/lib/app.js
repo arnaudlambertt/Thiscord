@@ -2,9 +2,21 @@
 const db = require('./db')
 const express = require('express')
 const cors = require('cors')
+const http = require('http')
 const {authenticator,loadUser} = require('./authenticator')
 
 const app = express()
+const server = http.createServer(app);
+const socketIo = require("socket.io");
+const io = socketIo(server, {
+  cors: {
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST","PUT","DELETE"],
+  allowedHeaders: ["Authorization"],
+  credentials: true
+}
+});
+
 const authenticate = authenticator({
   test_payload_email: process.env['TEST_PAYLOAD_EMAIL'],
   jwks_uri: 'http://127.0.0.1:5556/dex/keys'
@@ -14,6 +26,33 @@ app.use(require('body-parser').json({limit:'4mb'}))
 app.use(cors())
 
 app.all('*', authenticate)
+
+//socketio
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+io.use(wrap(authenticate))
+io.use(wrap(loadUser))
+
+io.use((socket, next) => {
+  if (socket.request.user.id) {
+    console.log(socket.request.user)
+    next();
+  } else {
+    next(new Error("unauthorized"))
+  }
+});
+
+let interval;
+
+io.on("connection", (socket) => {
+  console.log("New client connected");
+
+  socket.join(socket.request.user.id);
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
 
 // Channels
 
@@ -46,6 +85,10 @@ app.put('/channels/:id', loadUser, async (req, res) => {
   try{
     const original = await db.channels.get(req.params.id, req.user)
     const channel = await db.channels.update(req.body,original)
+    const removedMembers = original.members.filter(e => !channel.members.includes(e))
+    if(removedMembers.length)
+      io.to(removedMembers).emit('delete channel',channel)
+    io.to(channel.members).emit('update channel',channel)
     res.json(channel)
   }catch(err){
     res.status(403).send('You don\'t have access to this channel or it does not exist')
@@ -175,4 +218,4 @@ app.delete('/users/:id', loadUser, async (req, res) => {
   res.status(204).send()
 })
 
-module.exports = app
+module.exports = server
