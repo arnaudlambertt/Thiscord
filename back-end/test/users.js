@@ -1,6 +1,6 @@
 
 const supertest = require('supertest')
-const app = require('../lib/app')
+const server = require('../lib/app')
 const db = require('../lib/db')
 
 describe('users', () => {
@@ -11,7 +11,7 @@ describe('users', () => {
 
   it('list empty', async () => {
     // Return an empty user list by default
-    const {body: users} = await supertest(app)
+    const {body: users} = await supertest(server)
     .get('/users')
     .expect(200)
     users.should.eql([])
@@ -19,11 +19,11 @@ describe('users', () => {
 
   it('list one element', async () => {
     // Create a user
-    await supertest(app)
+    await supertest(server)
     .post('/users')
     .send({username: 'user_1'})
     // Ensure we list the users correctly
-    const {body: users} = await supertest(app)
+    const {body: users} = await supertest(server)
     .get('/users')
     .expect(200)
     users.should.match([{
@@ -38,11 +38,11 @@ describe('users', () => {
 
   it('list one element searched by username', async () => {
     // Create a user
-    await supertest(app)
+    await supertest(server)
     .post('/users')
     .send({username: 'user_1'})
     // Ensure we list the users correctly
-    const {body: users} = await supertest(app)
+    const {body: users} = await supertest(server)
     .get('/users?search=ser_1')
     .expect(200)
     users.should.match([{
@@ -57,24 +57,24 @@ describe('users', () => {
 
   it('add one element', async () => {
     // Create a user
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .post('/users')
     .send({username: 'user_1'})
     .expect(201)
     // Check its return value
     // Check it was correctly inserted
-    const {body: users} = await supertest(app)
+    const {body: users} = await supertest(server)
     .get('/users')
     users.length.should.eql(1)
   })
 
   it('get user', async () => {
     // Create a user
-    const {body: user1} = await supertest(app)
+    const {body: user1} = await supertest(server)
     .post('/users')
     .send({username: 'user_1'})
     // Check it was correctly inserted
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get(`/users/${user1.id}`)
     .expect(200)
     user.should.match({
@@ -89,7 +89,7 @@ describe('users', () => {
 
   it('signin', async () => {
     // Try to sign in without creating an account
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get('/signin')
     .expect(201) //POST
     user.should.match({
@@ -99,7 +99,7 @@ describe('users', () => {
       theme: 'dark'
     })
     // Sign in again after creating an account
-    const {body: user1} = await supertest(app)
+    const {body: user1} = await supertest(server)
     .get('/signin')
     .expect(200) //GET
     user1.should.match(user)
@@ -107,15 +107,15 @@ describe('users', () => {
 
   it('update user', async () => {
     // Create a user
-    const {body: user1} = await supertest(app)
+    const {body: user1} = await supertest(server)
     .post('/users')
     .send({username: 'user_1'})
     //
-    await supertest(app)
+    await supertest(server)
     .get(`/users/${user1.id}`)
     .expect(200)
     // Update the user
-    await supertest(app)
+    await supertest(server)
     .put(`/users/${user1.id}`)
     .send({username: 'user_A',
      email: process.env['TEST_PAYLOAD_EMAIL'],
@@ -124,7 +124,7 @@ describe('users', () => {
     })
     .expect(200)
     // Check if it was correctly updated
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get(`/users/${user1.id}`)
     .expect(200)
     user.should.match({
@@ -139,19 +139,19 @@ describe('users', () => {
 
   it('delete user', async () => {
     // Create a user
-    const {body: user1} = await supertest(app)
+    const {body: user1} = await supertest(server)
     .post('/users')
     .send({username: 'user_1'})
     //
-    await supertest(app)
+    await supertest(server)
     .get(`/users/${user1.id}`)
     .expect(200)
     // delete the user
-    await supertest(app)
+    await supertest(server)
     .delete(`/users/${user1.id}`)
     .expect(204)
     // Check it was correctly deleted
-    await supertest(app)
+    await supertest(server)
     .get(`/users/${user1.id}`)
     .expect(404)
   })

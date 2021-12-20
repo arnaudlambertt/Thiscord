@@ -1,6 +1,6 @@
 
 const supertest = require('supertest')
-const app = require('../lib/app')
+const server = require('../lib/app')
 const db = require('../lib/db')
 
 describe('channels', () => {
@@ -12,24 +12,24 @@ describe('channels', () => {
   describe( 'list', () => {
 
     it('list empty', async () => {
-      const {body: user} = await supertest(app)
+      const {body: user} = await supertest(server)
       .get('/signin')
       // Return an empty channel list by default
-      const {body: channels} = await supertest(app)
+      const {body: channels} = await supertest(server)
       .get('/channels')
       .expect(200)
       channels.should.eql([])
     })
 
     it('list one element', async () => {
-      const {body: user} = await supertest(app)
+      const {body: user} = await supertest(server)
       .get('/signin')
       // Create a channel
-      await supertest(app)
+      await supertest(server)
       .post('/channels')
       .send({name: 'channel 1', members: [user.id]})
       // Ensure we list the channels correctly
-      const {body: channels} = await supertest(app)
+      const {body: channels} = await supertest(server)
       .get('/channels')
       .expect(200)
       channels.should.match([{
@@ -43,10 +43,10 @@ describe('channels', () => {
   })
 
   it('create one element', async () => {
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get('/signin')
     // Create a channel
-    const {body: channel} = await supertest(app)
+    const {body: channel} = await supertest(server)
     .post('/channels')
     .send({name: 'channel 1', members: [user.id, null]})
     .expect(201)
@@ -58,39 +58,39 @@ describe('channels', () => {
       allMembers: [user.id]
     })
     // Check it was correctly inserted
-    const {body: channels} = await supertest(app)
+    const {body: channels} = await supertest(server)
     .get('/channels')
     channels.length.should.eql(1)
   })
 
   it('get channel', async () => {
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get('/signin')
     // Create a channel
-    const {body: channel1} = await supertest(app)
+    const {body: channel1} = await supertest(server)
     .post('/channels')
     .send({name: 'channel 1', members: [user.id]})
     // Check it was correctly inserted
-    const {body: channel} = await supertest(app)
+    const {body: channel} = await supertest(server)
     .get(`/channels/${channel1.id}`)
     .expect(200)
     channel.should.eql(channel1)
   })
 
   it('update channel', async () => {
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get('/signin')
     // Create a channel
-    const {body: channel1} = await supertest(app)
+    const {body: channel1} = await supertest(server)
     .post('/channels')
     .send({name: 'channel 1', members: [user.id]})
     // Update a channel
-    await supertest(app)
+    await supertest(server)
     .put(`/channels/${channel1.id}`)
     .send({name: 'channel 2', members: [user.id, null]})
     .expect(200)
     // Check it was correctly updated
-    const {body: channel} = await supertest(app)
+    const {body: channel} = await supertest(server)
     .get(`/channels/${channel1.id}`)
     channel.should.eql({
       id: channel1.id,
@@ -101,22 +101,22 @@ describe('channels', () => {
   })
 
   it('delete channel', async () => {
-    const {body: user} = await supertest(app)
+    const {body: user} = await supertest(server)
     .get('/signin')
     // Create a channel
-    const {body: channel} = await supertest(app)
+    const {body: channel} = await supertest(server)
     .post('/channels')
     .send({name: 'channel 1', members: [user.id]})
     // Create a message inside it
-    const {body: message} = await supertest(app)
+    const {body: message} = await supertest(server)
     .post(`/channels/${channel.id}/messages`)
     .send({content: 'Hello ECE'})
     // Delete a channel
-    await supertest(app)
+    await supertest(server)
     .delete(`/channels/${channel.id}`)
     .expect(204)
     // Check it was correctly deleted
-    await supertest(app)
+    await supertest(server)
     .get(`/channels/${channel.id}`)
     .expect(403)
   })
