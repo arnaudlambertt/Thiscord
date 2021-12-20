@@ -128,7 +128,8 @@ app.post('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const message = await db.messages.create(req.params.id, req.body, req.user)
     res.status(201).json(message)
-    io.to(channel.id).emit('update message ' + channel.id, message)
+    message.channelId = channel.id
+    io.to(channel.id).emit('update message', message)
   }catch(err){
     res.status(400).send('Bad message')
   }
@@ -144,7 +145,8 @@ app.put('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     const message = await db.messages.update(req.params.id, req.body, req.user)
     res.json(message)
-    io.to(channel.id).emit('update message ' + channel.id, message)
+    message.channelId = channel.id
+    io.to(channel.id).emit('update message', message)
   }catch(err){
     res.status(400).send('Bad message')
   }
@@ -160,7 +162,8 @@ app.delete('/channels/:id/messages', loadUser, async (req, res) => {
   try{
     await db.messages.delete(req.params.id, req.body, req.user)
     res.status(204).send()
-    io.to(channel.id).emit('delete message ' + channel.id, req.body)
+    req.body.channelId = channel.id
+    io.to(channel.id).emit('delete message', req.body)
   }catch(err){
     res.status(403).send('You cannot delete this message or it does not exist')
   }
@@ -213,7 +216,6 @@ app.put('/users/:id', loadUser, async (req, res) => {
     io.to(user.channels).emit('update author', user)
     io.to(user.id).emit('update user', user)
   }catch(err){
-    console.log(err)
     return res.status(400).send('The updated user is invalid')
   }
 })

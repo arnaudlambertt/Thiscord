@@ -54,9 +54,9 @@ const useStyles = (theme) => ({
 })
 
 export default forwardRef(({
-  channel,
   setMessages,
   messages,
+  channel,
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
@@ -145,24 +145,34 @@ export default forwardRef(({
         'Authorization': `Bearer ${oauth.access_token}`
       }
     });
-    socket.on('update message '+ channel.id, message => {
-      setMessages(messages => {
-        const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
-        if(localMessageIndex === -1)
-          return[...messages, message]
+    socket.on('update message', message => {
+      console.log(message)
+      console.log(channel)
+      if(message.channelId === channel.id)
+      {
+        setMessages(messages => {
+          const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+          if(localMessageIndex === -1)
+            return[...messages, message]
 
-        messages.splice(localMessageIndex,1,message)
-        return[...messages]
-      })
+          messages.splice(localMessageIndex,1,message)
+          return[...messages]
+        })
+      }
     });
-    socket.on('delete message '+ channel.id, message => {
-      setMessages(messages => {
-        const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
-        if(localMessageIndex !== -1)
-          messages.splice(localMessageIndex,1)
-        return [...messages]
-      })
+    socket.on('delete message', message => {
+      if(message.channelId === channel.id)
+      {
+        setMessages(messages => {
+          const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+          if(localMessageIndex !== -1)
+            messages.splice(localMessageIndex,1)
+
+          return [...messages]
+        })
+      }
     });
+
   }, [setMessages, oauth, channel])
 
   return (
