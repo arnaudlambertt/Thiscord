@@ -349,10 +349,11 @@ return (
                 <DropzoneAreaBase
                   Icon={PortraitIcon}
                   acceptedFiles={['image/*']}
-                  dropzoneText={"Drag and drop an image here or click"}
+                  dropzoneText={"Drag and drop an image here (max 500kb)"}
                   onAdd={uploadImage}
                   filesLimit={1}
                   showAlerts={false}
+                  maxFileSize={512000}
                 />
                 {importedImage ?
                 <Box sx={{position: "absolute", top: "62%", left: "50%"}}>
