@@ -1,9 +1,11 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState, useEffect} from 'react'
 import Context from '../Context'
 import axios from 'axios';
 import Gravatar from 'react-gravatar';
+import socketIOClient from 'socket.io-client';
+
 // Layout
 import { useTheme } from '@mui/styles';
 import { IconButton,Box, Button,Typography } from '@mui/material';
@@ -111,8 +113,6 @@ export default forwardRef(({
        },
        data: message
      })
-     messages.splice(messages.findIndex(e => e === message),1)
-     setMessages([...messages])
    }catch(err){
      console.log(err)
    }
@@ -131,13 +131,41 @@ export default forwardRef(({
            'Authorization': `Bearer ${oauth.access_token}`
          },
        })
-       messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
        setOpen(false)
      }
    }catch(err){
      console.log(err)
    }
  }
+
+ useEffect(() => {
+   const socket = socketIOClient('http://localhost:3001', {
+     withCredentials: true,
+     extraHeaders: {
+    'Authorization': `Bearer ${oauth.access_token}`
+   }
+   });
+   socket.on('update message '+ channel.id, message => {
+     setMessages(messages =>
+     {
+       const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+       if(localMessageIndex === -1)
+         return[...messages, message]
+
+       messages.splice(localMessageIndex,1,message)
+       return[...messages]
+     })
+   });
+   socket.on('delete message '+ channel.id, message => {
+     setMessages(messages =>
+     {
+       const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+       if(localMessageIndex !== -1)
+         messages.splice(localMessageIndex,1)
+       return [...messages]
+     })
+   });
+ }, [setMessages, oauth, channel])
 
   return (
     <div css={styles.root} ref={rootEl}>
