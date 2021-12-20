@@ -112,10 +112,10 @@ export default function Channel() {
     socket.on('delete author', author => {
         setAuthors((u) => {
           delete u[author.id]
-          return u
+          return {...u}
         })
     });
-    
+
   },[setAuthors,oauth])
 
   const onScrollDown = (scrollDown) => {

@@ -146,8 +146,6 @@ export default forwardRef(({
       }
     });
     socket.on('update message', message => {
-      console.log(message)
-      console.log(channel)
       if(message.channelId === channel.id)
       {
         setMessages(messages => {
@@ -234,10 +232,11 @@ export default forwardRef(({
                         >
                           {authors[message.author]?.username}
                         </Typography>
+                        {!authors[message.author]? "[deleted]" : ''}
                         <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                       </Box>
                       <Box>
-                        {user.id === message.author ?
+                        {user?.id === message.author ?
                         <div>
                           {message.edited ?
                           <span css={styles.edited}>(Edited)</span>
