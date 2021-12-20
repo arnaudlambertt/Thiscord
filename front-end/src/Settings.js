@@ -379,8 +379,8 @@ return (
           <Dialog open={openImageSelection} onClose={handleCloseImageSelection}>
             <DialogTitle>Choose from selection</DialogTitle>
             <ToggleButtonGroup sx={{padding:2}} value={chosenPicture} onChange={handleChangePicture} exclusive={true} size="large">
-            <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/arnaud.jpeg' key="arnaud">
-              <img src='http://localhost:3000/arnaud.jpeg' style={{borderRadius: "100%"}} width="100" height="100" alt='arnaud'/>
+            <ToggleButton sx={{position:'relative', width: { xs: "70px", sm: "100px" },height: { xs: "70px", sm: "100px" }}} value='http://localhost:3000/arnaud.jpeg' key="arnaud">
+              <img src='http://localhost:3000/arnaud.jpeg' style={{borderRadius: "100%",width:'130%',height:'130%'}}alt='arnaud'/>
               {chosenPicture==='http://localhost:3000/arnaud.jpeg'?
                   <div
                     style={{
@@ -392,12 +392,12 @@ return (
                     }}
                   >
                     {" "}
-                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                    <Box sx={{width: { xs: "45px", sm: "85px" },height: { xs: "45px", sm: "85px" },border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
                   </div>
                  : ''}
             </ToggleButton>
-              <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/clement.jpg' key="clement">
-                <img src='http://localhost:3000/clement.jpg' style={{borderRadius: "100%"}} width="100" height="100" alt='clement'/>
+              <ToggleButton sx={{position:'relative',width: { xs: "70px", sm: "100px" },height: { xs: "70px", sm: "100px" }}} value='http://localhost:3000/clement.jpg' key="clement">
+                <img src='http://localhost:3000/clement.jpg' style={{borderRadius: "100%",width:'130%',height:'130%'}} alt='clement'/>
                 {chosenPicture==='http://localhost:3000/clement.jpg'?
                   <div
                     style={{
@@ -409,12 +409,12 @@ return (
                     }}
                   >
                     {" "}
-                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                    <Box sx={{width: { xs: "45px", sm: "85px" },height: { xs: "45px", sm: "85px" },border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
                   </div>
                  : ''}
               </ToggleButton>
-              <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/david.png' key="david">
-                <img src='http://localhost:3000/david.png' style={{borderRadius: "100%"}} width="100" height="100" alt='david'/>
+              <ToggleButton sx={{position:'relative',width: { xs: "70px", sm: "100px" },height: { xs: "70px", sm: "100px" }}} value='http://localhost:3000/david.png' key="david">
+                <img src='http://localhost:3000/david.png' style={{borderRadius: "100%",width:'130%',height:'130%'}} alt='david'/>
                 {chosenPicture==='http://localhost:3000/david.png'?
                   <div
                     style={{
@@ -426,12 +426,12 @@ return (
                     }}
                   >
                     {" "}
-                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                    <Box sx={{width: { xs: "45px", sm: "85px" },height: { xs: "45px", sm: "85px" },border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
                   </div>
                  : ''}
               </ToggleButton>
-              <ToggleButton sx={{position:'relative',width:100,height:100}} value='http://localhost:3000/sergei.jpg' key='./sergei.jpg'>
-                <img src='http://localhost:3000/sergei.jpg' style={{borderRadius: "100%"}} width="100" height="100" alt='sergei'/>
+              <ToggleButton sx={{position:'relative',width: { xs: "70px", sm: "100px" },height: { xs: "70px", sm: "100px" }}} value='http://localhost:3000/sergei.jpg' key='./sergei.jpg'>
+                <img src='http://localhost:3000/sergei.jpg' style={{borderRadius: "100%",width:'130%',height:'130%'}} alt='sergei'/>
                 {chosenPicture==='http://localhost:3000/sergei.jpg'?
                   <div
                     style={{
@@ -443,7 +443,7 @@ return (
                     }}
                   >
                     {" "}
-                    <Box sx={{width:95,height:95,border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
+                    <Box sx={{width: { xs: "45px", sm: "85px" },height: { xs: "45px", sm: "85px" },border:5,borderColor:'#FFF',borderRadius:'50%'}} />{" "}
                   </div>
                  : ''}
               </ToggleButton>

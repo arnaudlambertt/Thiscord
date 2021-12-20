@@ -7,7 +7,9 @@ import qs from 'qs'
 import axios from 'axios'
 // Layout
 import { useTheme } from '@mui/styles';
-import { Link,AppBar,Toolbar } from '@mui/material';
+import Blog from './landing/Blog'
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { Link,Box,Button } from '@mui/material';
 // Local
 import Context from './Context'
 import {
@@ -32,23 +34,12 @@ const useStyles = (theme) => ({
   root: {
     flex: '1 1 auto',
     width:'100%',
-    height:'100%',
     background: theme.palette.background.default,
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection:'column',
+    gap:'20px',
     alignItems: 'center',
-    '& > div': {
-      margin: `${theme.spacing(1)}`,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-    '& fieldset': {
-      border: 'none',
-      '& label': {
-        marginBottom: theme.spacing(.5),
-        display: 'block',
-      },
-    },
+    overflow:'auto',
   },
 })
 
@@ -73,18 +64,37 @@ const Redirect = ({
   }
   return (
     <div css={styles.root}>
-    <AppBar
-      position="fixed"
-      sx={{
-        width:'100%',alignItems:'center',
-        backgroundColor:'primary.main'
-      }}
-    >
-      <Toolbar>
-        <p><b>Thiscord</b></p>
-      </Toolbar>
-    </AppBar>
-      <Link onClick={redirect} color="secondary">Login with OpenID Connect and OAuth2</Link>
+    <header style={{width:'100%'}}>
+      <Box
+        sx={{
+        display: 'flex',
+        width:'100%',
+        height:50,
+        backgroundColor:'primary.main',
+        alignItems: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection:'row',
+            justifyContent:'space-between',
+            width:'100%',
+            height:50,
+            alignItems: 'center',
+          }}
+        >
+        <Box sx={{width:{ xs:0, sm:200 }}}>
+          <p></p>
+        </Box>
+            <Box sx={{width:200,transform:'translateX(+50px)'}}>
+              <p><b>Thiscord</b></p>
+            </Box>
+            <Button variant="contained" color='secondary' sx={{right:5,height:"80%",width:200}} onClick={redirect}> <GitHubIcon sx={{marginRight:3}}/>  Login with Github </Button>
+        </Box>
+      </Box>
+    </header>
+    <Blog/>
     </div>
   )
 }

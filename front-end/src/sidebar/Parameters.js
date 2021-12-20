@@ -100,6 +100,7 @@ export default function SidebarButton(){
       await axios.put(
         `http://localhost:3001/channels/${currentChannel.id}`,
         {
+          name: currentChannel.name,
           members: members.map(a => a.id)
         },
         {
