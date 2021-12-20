@@ -1,7 +1,7 @@
 
-# Chat application - final project
+# Chat application « Thiscord » - Final project
 
-*presentation, introduction, ...*
+Welcome to our chat application **Thiscord**. Inspired by the famous desktop app Discord, this final project shows our capabilities in full-stack developpment, within a short span of time. Indeed, this project was made in roughly 10 days. Clement was mainly responsible for the front-end part of the app, including design, attention to details, responsiveness, etc; whereas Arnaud worked mostly on the backend and the flows between frontend and backend, including authentification & security, unit tests, routes, db management, etc.
 
 ## Usage
 
@@ -67,17 +67,19 @@ Project management
 
     The project is well organized in folder for back end and front end but also with folders for react components related to each other
 * Code quality   
-  graduation: 3,5/4
+  graduation: 3.5/4
 
     Large use of ES6 javascript, no warning or errors.
-    The code is well indented and as optimized as possible.
+    The code is well indented and as optimized as possible. A few unnecessary re-renders might still be present.
 * Design, UX   
   graduation: 3/4
 
-    The website is intuitive and good looking you can change your theme as desired. The buttons are at logical locations and easy to use.
+    The website is intuitive and good looking. Additionally, you can change your theme as desired. The buttons are at logical locations and easy to use.
     The design is also adapted to mobile phone usage.
 * Git and DevOps   
-  graduation: 2,5/4
+  graduation: 3/4
+
+Good use of git overall, a new branch for each relatively big features, and commit names respecting conventions. Although the urls are pointing to localhost, the front-end has been deployed to [netlify](https://thiscord.netlify.app/). No docker image, nor linter though.
 
 Application development
 
@@ -89,9 +91,9 @@ Application development
 * New channel creation   
   graduation: 6/6
 
-    The channel creation is a simple dialog, once the channel is created it is added in database with the creator in its members
-    You can also cancel the creation in the dialog
-    once the channel is created you can manage it in a very intuitive manner
+    The channel creation is a simple dialog, once the channel is created it is added in database with the creator in its members.
+    You can also cancel the creation in the dialog.
+    Once the channel is created you can manage it in a very intuitive manner.
 * Channel membership and access   
   graduation: 4/4
 
@@ -129,22 +131,35 @@ Application development
 * Gravatar integration   
   graduation: 2/2
 
-    Every user has an associated gravatar if he modifies his gravatar on gravatar website, the change will be taken into account on the website without having to update it
+    Every user has an associated gravatar. If they modifify their gravatar on the gravatar website, the change will be taken into account. It appears in their settings but also next to their messages.
 * Avatar selection   
   graduation: 4/4
 
-    Every user can choose an avatar from a wonderful preselection of profile pictures the image selected is saved into his profile
+    Every user can choose an avatar from a wonderful preselection of profile pictures. The image selected is saved and will appear next to their messages instead of their previous picture.
 * Personal custom avatar   
   graduation: 6/6
 
-    You can upload your own profile picture and that picture will be saved in your profile as your avatar
+    You can upload your own profile picture and it will be saved in your profile as your avatar (limit of 500kb).
+    
 ## Bonus
 
-* Username +1
+* Username (+1)
 
-  every user has a username and can modify it, it is impossible to have the whole list of username or to enter in contact with someone without knowing his username.
-  When a user first logs in he is asked to create one.
+  Every user has a **unique** username and can modify it. It is impossible to get the whole list of usernames without entering specific characters.
+  When a user first logs in, he is asked to create one.
+  
+* Delete channel (+1)
 
-* working theme +1
+  Every channel can be deleted. If a channel doesn't have any member, it is also deleted. All the messages will also be deleted, and the users will be updated accordingly.
+  
+* Delete user (+1.5)
 
-    point Theme dark or light, settings saved in the user db
+  Every user can delete their account. The deleted users will appear as [deleted] in the messages they've sent before their deletion.
+
+* Customized light/dark theme (+1.5)
+
+  Customized from mui, mode dark or light, this setting is saved in the db.
+  
+* Socket.io
+
+Use of Socket.io to update in real time the client of each user connected. The channels, the members, the messages (creation, edition and deletion), etc. Are all updated and shared across the concerned clients.
