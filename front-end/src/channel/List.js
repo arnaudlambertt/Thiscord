@@ -238,10 +238,6 @@ export default forwardRef(({
                       <Box>
                         {user?.id === message.author ?
                         <div>
-                          {message.edited ?
-                          <span css={styles.edited}>(Edited)</span>
-                          : ''
-                          }
                           <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation();handleOpen(message)}}>
                             <CreateIcon fontSize="small" />
                           </IconButton>
@@ -266,6 +262,10 @@ export default forwardRef(({
                           <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>
                             <DeleteIcon fontSize="small"/>
                           </IconButton>
+                          {message.edited ?
+                          <span css={styles.edited}>(Edited)</span>
+                          : ''
+                          }
                         </div>
                         :
                         message.edited ?
