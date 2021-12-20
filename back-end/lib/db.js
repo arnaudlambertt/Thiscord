@@ -47,6 +47,7 @@ module.exports = {
       return filteredChannels;
     },
     update: async (channel, original) => {
+      if(!channel.name) throw Error('Invalid channel')
       delete channel['id']
       delete channel['allMembers']
       //remove the channel from users who are not in it anymore
