@@ -98,7 +98,8 @@ app.put('/channels/:id', loadUser, async (req, res) => {
 app.delete('/channels/:id', loadUser, async (req, res) => {
   try{
     const original = await db.channels.get(req.params.id, req.user)
-    const channel = await db.channels.delete(original)
+    await db.channels.delete(original)
+    io.to(original.members).emit('delete channel',original)
     res.status(204).send()
   }catch(err){
     res.status(403).send('You don\'t have access to this channel or it does not exist')

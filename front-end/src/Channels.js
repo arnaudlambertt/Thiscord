@@ -73,7 +73,6 @@ export default function Channels() {
     socket.on('delete channel', channel => {
       setChannels(channels =>
       {
-        console.log('delete channel')
         const localChannelIndex = channels.findIndex(c => c.id === channel.id)
         if(localChannelIndex !== -1)
           channels.splice(localChannelIndex,1)
