@@ -33,8 +33,6 @@ const useStyles = (theme) => ({
   }
 })
 
-
-
 export default function Main(props) {
 const { window } = props;
   const {
