@@ -2,6 +2,8 @@
 /** @jsxImportSource @emotion/react */
 import {useContext, useRef, useState, useEffect} from 'react';
 import axios from 'axios';
+import socketIOClient from 'socket.io-client';
+
 // Layout
 import { useTheme } from '@mui/styles';
 import {Fab} from '@mui/material';
@@ -35,31 +37,30 @@ const useStyles = (theme) => ({
 export default function Channel() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const {channels, oauth, setCurrentChannel, authors, setAuthors} = useContext(Context)
+  const {channels, authors, oauth, setCurrentChannel, setAuthors} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
   const styles = useStyles(useTheme())
   const listRef = useRef()
   const [messages, setMessages] = useState([])
   const [,reRender] = useState(false)
   const [scrollDown, setScrollDown] = useState(false)
-  const addMessage = (message) => {
-    setMessages([...messages, message])
-  }
-
   useEffect( () => {
     const fetch = async () => {
-      try{
-        const {data: messages} = await axios.get(`http://localhost:3001/channels/${id}/messages`, {
-          headers: {
-              'Authorization': `Bearer ${oauth.access_token}`
+      if(channel)
+      {
+        try{
+          const {data: messages} = await axios.get(`http://localhost:3001/channels/${id}/messages`, {
+            headers: {
+                'Authorization': `Bearer ${oauth.access_token}`
+            }
+          })
+          setMessages(messages)
+          if(listRef.current){
+            listRef.current.scroll()
           }
-        })
-        setMessages(messages)
-        if(listRef.current){
-          listRef.current.scroll()
+        }catch(err){
+          navigate('/')
         }
-      }catch(err){
-        navigate('/')
       }
     }
     fetch()
@@ -88,11 +89,34 @@ export default function Channel() {
             await addAuthor(member)
         }
       }
-      setAuthors(Object.assign(authors,authorsTemp))
+      setAuthors(u => u = {...u,...authorsTemp})
       reRender(u => !u)
     }
     fetch()
-  },[authors, oauth, setAuthors,reRender, channels])
+  },[oauth, setAuthors,reRender, channels])
+
+  useEffect(() => {
+    const socket = socketIOClient('http://localhost:3001', {
+      withCredentials: true,
+      extraHeaders: {
+     'Authorization': `Bearer ${oauth.access_token}`
+    }
+    });
+    socket.on('update author', author => {
+        setAuthors((u) => {
+          const pair = {}
+          pair[author.id] = author
+          return {...u,...pair}
+        })
+    });
+    socket.on('delete author', author => {
+        setAuthors((u) => {
+          delete u[author.id]
+          return {...u}
+        })
+    });
+
+  },[setAuthors,oauth])
 
   const onScrollDown = (scrollDown) => {
     setScrollDown(scrollDown)
@@ -115,7 +139,7 @@ export default function Channel() {
           onScrollDown={onScrollDown}
           ref={listRef}
         />
-        <Form addMessage={addMessage} channel={channel} />
+        <Form channel={channel} />
         <Fab
           color="primary"
           aria-label="Latest messages"

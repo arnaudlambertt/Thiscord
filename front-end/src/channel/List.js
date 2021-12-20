@@ -1,9 +1,11 @@
 
 /** @jsxImportSource @emotion/react */
-import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState} from 'react'
+import {forwardRef, useContext, useImperativeHandle, useLayoutEffect, useRef, useState, useEffect} from 'react'
 import Context from '../Context'
 import axios from 'axios';
 import Gravatar from 'react-gravatar';
+import socketIOClient from 'socket.io-client';
+
 // Layout
 import { useTheme } from '@mui/styles';
 import { IconButton,Box, Button,Typography } from '@mui/material';
@@ -52,14 +54,14 @@ const useStyles = (theme) => ({
 })
 
 export default forwardRef(({
-  channel,
   setMessages,
   messages,
+  channel,
   onScrollDown,
 }, ref) => {
   const styles = useStyles(useTheme())
   const [open, setOpen] = useState(false);
-  const [content, setContent] = useState('')
+  const [messageToEdit, setMessageToEdit] = useState({content:''})
   const {user,authors,oauth} = useContext(Context)
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
@@ -91,53 +93,85 @@ export default forwardRef(({
   })
 
   const handleOpen = (message) => {
-   setOpen(true)
-   setContent(message.content)
- }
+    setOpen(true)
+    setMessageToEdit(message)
+  }
 
- const handleClose = () => {
-   setOpen(false)
- }
- const handleChange = (e) => {
-   setContent(e.target.value)
- }
- const deleteMessage = async (message) => {
-   try{
-     await axios.delete(
-       `http://localhost:3001/channels/${channel.id}/messages`,
-       {
-       headers: {
-         'Authorization': `Bearer ${oauth.access_token}`
-       },
-       data: message
-     })
-     messages.splice(messages.findIndex(e => e === message),1)
-     setMessages([...messages])
-   }catch(err){
-     console.log(err)
-   }
- }
- const editMessage = async (message) => {
-   try{
-     if(content){
-       const {data: edited} = await axios.put(
-         `http://localhost:3001/channels/${channel.id}/messages`,
-         {
-           content: content,
-           creation: message.creation,
-         },
-         {
-         headers: {
-           'Authorization': `Bearer ${oauth.access_token}`
-         },
-       })
-       messages.splice(messages.findIndex(e => e.creation === edited.creation),1,edited)
-       setOpen(false)
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleChange = (e) => {
+    setMessageToEdit({...messageToEdit, content: e.target.value})
+  }
+
+  const deleteMessage = async (message) => {
+    try{
+      await axios.delete(`http://localhost:3001/channels/${channel.id}/messages`,
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          },
+          data: message
+      })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const editMessage = async () => {
+    if(messageToEdit.content){
+      try{
+        await axios.put(`http://localhost:3001/channels/${channel.id}/messages`,
+        {
+          content: messageToEdit.content,
+          creation: messageToEdit.creation,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
+          },
+        })
+        setOpen(false)
+       }catch(err){
+         console.log(err)
+       }
      }
-   }catch(err){
-     console.log(err)
-   }
- }
+  }
+
+  useEffect(() => {
+    const socket = socketIOClient('http://localhost:3001', {
+      withCredentials: true,
+      extraHeaders: {
+        'Authorization': `Bearer ${oauth.access_token}`
+      }
+    });
+    socket.on('update message', message => {
+      if(message.channelId === channel.id)
+      {
+        setMessages(messages => {
+          const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+          if(localMessageIndex === -1)
+            return[...messages, message]
+
+          messages.splice(localMessageIndex,1,message)
+          return[...messages]
+        })
+      }
+    });
+    socket.on('delete message', message => {
+      if(message.channelId === channel.id)
+      {
+        setMessages(messages => {
+          const localMessageIndex = messages.findIndex(m => m.creation === message.creation)
+          if(localMessageIndex !== -1)
+            messages.splice(localMessageIndex,1)
+
+          return [...messages]
+        })
+      }
+    });
+
+  }, [setMessages, oauth, channel])
 
   return (
     <div css={styles.root} ref={rootEl}>
@@ -198,16 +232,17 @@ export default forwardRef(({
                         >
                           {authors[message.author]?.username}
                         </Typography>
+                        {!authors[message.author]? "[deleted]" : ''}
                         <span css={styles.timeStamp}>{ DateTime.fromMillis(Number(message.creation)/1000).toFormat("MMMM dd, yyyy 'at' t")}</span>
                       </Box>
                       <Box>
-                        {user.id === message.author ?
+                        {user?.id === message.author ?
                         <div>
                           {message.edited ?
                           <span css={styles.edited}>(Edited)</span>
                           : ''
                           }
-                          <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={() => {handleOpen(message)}}>
+                          <IconButton aria-label="modify" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation();handleOpen(message)}}>
                             <CreateIcon fontSize="small" />
                           </IconButton>
                           <Dialog open={open} onClose={handleClose}>
@@ -217,7 +252,7 @@ export default forwardRef(({
                                 autoFocus
                                 margin="dense"
                                 id="name"
-                                value={content}
+                                value={messageToEdit.content}
                                 onChange={handleChange}
                                 label="your message"
                                 variant="standard"
@@ -225,7 +260,7 @@ export default forwardRef(({
                             </DialogContent>
                             <DialogActions>
                               <Button onClick={handleClose}>Cancel</Button>
-                              <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage(message)}}>Edit</Button>
+                              <Button variant="contained" onClick={(e) => {e.stopPropagation(); editMessage();}}>Edit</Button>
                             </DialogActions>
                           </Dialog>
                           <IconButton aria-label="delete" sx={{color:'background.default'}} onClick={(e) => {e.stopPropagation(); deleteMessage(message)}}>

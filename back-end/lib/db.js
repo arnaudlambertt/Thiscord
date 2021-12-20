@@ -41,8 +41,13 @@ module.exports = {
       const member = await module.exports.users.get(user.id)
       const filteredChannels = [];
       for(channelid of member.channels){
-        const channel = await module.exports.channels.get(channelid,user)
-        filteredChannels.push(channel)
+        try{
+          const channel = await module.exports.channels.get(channelid,user)
+          filteredChannels.push(channel)
+        }catch(err){
+          member.channels.splice(member.channels.indexOf(channelid),1)
+          await module.exports.users.update(user.id,member,true)
+        }
       }
       return filteredChannels;
     },

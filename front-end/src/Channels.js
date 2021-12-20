@@ -2,6 +2,7 @@
 /** @jsxImportSource @emotion/react */
 import {useContext,useRef,useEffect} from 'react';
 import axios from 'axios';
+import socketIOClient from 'socket.io-client';
 // Layout
 // Local
 import Context from './Context'
@@ -51,7 +52,36 @@ export default function Channels() {
       }
     }
     fetch()
-  }, [oauth, setChannels])
+
+    const socket = socketIOClient('http://localhost:3001', {
+      withCredentials: true,
+      extraHeaders: {
+     'Authorization': `Bearer ${oauth.access_token}`
+    }
+    });
+    socket.on('update channel', channel => {
+      setChannels(channels =>
+      {
+        const localChannelIndex = channels.findIndex(c => c.id === channel.id)
+        if(localChannelIndex === -1)
+          return[...channels, channel]
+
+        channels.splice(localChannelIndex,1,channel)
+        return[...channels]
+      })
+    });
+    socket.on('delete channel', channel => {
+      setChannels(channels =>
+      {
+        const localChannelIndex = channels.findIndex(c => c.id === channel.id)
+        if(localChannelIndex !== -1)
+          channels.splice(localChannelIndex,1)
+        return [...channels]
+      })
+    });
+
+  }, [oauth,setChannels])
+
 
 //add members
   return (

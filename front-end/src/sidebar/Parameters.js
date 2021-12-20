@@ -74,7 +74,7 @@ export default function SidebarButton(){
 
   const updateCurrentChannel = async() => {
     try{
-      const {data: updatedChannel} = await axios.put(
+      await axios.put(
         `http://localhost:3001/channels/${currentChannel.id}`,
         {
           name: channelName,
@@ -85,8 +85,6 @@ export default function SidebarButton(){
             'Authorization': `Bearer ${oauth.access_token}`
           },
       })
-      channels.splice(channels.findIndex(e => e.id === currentChannel.id),1,updatedChannel)
-      setChannels([...channels])
       handleCloseParameters()
     }catch(err){
       console.error(err)
@@ -110,7 +108,6 @@ export default function SidebarButton(){
       })
       handleCloseParameters()
       navigate(`/`)
-      removeChannel()
     }catch(err){
       console.error(err)
     }
@@ -170,7 +167,6 @@ export default function SidebarButton(){
           }
         })
         handleCloseParameters()
-        removeChannel()
         navigate('/')
     }catch(err){
       console.log(err)
@@ -181,10 +177,6 @@ export default function SidebarButton(){
     setChannels([...channels, channel])
   }
 
-  const removeChannel = () => {
-    channels.splice(channels.findIndex(e => e.id === currentChannel.id),1)
-    setChannels([...channels])
-  }
   const addMember = (e,member) => {
     setMembers(member)
   }

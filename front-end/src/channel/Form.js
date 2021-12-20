@@ -8,8 +8,6 @@ import Context from '../Context'
 import SendIcon from '@mui/icons-material/Send';
 import { useTheme } from '@mui/styles';
 
-
-
 const useStyles = (theme) => {
   // See https://github.com/mui-org/material-ui/blob/next/packages/material-ui/src/OutlinedInput/OutlinedInput.js
   const borderColor = theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)';
@@ -29,8 +27,7 @@ const useStyles = (theme) => {
 }
 
 export default function Form({
-  addMessage,
-  channel,
+  channel
 }) {
   const [content, setContent] = useState('')
   const styles = useStyles(useTheme())
@@ -38,18 +35,16 @@ export default function Form({
   const onSubmit = async () => {
     try{
       if(content){
-        const {data: message} = await axios.post(
-          `http://localhost:3001/channels/${channel.id}/messages`,
-          {
-            content: content,
-            author: user.username,
+        await axios.post(`http://localhost:3001/channels/${channel.id}/messages`,
+        {
+          content: content,
+          author: user.username,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${oauth.access_token}`
           },
-          {
-            headers: {
-              'Authorization': `Bearer ${oauth.access_token}`
-            },
-          })
-        addMessage(message)
+        })
         setContent('')
       }
     }
