@@ -18,9 +18,6 @@ function FeaturedPost(props) {
             <Typography sx={{color:'terciary.contrastText'}} component="h2" variant="h5">
               {post.title}
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
-              {post.date}
-            </Typography>
             <Typography sx={{color:'terciary.contrastText'}}variant="subtitle1" paragraph>
               {post.description}
             </Typography>
@@ -37,14 +34,5 @@ function FeaturedPost(props) {
   );
 }
 
-FeaturedPost.propTypes = {
-  post: PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    imageLabel: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 export default FeaturedPost;
