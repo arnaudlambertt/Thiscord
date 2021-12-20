@@ -85,11 +85,11 @@ app.put('/channels/:id', loadUser, async (req, res) => {
   try{
     const original = await db.channels.get(req.params.id, req.user)
     const channel = await db.channels.update(req.body,original)
+    res.json(channel)
     const removedMembers = original.members.filter(e => !channel.members.includes(e))
     if(removedMembers.length)
-      io.to(removedMembers).emit('delete channel',channel)
-    io.to(channel.members).emit('update channel',channel)
-    res.json(channel)
+      io.to(removedMembers).emit('delete channel', channel)
+    io.to(channel.members).emit('update channel', channel)
   }catch(err){
     res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
@@ -99,8 +99,8 @@ app.delete('/channels/:id', loadUser, async (req, res) => {
   try{
     const original = await db.channels.get(req.params.id, req.user)
     await db.channels.delete(original)
-    io.to(original.members).emit('delete channel',original)
     res.status(204).send()
+    io.to(original.members).emit('delete channel', original)
   }catch(err){
     res.status(403).send('You don\'t have access to this channel or it does not exist')
   }
