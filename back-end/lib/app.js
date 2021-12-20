@@ -35,22 +35,15 @@ io.use(wrap(loadUser))
 
 io.use((socket, next) => {
   if (socket.request.user.id) {
-    console.log(socket.request.user)
     next();
   } else {
     next(new Error("unauthorized"))
   }
 });
 
-let interval;
-
 io.on("connection", (socket) => {
-  console.log("New client connected");
-
   socket.join(socket.request.user.id);
-
   socket.on("disconnect", () => {
-    console.log("Client disconnected");
   });
 });
 
