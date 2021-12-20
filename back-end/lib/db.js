@@ -233,7 +233,8 @@ module.exports = {
       for(channelid of original.channels){
         const original = await module.exports.channels.get(channelid,user)
         const channel = {...original}
-        channel.members.splice(channel.members.findIndex(m => m.id === id),1)
+        channel.members.splice(channel.members.indexOf(id),1)
+        channel.members.splice(channel.allMembers.indexOf(id),1)
         await module.exports.channels.update(channel,original)
       }
       await db.del(`usersid:${original.email}`)
