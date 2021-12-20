@@ -82,7 +82,6 @@ app.put('/channels/:id', loadUser, async (req, res, next) => {
       req.method = 'DELETE'
       return next()
     }
-    console.log("pas delete")
     const original = await db.channels.get(req.params.id, req.user)
     const channel = await db.channels.update(req.body,original)
     res.json(channel)
