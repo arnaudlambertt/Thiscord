@@ -42,9 +42,6 @@ export default function Channel() {
   const [messages, setMessages] = useState([])
   const [,reRender] = useState(false)
   const [scrollDown, setScrollDown] = useState(false)
-  const addMessage = (message) => {
-    setMessages([...messages, message])
-  }
 
   useEffect( () => {
     const fetch = async () => {
@@ -115,7 +112,7 @@ export default function Channel() {
           onScrollDown={onScrollDown}
           ref={listRef}
         />
-        <Form addMessage={addMessage} channel={channel} />
+        <Form channel={channel} />
         <Fab
           color="primary"
           aria-label="Latest messages"
