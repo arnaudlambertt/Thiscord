@@ -45,18 +45,21 @@ export default function Channel() {
 
   useEffect( () => {
     const fetch = async () => {
-      try{
-        const {data: messages} = await axios.get(`http://localhost:3001/channels/${id}/messages`, {
-          headers: {
-              'Authorization': `Bearer ${oauth.access_token}`
+      if(channel)
+      {
+        try{
+          const {data: messages} = await axios.get(`http://localhost:3001/channels/${id}/messages`, {
+            headers: {
+                'Authorization': `Bearer ${oauth.access_token}`
+            }
+          })
+          setMessages(messages)
+          if(listRef.current){
+            listRef.current.scroll()
           }
-        })
-        setMessages(messages)
-        if(listRef.current){
-          listRef.current.scroll()
+        }catch(err){
+          navigate('/')
         }
-      }catch(err){
-        navigate('/')
       }
     }
     fetch()
