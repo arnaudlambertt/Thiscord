@@ -1,7 +1,7 @@
 
 # Chat application « Thiscord » - Final project
 
-Welcome to our chat application **Thiscord**. Inspired by the famous desktop app Discord, this final project shows our capabilities in full-stack developpment, within a short span of time. Indeed, this project was made in roughly 10 days. Clement was mainly responsible for the front-end part of the app, including design, attention to details, responsiveness, etc; whereas Arnaud worked mostly on the backend and the flows between frontend and backend, including authentification & security, unit tests, routes, db management, etc.
+Welcome to our chat application **Thiscord**. Inspired by the famous desktop app Discord, this final project shows our capabilities in full-stack developpment, within a short span of time. Indeed, this project was made in roughly 10 days. Clement was mainly responsible for the front-end part of the app, including design, attention to details, responsiveness, etc, whereas Arnaud worked mostly on the backend and the flows between frontend and backend, including authentification & security, unit tests, routes, db management, etc.
 
 ## Usage
 
